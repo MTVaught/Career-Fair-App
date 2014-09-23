@@ -6,6 +6,7 @@ public class NamePrinter {
 		
 		//Print Matthew Vaught to the console
 		System.out.println("Matthew Vaught");
+		//test
 	}
 
 }
