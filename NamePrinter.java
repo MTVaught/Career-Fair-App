@@ -7,6 +7,8 @@ public class NamePrinter {
 		//Print Matthew Vaught to the console
 		System.out.println("Matthew Vaught");
 
+		System.out.println("Zicheng Liu");
+
 		//Print out Hannah Wilder
 		System.out.println("Hannah Wilder");
 
