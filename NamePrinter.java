@@ -9,6 +9,9 @@ public class NamePrinter {
 
 		//Print out Hannah Wilder
 		System.out.println("Hannah Wilder");
+
+		//Print Andrew Hanson to the console
+		System.out.println("Andrew Hanson");
 	}
 
 }
