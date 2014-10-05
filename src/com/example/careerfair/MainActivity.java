@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,22 +52,43 @@ public class MainActivity extends Activity implements
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager
-				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		switch(position){
+		case 0:
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			break;
+		case 1:
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			break;
+		case 2:
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			break;
+		case 3:
+			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
+			break;
+		
+		}
+		
+		
+	//	fragmentManager
+	//			.beginTransaction()
+	//			.replace(R.id.container,
+	//					PlaceholderFragment.newInstance(position + 1)).commit();
 	}
 
 	public void onSectionAttached(int number) {
 		switch (number) {
-		case 1:
+		case 0:
 			mTitle = getString(R.string.title_section1);
 			break;
-		case 2:
+		case 1:
 			mTitle = getString(R.string.title_section2);
 			break;
-		case 3:
+		case 2:
 			mTitle = getString(R.string.title_section3);
+			break;
+		case 3:
+			mTitle = "CRAZY!!!";
 			break;
 		}
 	}
