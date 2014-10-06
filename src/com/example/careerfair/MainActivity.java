@@ -68,6 +68,8 @@ public class MainActivity extends Activity implements
 		case 3:
 			mTitle = getString(R.string.title_section3);
 			break;
+		case 4:
+			mTitle = getString(R.string.ListView);
 		}
 	}
 
@@ -141,6 +143,6 @@ public class MainActivity extends Activity implements
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
-	}
+	} 
 
 }

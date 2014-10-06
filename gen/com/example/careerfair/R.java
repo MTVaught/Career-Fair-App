@@ -50,6 +50,7 @@ public final class R {
         public static final int main=0x7f070001;
     }
     public static final class string {
+        public static final int ListView=0x7f050008;
         public static final int action_example=0x7f050006;
         public static final int action_settings=0x7f050007;
         public static final int app_name=0x7f050000;
