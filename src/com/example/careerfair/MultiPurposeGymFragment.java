@@ -16,7 +16,9 @@ public class MultiPurposeGymFragment extends Fragment {
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
-	public static MultiPurposeGymFragment newInstance(int sectionNumber) {
+	public static MultiPurposeGymFragment newInstance(int sectionNumber)
+	{
+		
 		MultiPurposeGymFragment fragment = new MultiPurposeGymFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -24,19 +26,20 @@ public class MultiPurposeGymFragment extends Fragment {
 		return fragment;
 	}
 
-	public MultiPurposeGymFragment() {
+	public MultiPurposeGymFragment() 
+	{
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_multipurposegym,
-				container, false);
-		return rootView;
+			Bundle savedInstanceState) 
+	{
+		//GridView
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach(Activity activity) 
+	{
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));

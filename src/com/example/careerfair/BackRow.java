@@ -5,19 +5,14 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 
-public class BackRow extends ViewGroup
+public class BackRow extends GridLayout
 {
 	public BackRow( Context context, ArrayList<Company> aCompanyList, int start, int end)
 	{
 		super(context);
 		
 		//from right to left
-	}
-
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		// TODO Auto-generated method stub
-		
 	}
 }
