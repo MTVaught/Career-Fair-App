@@ -10,5 +10,7 @@
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
     <string name="title_multipurposegym">Multi-Purpose Gym</string>
+    <string name="MultiColumns">100</string>
+    <string name="MultiRows">100</string>
 
 </resources>

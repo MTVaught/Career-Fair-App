@@ -1,4 +1,10 @@
+package com.example.careerfair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -12,27 +18,38 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+/**
+ *
+ * @author daniel
+ *
+ */
 public class BoothAdapter extends BaseAdapter 
 {
 	
     private Context mContext;
+    private Company mCompany;
 
-
-    // references to our images
-    private Integer[] mBoothType = 
-    {
-            R.drawable.doublebooth,
-            R.drawable.singlebooth
-    };
+    //key == position number, value == booth number
+    private HashMap<Integer,Integer> mBackRow;
     
-    public BoothAdapter(Context c) 
+    public BoothAdapter(Context c, Company company ) 
     {
         mContext = c;
+        mCompany = company;
+        mBackRow = new HashMap<Integer,Integer>();
+        int start = 65;
+        int end = 36;
+        int position = 0;
+        for ( int i = start; i > end; i-- )
+        {
+        	mBackRow.put( position, R.drawable.singlebooth );
+        	position++;
+        }
     }
 
     public int getCount() 
     {
-        return mBoothType.length;
+        return mBackRow.size();
     }
 
     public Object getItem(int position) 
@@ -45,19 +62,20 @@ public class BoothAdapter extends BaseAdapter
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+    /**
+     * Creates an image view using the standard box layouts. This view needs to be modified after created with company info.
+     * @param int position
+     * 		0 - single booth
+     * 		1 - double booth
+     * @return a view containing an image of the booth
+     */
     public View getView( int position, View convertView, ViewGroup parent) 
     {
-    	Company company = new Company();
         ImageView imageView;
         if (convertView == null) 
         {  
         	// if it's not recycled, initialize some attributes
             imageView = new ImageView( mContext );
-            imageView.setLayoutParams( new GridView.LayoutParams(85, 85) );
-            imageView.setScaleType( ImageView.ScaleType.CENTER_CROP );
-            imageView.setPadding( 1, 1, 1, 1 );
-            imageView.setOnTouchListener( new BoothListener( company ));
             
         } 
         else 
@@ -65,9 +83,7 @@ public class BoothAdapter extends BaseAdapter
             imageView = (ImageView) convertView;
         }
         
-        
-        imageView.draw
-        
+        imageView.setImageResource( mBackRow.get( position ) );
         return imageView;
     }
 
