@@ -21,14 +21,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
+		NavigationDrawerFragment.NavigationDrawerCallbacks,
+		CompanyListFragment.CompanyListCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
 	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-
+	private CompanyListFragment mCompanyListFragment;
+	private CompanyReaderFragment mCompanyReaderFragment;
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -42,46 +44,70 @@ public class MainActivity extends Activity implements
 
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
+		mCompanyListFragment = (CompanyListFragment) getFragmentManager()
+				.findFragmentById(R.id.listView1);
+		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
+				.findFragmentById(R.id.company_reader);
 		mTitle = getTitle();
 
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		// Set up the ListView
+
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-		// update the main content by replacing fragments
+		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		switch(position){
 		case 0:
-			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 1:
-			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 2:
-			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 3:
+			ft.add(R.id.container, CompanyListFragment.newInstance(position)).commit();
+			break;
+		case 4:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
-		
 		}
-		
-		
-	//	fragmentManager
-	//			.beginTransaction()
-	//			.replace(R.id.container,
-	//					PlaceholderFragment.newInstance(position + 1)).commit();
+	}
+
+	@Override
+	public void onCompanyListItemSelected(int position) {
+		// TODO Auto-generated method stub
+		FragmentManager fragmentManager = super.getFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		switch(position){
+		case 0:
+			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			break;
+		case 1:
+			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			break;
+		case 2:
+			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			break;
+		case 3:
+			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			break;
+		}
+>>>>>>> origin/dev
 	}
 
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 0:
 			mTitle = getString(R.string.title_section1);
-			break;
+		    break;
 		case 1:
 			mTitle = getString(R.string.title_section2);
 			break;
@@ -89,7 +115,10 @@ public class MainActivity extends Activity implements
 			mTitle = getString(R.string.title_section3);
 			break;
 		case 3:
-			mTitle = "CRAZY!!!";
+			mTitle = getString(R.string.ListView);
+			break;
+		case 4:
+			mTitle = getString(R.string.title_multipurposegym);
 			break;
 		}
 	}

@@ -1,8 +1,12 @@
 package com.example.careerfair;
 
+import com.example.careerfair.MainActivity.PlaceholderFragment;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -66,6 +70,7 @@ public class NavigationDrawerFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+
 		// Read in the flag indicating whether or not the user has demonstrated
 		// awareness of the
 		// drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -111,8 +116,10 @@ public class NavigationDrawerFragment extends Fragment {
 						getString(R.string.title_section1),
 						getString(R.string.title_section2),
 						getString(R.string.title_section3),
+						getString(R.string.ListView),
 						getString(R.string.title_multipurposegym),
 						}));
+
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mDrawerListView;
 	}
@@ -273,11 +280,12 @@ public class NavigationDrawerFragment extends Fragment {
 			return true;
 		}
 
-		
-		
+
+
 		if (item.getItemId() == R.id.action_example) {
 			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
 					.show();
+
 			return true;
 		}
 
@@ -310,4 +318,6 @@ public class NavigationDrawerFragment extends Fragment {
 		 */
 		void onNavigationDrawerItemSelected(int position);
 	}
+
+
 }

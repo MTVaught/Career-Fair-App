@@ -24,6 +24,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
+
 public class ExternalDbOpenHelper extends SQLiteOpenHelper {
 
      //Path to the device folder with databases
@@ -33,7 +35,8 @@ public class ExternalDbOpenHelper extends SQLiteOpenHelper {
     public static String DB_NAME;
     public SQLiteDatabase database;
     public final Context context;
-
+ 
+   // private ArrayList companies = new ArrayList<String>();
     /**
      * returns the database associated with the helper
      * 
@@ -94,7 +97,7 @@ public class ExternalDbOpenHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Log.i(this.getClass().toString(), "Database does not exist yet, ignore above errors, database will be created momentarily");
         }
-        //Android doesn’t like resource leaks, everything should 
+        //Android doesnï¿½t like resource leaks, everything should 
         // be closed
         if (checkDb != null) {
             checkDb.close();
@@ -124,7 +127,7 @@ public class ExternalDbOpenHelper extends SQLiteOpenHelper {
         while ((bytesRead = externalDbStream.read(buffer)) > 0) {
             localDbStream.write(buffer, 0, bytesRead);
         }
-        //Don’t forget to close the streams
+        //Donï¿½t forget to close the streams
         localDbStream.close();
         externalDbStream.close();
     }
