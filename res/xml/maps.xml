@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<maps xmlns:android="http://schemas.android.com/apk/res/android">
+    <map name="multimap">
+<area coords="935,126,963,161" id="@+id/booth36" shape="rect"/>
+<area coords="905,126,933,161" id="@+id/booth37" shape="rect"/>
+<area coords="875,126,903,161" id="@+id/booth38" shape="rect"/>
+<area coords="845,126,873,161" id="@+id/booth39" shape="rect"/>
+<area coords="815,126,843,161" id="@+id/booth40" shape="rect"/>
+<area coords="785,126,813,161" id="@+id/booth41" shape="rect"/>
+<area coords="755,126,783,161" id="@+id/booth42" shape="rect"/>
+<area coords="725,126,753,161" id="@+id/booth43" shape="rect"/>
+<area coords="695,126,723,161" id="@+id/booth44" shape="rect"/>
+<area coords="665,126,693,161" id="@+id/booth45" shape="rect"/>
+<area coords="635,126,663,161" id="@+id/booth46" shape="rect"/>
+<area coords="605,126,633,161" id="@+id/booth47" shape="rect"/>
+<area coords="575,126,603,161" id="@+id/booth48" shape="rect"/>
+<area coords="545,126,573,161" id="@+id/booth49" shape="rect"/>
+<area coords="515,126,543,161" id="@+id/booth50" shape="rect"/>
+<area coords="485,126,513,161" id="@+id/booth51" shape="rect"/>
+<area coords="455,126,483,161" id="@+id/booth52" shape="rect"/>
+<area coords="425,126,453,161" id="@+id/booth53" shape="rect"/>
+<area coords="395,126,423,161" id="@+id/booth54" shape="rect"/>
+<area coords="365,126,393,161" id="@+id/booth55" shape="rect"/>
+<area coords="335,126,363,161" id="@+id/booth56" shape="rect"/>
+<area coords="305,126,333,161" id="@+id/booth57" shape="rect"/>
+<area coords="275,126,303,161" id="@+id/booth58" shape="rect"/>
+<area coords="245,126,273,161" id="@+id/booth59" shape="rect"/>
+<area coords="215,126,243,161" id="@+id/booth60" shape="rect"/>
+<area coords="185,126,213,161" id="@+id/booth61" shape="rect"/>
+<area coords="155,126,183,161" id="@+id/booth62" shape="rect"/>
+<area coords="125,126,153,161" id="@+id/booth63" shape="rect"/>
+<area coords="95,126,123,161" id="@+id/booth64" shape="rect"/>
+<area coords="65,126,93,161" id="@+id/booth65" shape="rect"/>
+</map>
+</maps>
