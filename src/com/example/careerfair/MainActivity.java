@@ -88,16 +88,16 @@ public class MainActivity extends Activity implements
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		switch(position){
 		case 0:
-			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		case 1:
-			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		case 2:
-			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		case 3:
-			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		}
 
