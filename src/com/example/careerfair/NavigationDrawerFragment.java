@@ -54,7 +54,7 @@ public class NavigationDrawerFragment extends Fragment {
 	 * Helper component that ties the action bar to the navigation drawer.
 	 */
 	private ActionBarDrawerToggle mDrawerToggle;
-   
+
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerListView;
 	private View mFragmentContainerView;
@@ -69,8 +69,8 @@ public class NavigationDrawerFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
+
+
 		// Read in the flag indicating whether or not the user has demonstrated
 		// awareness of the
 		// drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -116,7 +116,10 @@ public class NavigationDrawerFragment extends Fragment {
 						getString(R.string.title_section1),
 						getString(R.string.title_section2),
 						getString(R.string.title_section3),
-						getString(R.string.ListView)}));
+						getString(R.string.ListView),
+						getString(R.string.title_multipurposegym),
+						}));
+
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mDrawerListView;
 	}
@@ -277,10 +280,12 @@ public class NavigationDrawerFragment extends Fragment {
 			return true;
 		}
 
+
+
 		if (item.getItemId() == R.id.action_example) {
 			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
 					.show();
-			
+
 			return true;
 		}
 
@@ -314,5 +319,5 @@ public class NavigationDrawerFragment extends Fragment {
 		void onNavigationDrawerItemSelected(int position);
 	}
 
-	
+
 }

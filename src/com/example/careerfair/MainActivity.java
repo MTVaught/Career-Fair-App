@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		// Set up the ListView
-		
+
 	}
 
 	@Override
@@ -75,10 +75,12 @@ public class MainActivity extends Activity implements
 		case 3:
 			ft.add(R.id.container, CompanyListFragment.newInstance(position)).commit();
 			break;
-		
+		case 4:
+			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
+			break;
 		}
 	}
-	
+
 	@Override
 	public void onCompanyListItemSelected(int position) {
 		// TODO Auto-generated method stub
@@ -98,6 +100,7 @@ public class MainActivity extends Activity implements
 			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		}
+>>>>>>> origin/dev
 	}
 
 	public void onSectionAttached(int number) {
@@ -113,6 +116,9 @@ public class MainActivity extends Activity implements
 			break;
 		case 3:
 			mTitle = getString(R.string.ListView);
+			break;
+		case 4:
+			mTitle = getString(R.string.title_multipurposegym);
 			break;
 		}
 	}
@@ -187,6 +193,6 @@ public class MainActivity extends Activity implements
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
-	} 
+	}
 
 }
