@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements
 			ft.add(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
 			break;
 		}
->>>>>>> origin/dev
+
 	}
 
 	public void onSectionAttached(int number) {
