@@ -114,7 +114,7 @@ public class CompanyListFragment extends Fragment{
 			mCompanyListView.setItemChecked(mCurrentSelectedPosition, true);
 			return mCompanyListView;
 	    }
-	    
+	    //http://developer.android.com/training/multiscreen/index.html
 	    @Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
