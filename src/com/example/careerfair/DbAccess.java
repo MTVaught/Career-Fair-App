@@ -48,10 +48,10 @@ public class DbAccess {
      * getAllCompanies - gets all the companies in the database
      * 
      * @param companies - an ArrayList to fill with companies
-     * @param database - the name of the database to open (careerFairDB.db)
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      */
 	public static void getAllCompanies(ArrayList<Company> companies, SQLiteDatabase database) {
-		Cursor companiesCursor = database.rawQuery("SELECT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY company.name;", new String[0]);
+		Cursor companiesCursor = database.rawQuery("SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY company.name;", new String[0]);
 		companiesCursor.moveToFirst();
 		if(!companiesCursor.isAfterLast()) {
 			do {
@@ -72,7 +72,7 @@ public class DbAccess {
 	/**
      * getAllCompanies - gets all the companies in the database
      * 
-     * @param database - the name of the database to open (careerFairDB.db)
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      * @return an ArrayList filled with companies
      */
 	public static ArrayList<Company> getAllCompanies(SQLiteDatabase database) {
@@ -85,7 +85,7 @@ public class DbAccess {
      * getMajorsForCompany - gets all the majors a specific company is looking for
      * 
      * @param company - the name of the company to get the majors for
-     * @param database - the name of the database to open (careerFairDB.db)
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      * @return an ArrayList filled with majors
      */
 	public static ArrayList<Major> getMajorsForCompany(String company, SQLiteDatabase database) {
@@ -110,7 +110,7 @@ public class DbAccess {
      * getPositionsForCompany - gets all the positions a specific company is hiring for
      * 
      * @param company - the name of the company to get the positions for
-     * @param database - the name of the database to open (careerFairDB.db)
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      * @return an ArrayList filled with positions
      */
 	public static ArrayList<String> getPositionsForCompany(String company, SQLiteDatabase database) {
@@ -132,7 +132,7 @@ public class DbAccess {
      * getWorkAuthsForCompany - gets all the work authorization types a specific company is looking for
      * 
      * @param company - the name of the company to get the work authorizations for
-     * @param database - the name of the database to open (careerFairDB.db)
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      * @return an ArrayList filled with work authorizations
      */
 	public static ArrayList<String> getWorkAuthsForCompany(String company, SQLiteDatabase database) {
@@ -148,6 +148,83 @@ public class DbAccess {
 		}
 		
 		return workAuths;
+	}
+	
+	/**
+     * getAllMajors - gets a list of all the majors
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @param orderByName - orders by name if true, else ordered by abbreviation
+     * @return an ArrayList filled with major objects
+     */
+	public static ArrayList<Major> getAllMajors(SQLiteDatabase database, boolean orderByName) {
+		String[] empty ={};		
+		
+		ArrayList<Major> majors = new ArrayList<Major>();
+		Cursor majorsCursor;
+		if (orderByName) {
+			majorsCursor = database.rawQuery("SELECT name, abbreviation FROM major ORDER BY name;", empty);
+		} else {
+			majorsCursor = database.rawQuery("SELECT name, abbreviation FROM major ORDER BY abbreviation;", empty);
+		}
+		
+		majorsCursor.moveToFirst();
+		if(!majorsCursor.isAfterLast()) {
+			do{
+				String majorName = majorsCursor.getString(0);
+				String majorAbbrev = majorsCursor.getString(1);
+				majors.add(new Major(majorName, majorAbbrev));
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+		
+		return majors;
+	}
+	
+	/**
+     * getAllWorkAuths - gets a list of all the work authorizations
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the work authorizations
+     */
+	public static ArrayList<String> getAllWorkAuths(SQLiteDatabase database) {
+		String[] empty = {};
+		
+		ArrayList<String> workAuths = new ArrayList<String>();
+		Cursor workAuthsCursor = database.rawQuery("SELECT type FROM workAuth ORDER BY type;", empty);
+		workAuthsCursor.moveToFirst();
+		if (!workAuthsCursor.isAfterLast()) {
+			do {
+				workAuths.add(workAuthsCursor.getString(0));
+			} while (workAuthsCursor.moveToNext());
+		}
+		workAuthsCursor.close();
+		
+		return workAuths;
+	}
+	
+	/**
+     * getAllPositions - gets a list of all the positions/employment types
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the positions
+     */
+	public static ArrayList<String> getAllPositions (SQLiteDatabase database) {
+		String[] empty = {};
+		
+		ArrayList<String> positions = new ArrayList<String>();
+		Cursor positionsCursor = database.rawQuery("SELECT type FROM employmentType ORDER BY type;", empty);
+		positionsCursor.moveToFirst();
+		if (!positionsCursor.isAfterLast()) {
+			do {
+				positions.add(positionsCursor.getString(0));
+			} while (positionsCursor.moveToNext());
+		}
+		
+		positionsCursor.close();
+		
+		return positions;
+		
 	}
 }	
 
