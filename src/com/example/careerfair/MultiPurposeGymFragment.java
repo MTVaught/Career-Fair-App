@@ -2,8 +2,11 @@ package com.example.careerfair;
 
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,12 @@ public class MultiPurposeGymFragment extends Fragment
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String ARG_SECTION_NUMBER = "MultiPurpose";
+	private ImageMap mMultiMap;
+	
+	// database
+	private SQLiteDatabase mDatabase;
+	private ArrayList<Company> mCompanies;
+	private static final String DB_NAME = "careerFairDB.db";
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -44,27 +53,30 @@ public class MultiPurposeGymFragment extends Fragment
 	{
 		LinearLayout main = (LinearLayout) inflater.inflate( R.layout.fragment_multipurposegym, container, false );
 		main.setOrientation( LinearLayout.HORIZONTAL );
-		ImageMap imageMap = (ImageMap)  main.findViewById( R.id.map );
-		imageMap.setImageResource( R.drawable.multi );
+		mMultiMap = (ImageMap)  main.findViewById( R.id.map );
+		mMultiMap.setImageResource( R.drawable.multi );
 		
+    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(this.getActivity(), DB_NAME);
+        mDatabase = dbOpenHelper.openDataBase();
+
+        //Database is open
+        mCompanies = DbAccess.getAllCompanies( mDatabase );
 		
 		//add click handler
-		imageMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
+		mMultiMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
         {
 			@Override
 			public void onImageMapClicked(int id, ImageMap imageMap)
 			{
 				// when the area is tapped, show the name in a 
 				// text bubble
-				Toast.makeText( imageMap.getContext(), "Booth: " + id , Toast.LENGTH_SHORT ).show();
-				
-				Log.v("Booth: ", "" + id );
+				mMultiMap.showBubble( id );
 			}
 
 			@Override
 			public void onBubbleClicked( int id )
 			{
-				
+				Log.v("Booth: ", "" + id);
 			}
 		});
 		
