@@ -25,10 +25,7 @@ public class MultiPurposeGymFragment extends Fragment
 	private static final String ARG_SECTION_NUMBER = "MultiPurpose";
 	private ImageMap mMultiMap;
 	
-	// database
-	private SQLiteDatabase mDatabase;
-	private ArrayList<Company> mCompanies;
-	private static final String DB_NAME = "careerFairDB.db";
+
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -52,15 +49,9 @@ public class MultiPurposeGymFragment extends Fragment
 			Bundle savedInstanceState) 
 	{
 		LinearLayout main = (LinearLayout) inflater.inflate( R.layout.fragment_multipurposegym, container, false );
-		main.setOrientation( LinearLayout.HORIZONTAL );
+		main.setOrientation( LinearLayout.HORIZONTAL );	
 		mMultiMap = (ImageMap)  main.findViewById( R.id.map );
 		mMultiMap.setImageResource( R.drawable.multi );
-		
-    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(this.getActivity(), DB_NAME);
-        mDatabase = dbOpenHelper.openDataBase();
-
-        //Database is open
-        mCompanies = DbAccess.getAllCompanies( mDatabase );
 		
 		//add click handler
 		mMultiMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
