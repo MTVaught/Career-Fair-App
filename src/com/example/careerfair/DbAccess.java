@@ -306,8 +306,11 @@ public class DbAccess {
 		return positions;
 		
 	}
+	
 	/**
 	 * getTableCompanyMap
+	 * 
+	 * Returns a hash map keyed with the table number for all the companies in the wood or multipurpose gyms
 	 * 
 	 * @param WoodGym set to true to retrieve the wood gym companies, false to retrieve multipurpose room companies
 	 * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
