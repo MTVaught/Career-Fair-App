@@ -19,12 +19,6 @@ public class DbAccess {
 
 	private static final String DB_NAME = "careerFairDB.db";
 
-	//A good practice is to define database field names as constants
-	private static final String COMPANY_TABLE_NAME = "company";
-	private static final String COMPANY_ID = "_id";
-	private static final String COMPANY_NAME = "name";
-
-
 	/**
 	 * Queries the database to obtain a list of company names and fill an array list with them
 	 * 
@@ -33,12 +27,11 @@ public class DbAccess {
 	 */
 	public static void fillCompanies(ArrayList companies, SQLiteDatabase database) {
 		//companies = new ArrayList<String>();
-		Cursor companiesCursor = database.query(COMPANY_TABLE_NAME, new String[] {COMPANY_ID,
-				COMPANY_NAME}, null, null, null, null, COMPANY_NAME);
+		Cursor companiesCursor = database.rawQuery("SELECT DISTINCT company.name FROM company ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');", new String[0]);
 		companiesCursor.moveToFirst();
 		if(!companiesCursor.isAfterLast()) {
 			do {
-				String name = companiesCursor.getString(1);
+				String name = companiesCursor.getString(0);
 				companies.add(name);
 			} while (companiesCursor.moveToNext());
 		}
@@ -46,13 +39,14 @@ public class DbAccess {
 	}
 	
 	/**
-     * getAllCompanies - gets all the companies in the database
+     * getAllCompanies - gets all the companies in the database, ordered by company name, 
+     * case insensitive, ignores spaces and periods in the names
      * 
      * @param companies - an ArrayList to fill with companies
      * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      */
 	public static void getAllCompanies(ArrayList<Company> companies, SQLiteDatabase database) {
-		Cursor companiesCursor = database.rawQuery("SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY company.name;", new String[0]);
+		Cursor companiesCursor = database.rawQuery("SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');", new String[0]);
 		companiesCursor.moveToFirst();
 		if(!companiesCursor.isAfterLast()) {
 			do {
@@ -86,17 +80,22 @@ public class DbAccess {
      * getCompaniesWith - gets all the companies in the database fitting a specific set of criteria
      * 
      * @param filterName - a string that the returned company names should contain, if not used, enter empty string ""
+     * @param filterRoom - one of either "Wood", "Multipurpose", "Hall" or "" (indicating not to filter at all)
      * @param filterMajor - an ArrayList of majors to filter by, this filter will find all companies with at least one of the specified majors
      * @param filterWorkAuth - an ArrayList of strings to filter work authorizations by, this filter will find all the companies with at least one of the specified work authorizations
      * @param filterPosition - an ArrayList of strings to filter position types by, this filter will find all the companies with at least one of the specified position types
      * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      */
-	public static ArrayList<Company> getCompaniesWith(String filterName, ArrayList<Major> filterMajor, ArrayList<String> filterWorkAuth, ArrayList<String> filterPosition, SQLiteDatabase database) {
+	public static ArrayList<Company> getCompaniesWith(String filterName, String filterRoom, ArrayList<Major> filterMajor, ArrayList<String> filterWorkAuth, ArrayList<String> filterPosition, SQLiteDatabase database) {
 		ArrayList<Company> companies = new ArrayList<Company>();
 		
 		//Set default from and where strings (if there are no filters specified)
 		String fromString = "FROM company, companyToLocation, location, room";
 		String whereString = "WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id";
+		
+		if (!filterRoom.isEmpty()) {
+			whereString = whereString + " AND room.name = '" + filterRoom + "'";
+		}
 		
 		//Handle Major filter
 		if (!filterMajor.isEmpty()) {
@@ -137,7 +136,7 @@ public class DbAccess {
 		
 		//Toss strings into array to be passed into query 
 		String[] query = {fromString, whereString};
-		String wholeQuery = "SELECT DISTINCT company.name, company.website, location.tableNum, room.name " + fromString + " " + whereString + " ORDER BY company.name;";
+		String wholeQuery = "SELECT DISTINCT company.name, company.website, location.tableNum, room.name " + fromString + " " + whereString + " ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');";
 		wholeQuery = wholeQuery + "";
 		Cursor companiesCursor = database.rawQuery(wholeQuery, new String[0]);
 		companiesCursor.moveToFirst();
@@ -336,6 +335,34 @@ public class DbAccess {
 		}
 		
 		return map;
+	}
+	
+	/**
+	 * 
+	 * @param key - this parameter tells the method what to use for the key, options are as follows
+	 * 		0 - key with company name
+	 * 		1 - key with table number
+	 * 		otherwise return null (may request for other keys if needed)
+	 * @param companyList - an ArrayList with the company objects to be inserted into the hashmap
+	 * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+	 * @return a hashmap with the company objects, keyed with the requested field, or null if the requested field was invalid
+	 */
+	public static HashMap<String, Company> getHashMapForCompanyList (int key, ArrayList<Company> companyList, SQLiteDatabase database) {
+		if (key == 0) {
+			HashMap<String, Company> map = new HashMap<String, Company>();
+			for (Company company: companyList) {
+				map.put(company.getName(), company);
+			}
+			return map;
+		} else if (key == 1) {
+			HashMap<String, Company> map = new HashMap<String, Company>();
+			for (Company company: companyList) {
+				map.put(company.getTableNum(), company);
+			}
+			return map;
+		} else {
+			return null;
+		}
 	}
 }	
 
