@@ -52,7 +52,8 @@ public class CompanyListFragment extends Fragment{
       private ListView mCompanyListView;
       private CompanyListCallbacks mCallbacks;
       private ActionBarDrawerToggle mDrawerToggle;
-    
+      private ExternalDbOpenHelper dbOpenHelper;
+      private ArrayList<Company> companyList;
        /*
         * ArrayList to store the information returned by the database
         */
@@ -63,9 +64,11 @@ public class CompanyListFragment extends Fragment{
 	    	
 	    }
 	    @Override
+	    
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 
+						
 			// Read in the flag indicating whether or not the user has demonstrated
 			// awareness of the
 			// drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -73,27 +76,34 @@ public class CompanyListFragment extends Fragment{
 			//		.getDefaultSharedPreferences(getActivity());
 			//mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
-			if (savedInstanceState != null) {
-				mCurrentSelectedPosition = savedInstanceState
-						.getInt(STATE_SELECTED_POSITION);
-				mFromSavedInstanceState = true;
-			}
-
-			// Select either the default item (0) or the last selected item.
-			selectItem(mCurrentSelectedPosition);
+//			if (savedInstanceState != null) {
+//				mCurrentSelectedPosition = savedInstanceState
+//						.getInt(STATE_SELECTED_POSITION);
+//				mFromSavedInstanceState = true;
+//			}
+//
+//			// Select either the default item (0) or the last selected item.
+//			selectItem(mCurrentSelectedPosition);
 		}
 	    
 	    @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                             Bundle savedInstanceState) {
 	        //Creating the database
-	    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(this.getActivity(), DB_NAME);
-	        database = dbOpenHelper.openDataBase();
+	    	
+	    	
+	    	
+	    	if (database == null)
+	    	{
+	    		dbOpenHelper = new ExternalDbOpenHelper(this.getActivity(), DB_NAME);
+		        database = dbOpenHelper.openDataBase();
 
-	        //Database is open
-	        DbAccess.fillCompanies(companies, database);
+		        //Database is open
+		        DbAccess.fillCompanies(companies, database);
+		        companyList = DbAccess.getAllCompanies(database);
+	    	}
 	    	
-	    	
+	        	
 	        // Inflate the layout for this fragment
 	        this.mCompanyListView =(ListView) inflater.inflate(
 	        		R.layout.company_list, 
@@ -104,7 +114,7 @@ public class CompanyListFragment extends Fragment{
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
-					selectItem(position);
+					selectItem(position, companyList.get(position));
 				}
 			});
 	        mCompanyListView.setAdapter(new ArrayAdapter<String>(getActionBar()
@@ -114,7 +124,7 @@ public class CompanyListFragment extends Fragment{
 			mCompanyListView.setItemChecked(mCurrentSelectedPosition, true);
 			return mCompanyListView;
 	    }
-	    
+	    //http://developer.android.com/training/multiscreen/index.html
 	    @Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
@@ -123,7 +133,7 @@ public class CompanyListFragment extends Fragment{
 			setHasOptionsMenu(true);
 		}
 	    
-	    private void selectItem(int position) {
+	    private void selectItem(int position, Company company) {
 			mCurrentSelectedPosition = position;
 			if (mCompanyListView != null) {
 				mCompanyListView.setItemChecked(position, true);
@@ -132,7 +142,7 @@ public class CompanyListFragment extends Fragment{
 			//	mDrawerLayout.closeDrawer(mFragmentContainerView);
 			//}
 			if (mCallbacks != null) {
-				mCallbacks.onCompanyListItemSelected(position);
+				mCallbacks.onCompanyListItemSelected(position, company);
 			}
 		}
 	    
@@ -140,7 +150,7 @@ public class CompanyListFragment extends Fragment{
 			/**
 			 * Called when an item in the CompanyList drawer is selected.
 			 */
-			void onCompanyListItemSelected(int position);
+			void onCompanyListItemSelected(int position, Company company);
 		}
 	 	    
 	    @Override
@@ -152,12 +162,17 @@ public class CompanyListFragment extends Fragment{
 				throw new ClassCastException(
 						"Activity must implement CompanyListCallbacks.");
 			}
+			
+			((MainActivity) activity).onSectionAttached(getArguments().getInt(
+					ARG_SECTION_NUMBER));
+			
 		}
 
 		@Override
 		public void onDetach() {
 			super.onDetach();
 			mCallbacks = null;
+			database = null;
 		}
        
        @Override
