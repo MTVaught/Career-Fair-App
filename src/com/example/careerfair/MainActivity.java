@@ -41,7 +41,9 @@ public class MainActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mCompanyListFragment = (CompanyListFragment) getFragmentManager()
@@ -49,11 +51,12 @@ public class MainActivity extends Activity implements
 		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
 				.findFragmentById(R.id.company_reader);
 		mTitle = getTitle();
-
+        
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		// Set up the ListView
+		// Set up the company list 
+		
 
 	}
 
@@ -62,18 +65,19 @@ public class MainActivity extends Activity implements
 		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
+		
 		switch(position){
 		case 0:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 1:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 2:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
 			break;
 		case 3:
-			ft.add(R.id.container, CompanyListFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyListFragment.newInstance(position)).commit();
 			break;
 		case 4:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
@@ -82,25 +86,27 @@ public class MainActivity extends Activity implements
 	}
 
 	@Override
-	public void onCompanyListItemSelected(int position) {
+	public void onCompanyListItemSelected(int position, Company company) {
 		// TODO Auto-generated method stub
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		switch(position){
-		case 0:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 1:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 2:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 3:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		}
+//		switch(position){
+//		case 0:
+//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+//			break;
+//		case 1:
+//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+//			break;
+//		case 2:
+//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+//			break;
+//		case 3:
+//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
+//			break;
+//		}
 
+		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,company)).commit();
+		
 	}
 
 	public void onSectionAttached(int number) {

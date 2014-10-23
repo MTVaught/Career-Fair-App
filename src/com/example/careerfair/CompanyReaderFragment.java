@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 	public class CompanyReaderFragment extends Fragment{
 		private static final String DB_NAME = "careerFairDB.db";
@@ -18,11 +19,14 @@ import android.widget.ListView;
 		*/
 		private static final String ARG_SECTION_NUMBER = "CompanyReader";
 		
+		private static Company companyObj;
+		
 		/**
 		* Returns a new instance of this fragment for the given section number.
 		*/
 		
-		public static CompanyReaderFragment newInstance(int sectionNumber) {
+		public static CompanyReaderFragment newInstance(int sectionNumber, Company company) {
+			companyObj = company;
 			CompanyReaderFragment fragment = new CompanyReaderFragment();
 			Bundle args = new Bundle();
 			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -48,8 +52,8 @@ import android.widget.ListView;
 		        		R.layout.company_reader, 
 		        		container,
 		        		false);
-		    	
-		        
+		    	TextView text = (TextView) mCompanyReaderView.findViewById( R.id.company_name_lable );
+		        text.setText(companyObj.getName());
 		        
 		        return mCompanyReaderView;
 		    }
