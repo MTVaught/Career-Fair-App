@@ -1,24 +1,15 @@
 package com.example.careerfair;
 
 
-import android.app.Activity;
-
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -36,6 +27,7 @@ public class MainActivity extends Activity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	boolean inCompanyView = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +57,7 @@ public class MainActivity extends Activity implements
 		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		
+		inCompanyView = false;
 		switch(position){
 		
 		case 0:
@@ -82,23 +74,8 @@ public class MainActivity extends Activity implements
 		// TODO Auto-generated method stub
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-//		switch(position){
-//		case 0:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 1:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 2:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 3:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		}
-
 		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,company)).commit();
-		
+		inCompanyView = true;
 	}
 
 	public void onSectionAttached(int number) {
@@ -144,6 +121,19 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+	@Override
+	public void onBackPressed() {
+		Log.d("CDA", "onBackPressed Called");
+		if(inCompanyView){
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			inCompanyView = false;
+			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+					.commit();
+		} else {
 
+		}
+	}
+
+	
 }
