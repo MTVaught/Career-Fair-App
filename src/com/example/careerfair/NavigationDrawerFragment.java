@@ -1,6 +1,5 @@
 package com.example.careerfair;
 
-import com.example.careerfair.MainActivity.PlaceholderFragment;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -113,9 +112,6 @@ public class NavigationDrawerFragment extends Fragment {
 				.getThemedContext(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, new String[] {
-						getString(R.string.title_section1),
-						getString(R.string.title_section2),
-						getString(R.string.title_section3),
 						getString(R.string.ListView),
 						getString(R.string.title_multipurposegym),
 						}));
@@ -282,12 +278,12 @@ public class NavigationDrawerFragment extends Fragment {
 
 
 
-		if (item.getItemId() == R.id.action_example) {
-			Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
-					.show();
+		//if (item.getItemId() == R.id.action_example) {
+			//Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT)
+			//		.show();
 
-			return true;
-		}
+		//	return true;
+		//}
 
 		return super.onOptionsItemSelected(item);
 	}
