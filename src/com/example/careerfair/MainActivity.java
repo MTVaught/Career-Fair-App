@@ -1,13 +1,15 @@
 package com.example.careerfair;
 
 
-import android.app.Activity;
+import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -31,6 +33,13 @@ public class MainActivity extends Activity implements
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
+	
+	 private SQLiteDatabase database;
+	 private ExternalDbOpenHelper dbOpenHelper;
+     private ArrayList<Company> companyList;
+     private ArrayList<String> companyNames;
+     private boolean databaseOpen = false;
+     
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -55,8 +64,7 @@ public class MainActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		// Set up the company list 
-		
+		// Set up the company list
 
 	}
 
@@ -66,10 +74,14 @@ public class MainActivity extends Activity implements
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		
+		if (!databaseOpen) {
+			databaseOpen();
+		}
+		
 		switch(position){
 		
 		case 0:
-			ft.replace(R.id.container, CompanyListFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyListFragment.newInstance(position, companyNames, companyList)).commit();
 			break;
 		case 1:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
@@ -144,6 +156,24 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+	private void databaseOpen() {
+	      
+		long start = System.currentTimeMillis( );
+        
+		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(), "careerFairDB.db");
+        database = dbOpenHelper.openDataBase();
+       
+        //Database is open
+        companyNames = new ArrayList<String>();
+        DbAccess.fillCompanies(companyNames, database);
+        companyList = DbAccess.getAllCompanies(database);
+        
+        databaseOpen = true;
+        
+        long end2 = System.currentTimeMillis( );
+      
+        long diff2 = end2 - start;
+ 
+	}
 
 }
