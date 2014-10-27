@@ -34,7 +34,6 @@ public class CompanyReaderFragment extends Fragment {
 		return fragment;
 	}
 
-	private SQLiteDatabase database;
 	private View mCompanyReaderView;
 
 	/*
@@ -52,7 +51,7 @@ public class CompanyReaderFragment extends Fragment {
 		this.mCompanyReaderView = inflater.inflate(R.layout.company_reader,
 				container, false);
 		TextView text = (TextView) mCompanyReaderView
-				.findViewById(R.id.company_name_lable);
+				.findViewById(R.id.company_name_label);
 		text.setText(companyObj.getName());
 
 		return mCompanyReaderView;
