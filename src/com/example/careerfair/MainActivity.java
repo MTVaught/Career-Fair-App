@@ -1,26 +1,21 @@
 package com.example.careerfair;
 
 
-import java.util.ArrayList;
 
-import android.app.Activity;
+import java.util.ArrayList;
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -33,26 +28,27 @@ public class MainActivity extends Activity implements
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
-	
+
 	 private SQLiteDatabase database;
 	 private ExternalDbOpenHelper dbOpenHelper;
      private ArrayList<Company> companyList;
      private ArrayList<String> companyNames;
      private boolean databaseOpen = false;
-     
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	boolean inCompanyView = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction ft = fragmentManager.beginTransaction();
-		
+		// FragmentTransaction ft = fragmentManager.beginTransaction();
+
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mCompanyListFragment = (CompanyListFragment) getFragmentManager()
@@ -60,7 +56,7 @@ public class MainActivity extends Activity implements
 		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
 				.findFragmentById(R.id.company_reader);
 		mTitle = getTitle();
-        
+
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
@@ -73,13 +69,15 @@ public class MainActivity extends Activity implements
 		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		
+
+		inCompanyView = false;
+
 		if (!databaseOpen) {
 			databaseOpen();
 		}
-		
+
 		switch(position){
-		
+
 		case 0:
 			ft.replace(R.id.container, CompanyListFragment.newInstance(position, companyNames, companyList)).commit();
 			break;
@@ -94,23 +92,8 @@ public class MainActivity extends Activity implements
 		// TODO Auto-generated method stub
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-//		switch(position){
-//		case 0:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 1:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 2:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		case 3:
-//			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-//			break;
-//		}
-
 		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,company)).commit();
-		
+		inCompanyView = true;
 	}
 
 	public void onSectionAttached(int number) {
@@ -156,24 +139,37 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+
+	@Override
+	public void onBackPressed() {
+		Log.d("CDA", "onBackPressed Called");
+		if(inCompanyView){
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			inCompanyView = false;
+			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+					.commit();
+		} else {
+		}
+	}
+
 	private void databaseOpen() {
-	      
+
 		long start = System.currentTimeMillis( );
-        
+
 		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(), "careerFairDB.db");
         database = dbOpenHelper.openDataBase();
-       
+
         //Database is open
         companyNames = new ArrayList<String>();
         DbAccess.fillCompanies(companyNames, database);
         companyList = DbAccess.getAllCompanies(database);
-        
-        databaseOpen = true;
-        
-        long end2 = System.currentTimeMillis( );
-      
-        long diff2 = end2 - start;
- 
-	}
 
+        databaseOpen = true;
+
+        long end2 = System.currentTimeMillis( );
+
+        long diff2 = end2 - start;
+
+	}	
 }
