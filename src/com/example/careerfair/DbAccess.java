@@ -18,6 +18,8 @@ import android.widget.ListView;
 public class DbAccess {
 
 	private static final String DB_NAME = "careerFairDB.db";
+	private static ArrayList<String> majorNames;
+	private static ArrayList<String> majorAbbrevs;
 
 	/**
 	 * Queries the database to obtain a list of company names and fill an array list with them
@@ -60,7 +62,7 @@ public class DbAccess {
 				String room = companiesCursor.getString(3);
 				
 				long start2 = System.currentTimeMillis();
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), majorNames, majorAbbrevs, getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
 				long end2 = System.currentTimeMillis();
 				long diff2 = end2 - start2;
 				diff2 = diff2 + 1;
@@ -155,7 +157,7 @@ public class DbAccess {
 				String tableNum = companiesCursor.getString(2);
 				String room = companiesCursor.getString(3);
 				
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), majorNames, majorAbbrevs, getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
 				companies.add(newCompany);
 				
 				
@@ -177,12 +179,16 @@ public class DbAccess {
 		String[] nameArray = {company};
 		
 		ArrayList<Major> majors = new ArrayList<Major>();
+		majorNames = new ArrayList<String>();
+		majorAbbrevs = new ArrayList<String>();
 		Cursor majorsCursor = database.rawQuery("SELECT major.name, major.abbreviation FROM company, companyToMajor, major WHERE company._id=companyToMajor.companyID AND company.name=? AND companyToMajor.majorID=major._id ORDER BY major.abbreviation;", nameArray);
 		majorsCursor.moveToFirst();
 		if(!majorsCursor.isAfterLast()) {
 			do{
 				String majorName = majorsCursor.getString(0);
+				majorNames.add(majorName);
 				String majorAbbrev = majorsCursor.getString(1);
+				majorAbbrevs.add(majorAbbrev);
 				majors.add(new Major(majorName, majorAbbrev));
 			} while (majorsCursor.moveToNext());
 		}
