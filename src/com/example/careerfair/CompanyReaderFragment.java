@@ -34,7 +34,6 @@ public class CompanyReaderFragment extends Fragment {
 		return fragment;
 	}
 
-	private SQLiteDatabase database;
 	private View mCompanyReaderView;
 
 	/*
@@ -51,10 +50,34 @@ public class CompanyReaderFragment extends Fragment {
 		// Inflate the layout for this fragment
 		this.mCompanyReaderView = inflater.inflate(R.layout.company_reader,
 				container, false);
+		
+		// Display the Company name
 		TextView text = (TextView) mCompanyReaderView
-				.findViewById(R.id.company_name_lable);
-		text.setText(companyObj.getName());
+				.findViewById(R.id.company_name_label);
+		text.setText("Company: " + companyObj.getName());
 
+		// Display Majors
+		text = (TextView) mCompanyReaderView
+				.findViewById(R.id.company_major_label);
+		text.setText("Majors: " + companyObj.getMajors().toString());
+		
+		// Display Positions
+		text = (TextView) mCompanyReaderView
+				.findViewById(R.id.company_position_label);
+		text.setText("Positions: " + companyObj.getPositions().toString());
+		
+		// Display Work Authorizations
+		text = (TextView) mCompanyReaderView
+				.findViewById(R.id.company_workauths_label);
+		text.setText("Work Authorizations: " + companyObj.getWorkAuth().toString());
+		
+		// Display Website URL
+		text = (TextView) mCompanyReaderView
+				.findViewById(R.id.company_website_label);
+		text.setText("Website: " + companyObj.getWebsite());
+		
+		
+		
 		return mCompanyReaderView;
 	}
 

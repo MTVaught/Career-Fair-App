@@ -18,8 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks,
-		CompanyListFragment.CompanyListCallbacks {
+NavigationDrawerFragment.NavigationDrawerCallbacks,
+CompanyListFragment.CompanyListCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -29,11 +29,11 @@ public class MainActivity extends Activity implements
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
 
-	 private SQLiteDatabase database;
-	 private ExternalDbOpenHelper dbOpenHelper;
-     private ArrayList<Company> companyList;
-     private ArrayList<String> companyNames;
-     private boolean databaseOpen = false;
+	private SQLiteDatabase database;
+	private ExternalDbOpenHelper dbOpenHelper;
+	private ArrayList<Company> companyList;
+	private ArrayList<String> companyNames;
+	private boolean databaseOpen = false;
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -88,11 +88,12 @@ public class MainActivity extends Activity implements
 	}
 
 	@Override
-	public void onCompanyListItemSelected(int position, Company company) {
+	public void onCompanyListItemSelected(int position) {
 		// TODO Auto-generated method stub
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,company)).commit();
+		Company clickedCompany = companyList.get(position);
+		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,clickedCompany)).commit();
 		inCompanyView = true;
 	}
 
@@ -148,7 +149,7 @@ public class MainActivity extends Activity implements
 			FragmentTransaction ft = fragmentManager.beginTransaction();
 			inCompanyView = false;
 			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
-					.commit();
+			.commit();
 		} else {
 		}
 	}
@@ -158,18 +159,18 @@ public class MainActivity extends Activity implements
 		long start = System.currentTimeMillis( );
 
 		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(), "careerFairDB.db");
-        database = dbOpenHelper.openDataBase();
+		database = dbOpenHelper.openDataBase();
 
-        //Database is open
-        companyNames = new ArrayList<String>();
-        DbAccess.fillCompanies(companyNames, database);
-        companyList = DbAccess.getAllCompanies(database);
+		//Database is open
+		companyNames = new ArrayList<String>();
+		DbAccess.fillCompanies(companyNames, database);
+		companyList = DbAccess.getAllCompanies(database);
 
-        databaseOpen = true;
+		databaseOpen = true;
 
-        long end2 = System.currentTimeMillis( );
+		long end2 = System.currentTimeMillis( );
 
-        long diff2 = end2 - start;
+		long diff2 = end2 - start;
 
 	}	
 }
