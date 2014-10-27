@@ -20,6 +20,7 @@ import android.widget.Toast;
 public class WoodGymFragment extends Fragment {
 
 	private static final String ARG_SECTION_NUMBER = "WoodGym";
+	private ImageMap mWoodMap;
 
 	public static WoodGymFragment newInstance(int sectionNumber) {
 		WoodGymFragment fragment = new WoodGymFragment();
@@ -39,24 +40,23 @@ public class WoodGymFragment extends Fragment {
 		LinearLayout main = (LinearLayout) inflater.inflate(
 				R.layout.fragment_woodgym, container, false);
 		main.setOrientation(LinearLayout.HORIZONTAL);
-		ImageMap imageMap = (ImageMap) main.findViewById(R.id.woodgymmap);
-		imageMap.setImageResource(R.drawable.multi);
+		mWoodMap = (ImageMap) main.findViewById(R.id.woodgymmap);
+		mWoodMap.setImageResource(R.drawable.multi);
 
 		// add click handler
-		imageMap.addOnImageMapClickedHandler(new ImageMap.OnImageMapClickedHandler() {
+		mWoodMap.addOnImageMapClickedHandler(new ImageMap.OnImageMapClickedHandler() {
 
 			@Override
 			public void onImageMapClicked(int id, ImageMap imageMap) {
 				// when the area is tapped, show the name in a text bubble
-				Toast.makeText(imageMap.getContext(), "Booth: " + id,
-						Toast.LENGTH_SHORT).show();
+				mWoodMap.showBubble(id);
 
 				Log.v("Booth: ", "" + id);
 			}
 
 			@Override
 			public void onBubbleClicked(int id) {
-				// TODO Auto-generated method stub
+				Log.v("Booth: ", "" + id);
 
 			}
 		});
