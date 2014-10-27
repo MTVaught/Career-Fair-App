@@ -53,7 +53,8 @@ public class CompanyListFragment extends Fragment{
       private CompanyListCallbacks mCallbacks;
       private ActionBarDrawerToggle mDrawerToggle;
       private ExternalDbOpenHelper dbOpenHelper;
-      private ArrayList<Company> companyList;
+      private static ArrayList<Company> companyList;
+      private static ArrayList<String> companyNames;
        /*
         * ArrayList to store the information returned by the database
         */
@@ -63,8 +64,19 @@ public class CompanyListFragment extends Fragment{
 	    public CompanyListFragment(){
 	    	
 	    }
-	    @Override
 	    
+	    
+	    public static CompanyListFragment newInstance(int sectionNumber, ArrayList<String> companyName, ArrayList<Company> companies) {
+			companyNames = companyName;
+			companyList = companies;
+			CompanyListFragment fragment = new CompanyListFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+	    
+	    @Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 
@@ -92,7 +104,7 @@ public class CompanyListFragment extends Fragment{
 	        //Creating the database
 	    	
 	    	
-	    	
+	    	/**
 	    	if (database == null)
 	    	{
 	    		dbOpenHelper = new ExternalDbOpenHelper(this.getActivity(), DB_NAME);
@@ -102,6 +114,7 @@ public class CompanyListFragment extends Fragment{
 		        DbAccess.fillCompanies(companies, database);
 		        companyList = DbAccess.getAllCompanies(database);
 	    	}
+	    	*/
 	    	
 	        	
 	        // Inflate the layout for this fragment
@@ -120,7 +133,7 @@ public class CompanyListFragment extends Fragment{
 	        mCompanyListView.setAdapter(new ArrayAdapter<String>(getActionBar()
 					.getThemedContext(),
 					android.R.layout.simple_list_item_activated_1,
-					companies));
+					companyNames));
 			mCompanyListView.setItemChecked(mCurrentSelectedPosition, true);
 			return mCompanyListView;
 	    }

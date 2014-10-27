@@ -46,7 +46,11 @@ public class DbAccess {
      * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      */
 	public static void getAllCompanies(ArrayList<Company> companies, SQLiteDatabase database) {
+		long start = System.currentTimeMillis();
 		Cursor companiesCursor = database.rawQuery("SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');", new String[0]);
+		long end = System.currentTimeMillis();
+		long diff = start - end;
+		diff = diff + 1;
 		companiesCursor.moveToFirst();
 		if(!companiesCursor.isAfterLast()) {
 			do {
@@ -55,7 +59,11 @@ public class DbAccess {
 				String tableNum = companiesCursor.getString(2);
 				String room = companiesCursor.getString(3);
 				
+				long start2 = System.currentTimeMillis();
 				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				long end2 = System.currentTimeMillis();
+				long diff2 = end2 - start2;
+				diff2 = diff2 + 1;
 				companies.add(newCompany);
 				
 				
