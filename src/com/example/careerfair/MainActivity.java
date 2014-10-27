@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction ft = fragmentManager.beginTransaction();
+		// FragmentTransaction ft = fragmentManager.beginTransaction();
 		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
