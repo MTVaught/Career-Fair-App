@@ -269,6 +269,52 @@ public class DbAccess {
 	}
 	
 	/**
+     * getAllMajorNames - gets a list of all the majors
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the major names
+     */
+	public static ArrayList<String> getAllMajorNames(SQLiteDatabase database) {
+		String[] empty ={};		
+		
+		ArrayList<String> names = new ArrayList<String>();
+		Cursor majorsCursor = database.rawQuery("SELECT name FROM major ORDER BY name;", empty);
+		
+		majorsCursor.moveToFirst();
+		if(!majorsCursor.isAfterLast()) {
+			do{
+				names.add(majorsCursor.getString(0));
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+		
+		return names;
+	}
+	
+	/**
+     * getAllMajorNames - gets a list of all the majors
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the major abbreviations
+     */
+	public static ArrayList<String> getAllMajorAbbrevs(SQLiteDatabase database) {
+		String[] empty ={};		
+		
+		ArrayList<String> abbrev = new ArrayList<String>();
+		Cursor majorsCursor = database.rawQuery("SELECT abbreviation FROM major ORDER BY abbreviation;", empty);
+		
+		majorsCursor.moveToFirst();
+		if(!majorsCursor.isAfterLast()) {
+			do{
+				abbrev.add(majorsCursor.getString(0));
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+		
+		return abbrev;
+	}
+	
+	/**
      * getAllWorkAuths - gets a list of all the work authorizations
      * 
      * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
@@ -366,6 +412,34 @@ public class DbAccess {
 			HashMap<String, Company> map = new HashMap<String, Company>();
 			for (Company company: companyList) {
 				map.put(company.getTableNum(), company);
+			}
+			return map;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param key - this parameter tells the method what to use for the key, options are as follows
+	 * 		0 - key with major name
+	 * 		1 - key with major abbrev
+	 * 		otherwise return null (may request for other keys if needed)
+	 * @param MajorList - an ArrayList with the company objects to be inserted into the hashmap
+	 * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+	 * @return a hashmap with the major objects, keyed with the requested field, or null if the requested field was invalid
+	 */
+	public static HashMap<String, Major> getHashMapForMajorList (int key, ArrayList<Major> MajorList, SQLiteDatabase database) {
+		if (key == 0) {
+			HashMap<String, Major> map = new HashMap<String, Major>();
+			for (Major major: MajorList) {
+				map.put(major.getName(), major);
+			}
+			return map;
+		} else if (key == 1) {
+			HashMap<String, Major> map = new HashMap<String, Major>();
+			for (Major major: MajorList) {
+				map.put(major.getAbbrev(), major);
 			}
 			return map;
 		} else {
