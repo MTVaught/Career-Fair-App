@@ -3,14 +3,12 @@ package com.example.careerfair;
 
 
 import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -28,6 +26,7 @@ CompanyListFragment.CompanyListCallbacks {
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
+	private WoodGymFragment mWoodGymFragment;
 
 	private SQLiteDatabase database;
 	private ExternalDbOpenHelper dbOpenHelper;
@@ -55,6 +54,8 @@ CompanyListFragment.CompanyListCallbacks {
 				.findFragmentById(R.id.listView1);
 		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
 				.findFragmentById(R.id.company_reader);
+		mWoodGymFragment = (WoodGymFragment) getFragmentManager()
+				.findFragmentById(R.id.woodgymmap);
 		mTitle = getTitle();
 
 		// Set up the drawer.
@@ -84,6 +85,10 @@ CompanyListFragment.CompanyListCallbacks {
 		case 1:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
+		case 2:
+			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
+					.commit();
+			break;
 		}
 	}
 
@@ -104,6 +109,9 @@ CompanyListFragment.CompanyListCallbacks {
 			break;
 		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
+			break;
+		case 2:
+			mTitle = getString(R.string.title_woodgym);
 			break;
 		}
 	}

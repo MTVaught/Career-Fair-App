@@ -42,7 +42,8 @@ public class MultiPurposeGymFragment extends Fragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) 
 	{
-		LinearLayout main = (LinearLayout) inflater.inflate( R.layout.fragment_multipurposegym, container, false );
+		LinearLayout main = (LinearLayout) inflater.inflate(
+				R.layout.fragment_multipurposegym, container, false);
 		main.setOrientation( LinearLayout.HORIZONTAL );
 		ImageMap imageMap = (ImageMap)  main.findViewById( R.id.map );
 		imageMap.setImageResource( R.drawable.multi );
@@ -56,8 +57,9 @@ public class MultiPurposeGymFragment extends Fragment
 			{
 				// when the area is tapped, show the name in a 
 				// text bubble
-				Toast.makeText( imageMap.getContext(), "Booth: " + id , Toast.LENGTH_SHORT ).show();
-				
+				Toast.makeText(imageMap.getContext(), "Booth: " + id,
+						Toast.LENGTH_SHORT).show();
+
 				Log.v("Booth: ", "" + id );
 			}
 
