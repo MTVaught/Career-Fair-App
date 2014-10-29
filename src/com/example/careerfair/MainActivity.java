@@ -55,7 +55,7 @@ CompanyListFragment.CompanyListCallbacks {
 		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
 				.findFragmentById(R.id.company_reader);
 		mWoodGymFragment = (WoodGymFragment) getFragmentManager()
-				.findFragmentById(R.id.woodgymmap);
+				.findFragmentById(R.id.varsitymap);
 		mTitle = getTitle();
 
 		// Set up the drawer.
