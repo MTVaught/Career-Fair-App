@@ -6,10 +6,10 @@
     android:layout_height="fill_parent" >
     
     <com.example.careerfair.ImageMap
-        android:id="@+id/woodgymmap"
+        android:id="@+id/varsitymap"
     	android:layout_width="fill_parent" 
     	android:layout_height="fill_parent"
-    	ctc:map="multimap"
+    	ctc:map="varsity"
         ctc:maxSizeFactor="1.5"
         ctc:scaleFromOriginal="true"
         ctc:fitImageToScreen="true"/>
