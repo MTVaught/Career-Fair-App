@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/filter_by_major" 
+        android:showAsAction="ifRoom" 
+        android:enabled="true" 
+        android:visible="true" 
+        android:checked="true" 
+        android:menuCategory="system"
+        android:checkable="true"
+         android:title="Filter By Major"></item>
+    
+
+</menu>
