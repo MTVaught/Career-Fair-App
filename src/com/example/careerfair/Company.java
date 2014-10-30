@@ -48,6 +48,7 @@ public class Company {
 		positions = aPositions;
 		workAuths = aWorkAuths; 
 		
+		// key = full name value = abbreviation
 		majorHashMap = new HashMap<String, String>();
 		for (Major major : majors) {
 			majorHashMap.put(major.getName(), major.getAbbrev());
