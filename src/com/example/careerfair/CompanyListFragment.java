@@ -66,9 +66,8 @@ public class CompanyListFragment extends Fragment{
 	}
 
 
-	public static CompanyListFragment newInstance(int sectionNumber, ArrayList<String> companyName, ArrayList<Company> companies) {
+	public static CompanyListFragment newInstance(int sectionNumber, ArrayList<String> companyName) {
 		companyNames = companyName;
-		//companyList = companies;
 		CompanyListFragment fragment = new CompanyListFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);

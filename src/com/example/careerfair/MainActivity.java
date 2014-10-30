@@ -3,12 +3,13 @@ package com.example.careerfair;
 
 
 import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,7 +35,9 @@ CompanyListFragment.CompanyListCallbacks {
 	private ArrayList<Company> companyList;
 	private ArrayList<String> companyNames;
 	private boolean databaseOpen = false;
-
+	public SharedPreferences sharedPref;
+	public SharedPreferences.Editor editor;
+	
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -61,6 +64,11 @@ CompanyListFragment.CompanyListCallbacks {
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		// Set up the company list
+		
+		
+		// Setup the shared Preferences
+		sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+		editor = sharedPref.edit();
 
 	}
 
@@ -79,12 +87,24 @@ CompanyListFragment.CompanyListCallbacks {
 		switch(position){
 
 		case 0:
-			ft.replace(R.id.container, CompanyListFragment.newInstance(position, companyNames, companyList)).commit();
+			// Before sending the companies to be filled, filter out the incorrect ones
+			// companyNames AND companyList need to be of the same length
+			// Delete these comments here when implemented
+			
+			
+			ft.replace(R.id.container, CompanyListFragment.newInstance(position, companyNames)).commit();
 			break;
 		case 1:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
+		case 2:
+			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
+			ArrayList<String> Positions = DbAccess.getAllPositions(database);
+			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+			break;
 		}
+		
 	}
 
 	@Override
@@ -104,6 +124,9 @@ CompanyListFragment.CompanyListCallbacks {
 			break;
 		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
+			break;
+		case 2:
+			mTitle = getString(R.string.PreferencesFragment);
 			break;
 		}
 	}

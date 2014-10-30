@@ -10,5 +10,6 @@
     <string name="MultiRows">100</string>
     <string name="ListView">Company List</string>
     <string name="CompanyName1">Google</string>
+    <string name="PreferencesFragment">Set Filters</string>
 
 </resources>
