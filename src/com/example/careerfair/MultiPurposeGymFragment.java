@@ -2,8 +2,11 @@ package com.example.careerfair;
 
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,19 +17,22 @@ import android.widget.Toast;
 
 
 
-public class MultiPurposeGymFragment extends Fragment 
+public class MultiPurposeGymFragment extends Fragment
 {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String ARG_SECTION_NUMBER = "MultiPurpose";
+	private ImageMap mMultiMap;
+
+
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
 	public static MultiPurposeGymFragment newInstance(int sectionNumber)
 	{
-		
+
 		MultiPurposeGymFragment fragment = new MultiPurposeGymFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -34,51 +40,49 @@ public class MultiPurposeGymFragment extends Fragment
 		return fragment;
 	}
 
-	public MultiPurposeGymFragment() 
+	public MultiPurposeGymFragment()
 	{
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) 
+			Bundle savedInstanceState)
 	{
-		LinearLayout main = (LinearLayout) inflater.inflate(
-				R.layout.fragment_multipurposegym, container, false);
+
+		LinearLayout main = (LinearLayout) inflater.inflate( R.layout.fragment_multipurposegym, container, false );
 		main.setOrientation( LinearLayout.HORIZONTAL );
-		ImageMap imageMap = (ImageMap)  main.findViewById( R.id.map );
-		imageMap.setImageResource( R.drawable.multi );
-		
-		
+		mMultiMap = (ImageMap)  main.findViewById( R.id.map );
+		mMultiMap.setImageResource( R.drawable.multi );
+
+
 		//add click handler
-		imageMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
+		mMultiMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
         {
 			@Override
 			public void onImageMapClicked(int id, ImageMap imageMap)
 			{
-				// when the area is tapped, show the name in a 
+				// when the area is tapped, show the name in a
 				// text bubble
-				Toast.makeText(imageMap.getContext(), "Booth: " + id,
-						Toast.LENGTH_SHORT).show();
 
-				Log.v("Booth: ", "" + id );
+				mMultiMap.showBubble( id );
 			}
 
 			@Override
 			public void onBubbleClicked( int id )
 			{
-				
+				Log.v("Booth: ", "" + id);
 			}
 		});
-		
+
 	    return main;
 	}
 
 	@Override
-	public void onAttach(Activity activity) 
+	public void onAttach(Activity activity)
 	{
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));
 	}
-	
+
 }

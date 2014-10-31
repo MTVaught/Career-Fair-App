@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -58,7 +59,14 @@ public class ImageMap extends ImageView
 	//           image size will likely be larger than screen
 
 	// by default, this is true
-	private boolean mFitImageToScreen=true;
+	private boolean mFitImageToScreen=false;
+	
+	// database
+	private SQLiteDatabase mDatabase;
+	private ArrayList<Company> mCompanies;
+	private static final String DB_NAME = "careerFairDB.db";
+	
+
 
 	// For certain images, it is best to always resize using the original
 	// image bits. This requires keeping the original image in memory along with the
@@ -74,8 +82,8 @@ public class ImageMap extends ImageView
 	// Allowing size to go too large may result in memory problems.
 	//  set this to 1.0f to disable resizing
 	// by default, this is 1.5f
-	private static final float defaultMaxSize = 1.5f;
-	private float mMaxSize = 1.5f;
+	private static final float defaultMaxSize = 2.0f;
+	private float mMaxSize = 2.0f;
 
 	/* Touch event handling variables */
 	private VelocityTracker mVelocityTracker;
@@ -166,11 +174,13 @@ public class ImageMap extends ImageView
 	 */
 	public ImageMap(Context context) {
 		super(context);
+        //Creating the database
 		init();
 	}
 
 	public ImageMap(Context context, AttributeSet attrs) {
 		super(context, attrs);
+        //Creating the database
 		init();
 		loadAttributes(attrs);
 	}
@@ -181,7 +191,15 @@ public class ImageMap extends ImageView
 		init();
 		loadAttributes(attrs);
 	}
-
+	
+	/**
+	 * Set the image map database to the array list of companies
+	 */
+	public void setCompanies( ArrayList<Company> companies )
+	{
+		mCompanies = companies;
+	}
+	
 	/**
 	 * get the map name from the attributes and load areas from xml
 	 * @param attrs
@@ -288,8 +306,19 @@ public class ImageMap extends ImageView
 	{
 		Area a = null;
 		String rid = id.replace("@+id/", "");
+		String bid = rid.replace("booth", "");
 		int _id=0;
-
+		
+		//TODO: get a database filter for company booth
+		for ( Company c : mCompanies )
+		{
+			if ( c.getTableNum().equals(bid) )
+			{
+				name = c.getName();
+				break;
+			}
+		}
+				
 		try
 		{
 			Class<R.id> res = R.id.class;
@@ -423,7 +452,13 @@ public class ImageMap extends ImageView
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-
+		
+    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper( getContext(), DB_NAME);
+        mDatabase = dbOpenHelper.openDataBase();
+		//Database is open
+        mCompanies = DbAccess.getAllCompanies( mDatabase );
+	
+        
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
 	}
