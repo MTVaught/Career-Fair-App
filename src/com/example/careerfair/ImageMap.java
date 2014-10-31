@@ -309,15 +309,18 @@ public class ImageMap extends ImageView
 		String bid = rid.replace("booth", "");
 		int _id=0;
 		
-		//TODO: get a database filter for company booth
-		for ( Company c : mCompanies )
+		HashMap<String,Company> map;
+		
+		if ( mapName.equals("varsitymap" ) )
 		{
-			if ( c.getTableNum().equals(bid) )
-			{
-				name = c.getName();
-				break;
-			}
+			map = (HashMap<String, Company>) MainActivity.getVarsityBooth();
 		}
+		else
+		{
+			map = (HashMap<String,Company> ) MainActivity.getMultiBooth();
+		}
+		
+		name = map.get(bid).getName();
 				
 		try
 		{
@@ -452,12 +455,6 @@ public class ImageMap extends ImageView
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-		
-    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper( getContext(), DB_NAME);
-        mDatabase = dbOpenHelper.openDataBase();
-		//Database is open
-        mCompanies = DbAccess.getAllCompanies( mDatabase );
-	
         
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
