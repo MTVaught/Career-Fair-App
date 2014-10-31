@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 public class MainActivity extends Activity implements
 NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -97,12 +98,6 @@ CompanyListFragment.CompanyListCallbacks {
 		case 1:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
-		case 2:
-			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
-			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
-			ArrayList<String> Positions = DbAccess.getAllPositions(database);
-			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
-			break;
 		}
 		
 	}
@@ -125,9 +120,7 @@ CompanyListFragment.CompanyListCallbacks {
 		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
 			break;
-		case 2:
-			mTitle = getString(R.string.PreferencesFragment);
-			break;
+		
 		}
 	}
 
@@ -146,6 +139,8 @@ CompanyListFragment.CompanyListCallbacks {
 			// decide what to show in the action bar.
 			getMenuInflater().inflate(R.menu.main, menu);
 			restoreActionBar();
+			//menu.add(0, Menu.FIRST+1,0,"Sets Filter");
+			
 			return true;
 		}
 		return super.onCreateOptionsMenu(menu);
@@ -157,10 +152,18 @@ CompanyListFragment.CompanyListCallbacks {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+		int position = item.getOrder();
 		if (id == R.id.action_settings) {
-			getMenuInflater().inflate(R.menu.setting,(Menu) item);
+			//getMenuInflater().inflate(R.menu.setting,(Menu) item);
+			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
+			ArrayList<String> Positions = DbAccess.getAllPositions(database);
+			FragmentManager fragmentManager = super.getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
 			return true;
 		}
+	
 		return super.onOptionsItemSelected(item);
 	}
 

@@ -133,6 +133,7 @@ containing a value of this type.
         public static final int ListView=0x7f070007;
         public static final int MultiColumns=0x7f070005;
         public static final int MultiRows=0x7f070006;
+        public static final int PreferencesFragment=0x7f070009;
         public static final int action_settings=0x7f070003;
         public static final int app_name=0x7f070000;
         public static final int navigation_drawer_close=0x7f070002;
