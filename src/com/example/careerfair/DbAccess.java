@@ -18,8 +18,6 @@ import android.widget.ListView;
 public class DbAccess {
 
 	private static final String DB_NAME = "careerFairDB.db";
-	private static ArrayList<String> majorNames;
-	private static ArrayList<String> majorAbbrevs;
 
 	/**
 	 * Queries the database to obtain a list of company names and fill an array list with them
@@ -62,7 +60,7 @@ public class DbAccess {
 				String room = companiesCursor.getString(3);
 				
 				long start2 = System.currentTimeMillis();
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), majorNames, majorAbbrevs, getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
 				long end2 = System.currentTimeMillis();
 				long diff2 = end2 - start2;
 				diff2 = diff2 + 1;
@@ -157,7 +155,7 @@ public class DbAccess {
 				String tableNum = companiesCursor.getString(2);
 				String room = companiesCursor.getString(3);
 				
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), majorNames, majorAbbrevs, getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
 				companies.add(newCompany);
 				
 				
@@ -179,16 +177,12 @@ public class DbAccess {
 		String[] nameArray = {company};
 		
 		ArrayList<Major> majors = new ArrayList<Major>();
-		majorNames = new ArrayList<String>();
-		majorAbbrevs = new ArrayList<String>();
 		Cursor majorsCursor = database.rawQuery("SELECT major.name, major.abbreviation FROM company, companyToMajor, major WHERE company._id=companyToMajor.companyID AND company.name=? AND companyToMajor.majorID=major._id ORDER BY major.abbreviation;", nameArray);
 		majorsCursor.moveToFirst();
 		if(!majorsCursor.isAfterLast()) {
 			do{
 				String majorName = majorsCursor.getString(0);
-				majorNames.add(majorName);
 				String majorAbbrev = majorsCursor.getString(1);
-				majorAbbrevs.add(majorAbbrev);
 				majors.add(new Major(majorName, majorAbbrev));
 			} while (majorsCursor.moveToNext());
 		}
@@ -272,52 +266,6 @@ public class DbAccess {
 		majorsCursor.close();
 		
 		return majors;
-	}
-	
-	/**
-     * getAllMajorNames - gets a list of all the majors
-     * 
-     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
-     * @return an ArrayList filled with the major names
-     */
-	public static ArrayList<String> getAllMajorNames(SQLiteDatabase database) {
-		String[] empty ={};		
-		
-		ArrayList<String> names = new ArrayList<String>();
-		Cursor majorsCursor = database.rawQuery("SELECT name FROM major ORDER BY name;", empty);
-		
-		majorsCursor.moveToFirst();
-		if(!majorsCursor.isAfterLast()) {
-			do{
-				names.add(majorsCursor.getString(0));
-			} while (majorsCursor.moveToNext());
-		}
-		majorsCursor.close();
-		
-		return names;
-	}
-	
-	/**
-     * getAllMajorNames - gets a list of all the majors
-     * 
-     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
-     * @return an ArrayList filled with the major abbreviations
-     */
-	public static ArrayList<String> getAllMajorAbbrevs(SQLiteDatabase database) {
-		String[] empty ={};		
-		
-		ArrayList<String> abbrev = new ArrayList<String>();
-		Cursor majorsCursor = database.rawQuery("SELECT abbreviation FROM major ORDER BY abbreviation;", empty);
-		
-		majorsCursor.moveToFirst();
-		if(!majorsCursor.isAfterLast()) {
-			do{
-				abbrev.add(majorsCursor.getString(0));
-			} while (majorsCursor.moveToNext());
-		}
-		majorsCursor.close();
-		
-		return abbrev;
 	}
 	
 	/**
@@ -418,34 +366,6 @@ public class DbAccess {
 			HashMap<String, Company> map = new HashMap<String, Company>();
 			for (Company company: companyList) {
 				map.put(company.getTableNum(), company);
-			}
-			return map;
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * 
-	 * @param key - this parameter tells the method what to use for the key, options are as follows
-	 * 		0 - key with major name
-	 * 		1 - key with major abbrev
-	 * 		otherwise return null (may request for other keys if needed)
-	 * @param MajorList - an ArrayList with the company objects to be inserted into the hashmap
-	 * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
-	 * @return a hashmap with the major objects, keyed with the requested field, or null if the requested field was invalid
-	 */
-	public static HashMap<String, Major> getHashMapForMajorList (int key, ArrayList<Major> MajorList, SQLiteDatabase database) {
-		if (key == 0) {
-			HashMap<String, Major> map = new HashMap<String, Major>();
-			for (Major major: MajorList) {
-				map.put(major.getName(), major);
-			}
-			return map;
-		} else if (key == 1) {
-			HashMap<String, Major> map = new HashMap<String, Major>();
-			for (Major major: MajorList) {
-				map.put(major.getAbbrev(), major);
 			}
 			return map;
 		} else {
