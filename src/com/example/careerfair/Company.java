@@ -7,7 +7,6 @@
 package com.example.careerfair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Company {
 	private String name = null;
@@ -15,13 +14,9 @@ public class Company {
 	private String tableNum = null;
 	private String room = null;
 
-	private ArrayList<Major> majors;
-	private ArrayList<String> majorNames;
-	private ArrayList<String> majorAbbrevs;
-	private ArrayList<String> positions;
-	private ArrayList<String> workAuths;
-	
-	private HashMap<String, String> majorHashMap;
+	private ArrayList<Major> majors = new ArrayList<Major>();
+	private ArrayList<String> positions = new ArrayList<String>();
+	private ArrayList<String> workAuths = new ArrayList<String>();
 
 	/**
 	 * Company constructor
@@ -31,27 +26,18 @@ public class Company {
 	 * @param aTableNum - the number of the table (in a string)
 	 * @param aRoom - the room name (hall/multipurpose/wood)
 	 * @param aMajors - an ArrayList of the majors this company is looking for
-	 * @param aMajorNames - an ArrayList of the names of the majors this company is looking for
-	 * @param aMajorAbbrevs - an ArrayList of the abbreviations of the majors this company is looking for
 	 * @param aPositions - an ArrayList of the positions a company is hiring
 	 * @param aWorkAuths - an ArrayList of work authorizations a company is looking for
 	 */
-	public Company(String aName, String aWebsite, String aTableNum, String aRoom, ArrayList<Major> aMajors, ArrayList<String> aMajorNames, ArrayList<String> aMajorAbbrevs, ArrayList<String> aPositions, ArrayList<String> aWorkAuths) {
+	public Company(String aName, String aWebsite, String aTableNum, String aRoom, ArrayList<Major> aMajors, ArrayList<String> aPositions, ArrayList<String> aWorkAuths) {
 		name = aName;
 		website = aWebsite;
 		tableNum = aTableNum;
 		room = aRoom;
 		
 		majors = aMajors;
-		majorNames = aMajorNames;
-		majorAbbrevs = aMajorAbbrevs;
 		positions = aPositions;
 		workAuths = aWorkAuths; 
-		
-		majorHashMap = new HashMap<String, String>();
-		for (Major major : majors) {
-			majorHashMap.put(major.getName(), major.getAbbrev());
-		}
 	}
 
 	// ACCESS METHODS
@@ -63,32 +49,7 @@ public class Company {
 	public ArrayList<Major> getMajors() {
 		return (ArrayList<Major>) majors.clone();
 	}
-	
-	/**
-	 * getMajorNames
-	 * @return returns a copy the ArrayList of major names
-	 */
-	public ArrayList<String> getMajorNames() {
-		return (ArrayList<String>) majorNames.clone();
-	}
-	
-	/**
-	 * getMajorAbbrevs
-	 * @return returns a copy the ArrayList of major abbrevs
-	 */
-	public ArrayList<String> getMajorAbbrevs() {
-		return (ArrayList<String>) majorAbbrevs.clone();
-	}
 
-	
-	/**
-	 * getMajorHashMap
-	 * @return a copy of the major hash map (keyed with full name as per request)
-	 */
-	public HashMap<String, String> getMajorHashMap() {
-		return (HashMap<String, String>) majorHashMap.clone();
-	}
-	
 	/**
 	 * getPositions
 	 * @return returns a copy of the ArrayList of positions

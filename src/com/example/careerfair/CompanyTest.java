@@ -20,7 +20,7 @@ public class CompanyTest extends TestCase
 		//ExternalDbOpenHelper helper = new ExternalDbOpenHelper( app.getBaseContext(), "careerFairDB.db" );
 		//db = helper.openDataBase();
 		mTest = new Company("a","b","c","d" ,
-				new ArrayList<Major>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() );
+				new ArrayList<Major>(), new ArrayList<String>(), new ArrayList<String>() );
 		super.setUp();
 	}
 
@@ -31,7 +31,7 @@ public class CompanyTest extends TestCase
 
 	public void testCompany() {
 		Company test = new Company("a","b","c","d" ,
-				new ArrayList<Major>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() );
+				new ArrayList<Major>(), new ArrayList<String>(), new ArrayList<String>() );
 		Assert.assertNotNull( test );
 	}
 
