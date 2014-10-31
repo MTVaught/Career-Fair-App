@@ -31,7 +31,7 @@ CompanyListFragment.CompanyListCallbacks {
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
 
-	private static SQLiteDatabase database;
+	protected static SQLiteDatabase database;
 	private ExternalDbOpenHelper dbOpenHelper;
 	private ArrayList<Company> companyList;
 	private ArrayList<String> companyNames;
@@ -176,17 +176,5 @@ CompanyListFragment.CompanyListCallbacks {
 
 	}	
 	
-	public static Map<String,Company> getVarsityBooth()
-	{
-		Map<String,Company> map = new HashMap<String,Company>();
-		DbAccess.getTableCompanyMap(true, database );
-		return map;
-	}
-	
-	public static Map<String,Company> getMultiBooth()
-	{
-		Map<String,Company> map = new HashMap<String,Company>();
-		DbAccess.getTableCompanyMap(false, database );
-		return map;
-	}
+
 }

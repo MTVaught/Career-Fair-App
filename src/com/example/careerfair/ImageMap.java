@@ -62,7 +62,7 @@ public class ImageMap extends ImageView
 	private boolean mFitImageToScreen=false;
 	
 	// database
-	private SQLiteDatabase mDatabase;
+	private static SQLiteDatabase mDatabase;
 	private ArrayList<Company> mCompanies;
 	private static final String DB_NAME = "careerFairDB.db";
 	
@@ -313,11 +313,11 @@ public class ImageMap extends ImageView
 		
 		if ( mapName.equals("varsitymap" ) )
 		{
-			map = (HashMap<String, Company>) MainActivity.getVarsityBooth();
+			map = (HashMap<String, Company>) DbAccess.getTableCompanyMap(true, mDatabase);
 		}
 		else
 		{
-			map = (HashMap<String,Company> ) MainActivity.getMultiBooth();
+			map = (HashMap<String, Company>) DbAccess.getTableCompanyMap(false, mDatabase);
 		}
 		
 		name = map.get(bid).getName();
@@ -456,6 +456,7 @@ public class ImageMap extends ImageView
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         
+		mDatabase = MainActivity.database;
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
 	}
