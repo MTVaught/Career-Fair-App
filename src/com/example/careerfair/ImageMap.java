@@ -61,6 +61,11 @@ public class ImageMap extends ImageView
 	// by default, this is true
 	private boolean mFitImageToScreen=false;
 	
+	// database
+	private SQLiteDatabase mDatabase;
+	private ArrayList<Company> mCompanies;
+	private static final String DB_NAME = "careerFairDB.db";
+	
 
 
 	// For certain images, it is best to always resize using the original
@@ -186,8 +191,6 @@ public class ImageMap extends ImageView
 		init();
 		loadAttributes(attrs);
 	}
-	
-	private ArrayList<Company> mCompanies;
 	
 	/**
 	 * Set the image map database to the array list of companies
@@ -450,7 +453,11 @@ public class ImageMap extends ImageView
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 		
-
+    	ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper( getContext(), DB_NAME);
+        mDatabase = dbOpenHelper.openDataBase();
+		//Database is open
+        mCompanies = DbAccess.getAllCompanies( mDatabase );
+	
         
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
