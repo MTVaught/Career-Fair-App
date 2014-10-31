@@ -1,28 +1,25 @@
 package com.example.careerfair;
 
 
-import android.app.Activity;
 
+import java.util.ArrayList;
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks,
-		CompanyListFragment.CompanyListCallbacks {
+NavigationDrawerFragment.NavigationDrawerCallbacks,
+CompanyListFragment.CompanyListCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -31,16 +28,26 @@ public class MainActivity extends Activity implements
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
+
+	private SQLiteDatabase database;
+	private ExternalDbOpenHelper dbOpenHelper;
+	private ArrayList<Company> companyList;
+	private ArrayList<String> companyNames;
+	private boolean databaseOpen = false;
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	boolean inCompanyView = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		FragmentManager fragmentManager = getFragmentManager();
+		// FragmentTransaction ft = fragmentManager.beginTransaction();
 
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
@@ -53,7 +60,7 @@ public class MainActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		// Set up the ListView
+		// Set up the company list
 
 	}
 
@@ -62,20 +69,19 @@ public class MainActivity extends Activity implements
 		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
+
+		inCompanyView = false;
+
+		if (!databaseOpen) {
+			databaseOpen();
+		}
+
 		switch(position){
+
 		case 0:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+			ft.replace(R.id.container, CompanyListFragment.newInstance(position, companyNames, companyList)).commit();
 			break;
 		case 1:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
-			break;
-		case 2:
-			ft.add(R.id.container, PlaceholderFragment.newInstance(position)).commit();
-			break;
-		case 3:
-			ft.add(R.id.container, CompanyListFragment.newInstance(position)).commit();
-			break;
-		case 4:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
 		}
@@ -86,38 +92,17 @@ public class MainActivity extends Activity implements
 		// TODO Auto-generated method stub
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		switch(position){
-		case 0:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 1:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 2:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		case 3:
-			ft.replace(R.id.container, CompanyReaderFragment.newInstance(position)).commit();
-			break;
-		}
-
+		Company clickedCompany = companyList.get(position);
+		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,clickedCompany)).commit();
+		inCompanyView = true;
 	}
 
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 0:
-			mTitle = getString(R.string.title_section1);
-		    break;
-		case 1:
-			mTitle = getString(R.string.title_section2);
-			break;
-		case 2:
-			mTitle = getString(R.string.title_section3);
-			break;
-		case 3:
 			mTitle = getString(R.string.ListView);
 			break;
-		case 4:
+		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
 			break;
 		}
@@ -155,44 +140,37 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
 
-		/**
-		 * Returns a new instance of this fragment for the given section number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
-		}
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			return rootView;
-		}
-
-		@Override
-		public void onAttach(Activity activity) {
-			super.onAttach(activity);
-			((MainActivity) activity).onSectionAttached(getArguments().getInt(
-					ARG_SECTION_NUMBER));
+	@Override
+	public void onBackPressed() {
+		Log.d("CDA", "onBackPressed Called");
+		if(inCompanyView){
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			inCompanyView = false;
+			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+			.commit();
+		} else {
 		}
 	}
 
+	private void databaseOpen() {
+
+		long start = System.currentTimeMillis( );
+
+		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(), "careerFairDB.db");
+		database = dbOpenHelper.openDataBase();
+
+		//Database is open
+		companyNames = new ArrayList<String>();
+		DbAccess.fillCompanies(companyNames, database);
+		companyList = DbAccess.getAllCompanies(database);
+
+		databaseOpen = true;
+
+		long end2 = System.currentTimeMillis( );
+
+		long diff2 = end2 - start;
+
+	}	
 }
