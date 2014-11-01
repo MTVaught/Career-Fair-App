@@ -18,7 +18,110 @@ import android.widget.ListView;
 public class DbAccess {
 
 	private static final String DB_NAME = "careerFairDB.db";
+	private static ArrayList<String> majorNames;
+	private static ArrayList<String> majorAbbrevs;
+	private static ArrayList<String> lastFilteredNames = new ArrayList<String>();
+	private static HashMap<String, ArrayList<Major>> majorMap;
+	private static HashMap<String, ArrayList<String>> workAuthMap;
+	private static HashMap<String, ArrayList<String>> positionMap;
 
+	
+	/**
+     * getPositionsForCompany - gets all the positions a specific company is hiring for
+     * 
+     * @param company - the name of the company to get the positions for
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with positions
+     */
+	private static void fillPositionMap(SQLiteDatabase database) {
+		positionMap = new HashMap<String, ArrayList<String>>();
+		
+		Cursor positionsCursor = database.rawQuery("SELECT DISTINCT company.name, employmentType.type FROM company, companyToType, employmentType WHERE company._id=companyToType.companyID AND companyToType.typeID=employmentType._id AND type<>'';", new String[0]);
+		positionsCursor.moveToFirst();
+		if(!positionsCursor.isAfterLast()) {
+			do{
+				if (positionsCursor.getString(0).contains("Mid")) {
+					String name = positionsCursor.getString(0);
+					String stop = "";
+				}
+				ArrayList<String> list = positionMap.get(positionsCursor.getString(0));
+				if (list==null) {
+					ArrayList<String> newlist = new ArrayList<String>();
+					newlist.add(positionsCursor.getString(1));
+					positionMap.put(positionsCursor.getString(0), newlist);
+				} else {
+					list.add(positionsCursor.getString(1));
+				}
+			} while (positionsCursor.moveToNext());
+		}
+		positionsCursor.close();
+		
+	}
+	
+	/**
+     * getWorkAuthsForCompany - gets all the work authorization types a specific company is looking for
+     * 
+     * @param company - the name of the company to get the work authorizations for
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with work authorizations
+     */
+	private static void fillWorkAuthMap (SQLiteDatabase database) {
+		workAuthMap = new HashMap<String, ArrayList<String>>();
+		
+		Cursor workAuthsCursor = database.rawQuery("SELECT DISTINCT company.name, workAuth.type FROM company, companyToWorkAuth, workAuth WHERE company._id=companyToWorkAuth.companyID AND companyToWorkAuth.workAuthID=workAuth._id AND type<>'';", new String[0]);
+		workAuthsCursor.moveToFirst();
+		if(!workAuthsCursor.isAfterLast()) {
+			do {
+				if (workAuthsCursor.getString(0).contains("Mid")) {
+					String name = workAuthsCursor.getString(0);
+					String stop = "";
+				}
+				
+				ArrayList<String> list = workAuthMap.get(workAuthsCursor.getString(0));
+				if (list==null) {
+					ArrayList<String> newlist = new ArrayList<String>();
+					newlist.add(workAuthsCursor.getString(1));
+					workAuthMap.put(workAuthsCursor.getString(0), newlist);
+				} else {
+					list.add(workAuthsCursor.getString(1));
+				}
+			} while (workAuthsCursor.moveToNext());
+		}
+		workAuthsCursor.close();
+		
+	}
+	
+	private static void fillMajorMap(SQLiteDatabase database) {
+		majorMap = new HashMap<String, ArrayList<Major>>();
+		Cursor majorsCursor = database
+				.rawQuery(
+						"SELECT DISTINCT company.name, major.name, major.abbreviation FROM company, companyToMajor, major WHERE company._id=companyToMajor.companyID AND companyToMajor.majorID=major._id ORDER BY major.abbreviation;",
+						new String[0]);
+		majorsCursor.moveToFirst();
+		if (!majorsCursor.isAfterLast()) {
+			do {
+				if (majorsCursor.getString(0).contains("Mid")) {
+					String companyName = majorsCursor.getString(0);
+					String stop = "";
+				}
+				
+				String majorName = majorsCursor.getString(1);
+				String majorAbbrev = majorsCursor.getString(2);
+				ArrayList<Major> list = majorMap.get(majorsCursor.getString(0));
+				if (list==null) {
+					ArrayList<Major> newlist = new ArrayList<Major>();
+					newlist.add(new Major(majorName,majorAbbrev));
+					majorMap.put(majorsCursor.getString(0), newlist);
+				} else {
+					list.add(new Major(majorName, majorAbbrev));
+				}
+				
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+
+	}
+	
 	/**
 	 * Queries the database to obtain a list of company names and fill an array list with them
 	 * 
@@ -38,6 +141,21 @@ public class DbAccess {
 		companiesCursor.close();
 	}
 	
+	/**
+	 * Returns a list of the companies that were in the set last filtered by getCompaniesWith
+	 * 
+	 * @param database - the database to query (obtain database with ExternalDbOpenHelper instance)
+	 * @return the names of the companies in the list last returned by getCompaniesWith
+	 */
+	public static ArrayList<String> getFilteredNames(SQLiteDatabase database) {
+		if (lastFilteredNames.isEmpty()) {
+			ArrayList<String> toReturn = new ArrayList<String>();
+			fillCompanies(toReturn, database);
+			return toReturn;
+		} else {
+			return lastFilteredNames;
+		}
+	}
 	/**
      * getAllCompanies - gets all the companies in the database, ordered by company name, 
      * case insensitive, ignores spaces and periods in the names
@@ -60,7 +178,29 @@ public class DbAccess {
 				String room = companiesCursor.getString(3);
 				
 				long start2 = System.currentTimeMillis();
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				if (majorMap==null) {
+					fillMajorMap(database);
+				}
+				if (positionMap==null) {
+					fillPositionMap(database);
+				}
+				if (workAuthMap==null) {
+					fillWorkAuthMap(database);
+				}
+				ArrayList<Major> majorList = majorMap.get(name);
+				ArrayList<String> positionList = positionMap.get(name);
+				ArrayList<String> workAuthList = workAuthMap.get(name);
+				if (majorList==null) {
+					majorList = new ArrayList<Major>();
+				}
+				if (positionList==null) {
+					positionList = new ArrayList<String>();
+				}
+				if (workAuthList==null) {
+					workAuthList = new ArrayList<String>();
+				}
+				Company newCompany = new Company(name, website, tableNum, room, majorList, positionList, workAuthList);
+				
 				long end2 = System.currentTimeMillis();
 				long diff2 = end2 - start2;
 				diff2 = diff2 + 1;
@@ -94,8 +234,9 @@ public class DbAccess {
      * @param filterPosition - an ArrayList of strings to filter position types by, this filter will find all the companies with at least one of the specified position types
      * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
      */
-	public static ArrayList<Company> getCompaniesWith(String filterName, String filterRoom, ArrayList<Major> filterMajor, ArrayList<String> filterWorkAuth, ArrayList<String> filterPosition, SQLiteDatabase database) {
+	public static ArrayList<Company> getCompaniesWith(String filterName, String filterRoom, ArrayList<String> filterMajor, ArrayList<String> filterWorkAuth, ArrayList<String> filterPosition, SQLiteDatabase database) {
 		ArrayList<Company> companies = new ArrayList<Company>();
+		lastFilteredNames = new ArrayList<String>();
 		
 		//Set default from and where strings (if there are no filters specified)
 		String fromString = "FROM company, companyToLocation, location, room";
@@ -108,9 +249,9 @@ public class DbAccess {
 		//Handle Major filter
 		if (!filterMajor.isEmpty()) {
 			String majorSet = "'ALL'";
-			for (Major major : filterMajor) {
+			for (String major : filterMajor) {
 				
-				majorSet = majorSet + ", '" + major.getAbbrev() + "'";
+				majorSet = majorSet + ", '" + major + "'";
 			}
 			whereString = whereString + " AND company._id=companyToMajor.companyID AND major._id=companyToMajor.majorID AND major.abbreviation IN (" + majorSet + ")";
 			fromString = fromString + ", companyToMajor, major";
@@ -118,7 +259,7 @@ public class DbAccess {
 		
 		//Handle workAuth filter
 		if(!filterWorkAuth.isEmpty()) {
-			String workAuthSet = "'',";
+			String workAuthSet = "''";
 			for (String workAuth : filterWorkAuth) {
 				workAuthSet = workAuthSet + ", '" + workAuth + "'";
 			}
@@ -128,7 +269,7 @@ public class DbAccess {
 		
 		//Handle position filter
 		if(!filterPosition.isEmpty()) {
-			String positionSet = "'',";
+			String positionSet = "''";
 			for (String position : filterPosition) {
 				positionSet = positionSet + ", '" + position + "'";
 			}
@@ -155,7 +296,30 @@ public class DbAccess {
 				String tableNum = companiesCursor.getString(2);
 				String room = companiesCursor.getString(3);
 				
-				Company newCompany = new Company(name, website, tableNum, room, getMajorsForCompany(name, database), getPositionsForCompany(name, database), getWorkAuthsForCompany(name, database));
+				lastFilteredNames.add(name);
+				
+				if (majorMap==null) {
+					fillMajorMap(database);
+				}
+				if (positionMap==null) {
+					fillPositionMap(database);
+				}
+				if (workAuthMap==null) {
+					fillWorkAuthMap(database);
+				}
+				ArrayList<Major> majorList = majorMap.get(name);
+				ArrayList<String> positionList = positionMap.get(name);
+				ArrayList<String> workAuthList = workAuthMap.get(name);
+				if (majorList==null) {
+					majorList = new ArrayList<Major>();
+				}
+				if (positionList==null) {
+					positionList = new ArrayList<String>();
+				}
+				if (workAuthList==null) {
+					workAuthList = new ArrayList<String>();
+				}
+				Company newCompany = new Company(name, website, tableNum, room, majorList, positionList, workAuthList);
 				companies.add(newCompany);
 				
 				
@@ -177,12 +341,16 @@ public class DbAccess {
 		String[] nameArray = {company};
 		
 		ArrayList<Major> majors = new ArrayList<Major>();
+		majorNames = new ArrayList<String>();
+		majorAbbrevs = new ArrayList<String>();
 		Cursor majorsCursor = database.rawQuery("SELECT major.name, major.abbreviation FROM company, companyToMajor, major WHERE company._id=companyToMajor.companyID AND company.name=? AND companyToMajor.majorID=major._id ORDER BY major.abbreviation;", nameArray);
 		majorsCursor.moveToFirst();
 		if(!majorsCursor.isAfterLast()) {
 			do{
 				String majorName = majorsCursor.getString(0);
+				majorNames.add(majorName);
 				String majorAbbrev = majorsCursor.getString(1);
+				majorAbbrevs.add(majorAbbrev);
 				majors.add(new Major(majorName, majorAbbrev));
 			} while (majorsCursor.moveToNext());
 		}
@@ -266,6 +434,52 @@ public class DbAccess {
 		majorsCursor.close();
 		
 		return majors;
+	}
+	
+	/**
+     * getAllMajorNames - gets a list of all the majors
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the major names
+     */
+	public static ArrayList<String> getAllMajorNames(SQLiteDatabase database) {
+		String[] empty ={};		
+		
+		ArrayList<String> names = new ArrayList<String>();
+		Cursor majorsCursor = database.rawQuery("SELECT name FROM major ORDER BY name;", empty);
+		
+		majorsCursor.moveToFirst();
+		if(!majorsCursor.isAfterLast()) {
+			do{
+				names.add(majorsCursor.getString(0));
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+		
+		return names;
+	}
+	
+	/**
+     * getAllMajorNames - gets a list of all the majors
+     * 
+     * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+     * @return an ArrayList filled with the major abbreviations
+     */
+	public static ArrayList<String> getAllMajorAbbrevs(SQLiteDatabase database) {
+		String[] empty ={};		
+		
+		ArrayList<String> abbrev = new ArrayList<String>();
+		Cursor majorsCursor = database.rawQuery("SELECT abbreviation FROM major ORDER BY abbreviation;", empty);
+		
+		majorsCursor.moveToFirst();
+		if(!majorsCursor.isAfterLast()) {
+			do{
+				abbrev.add(majorsCursor.getString(0));
+			} while (majorsCursor.moveToNext());
+		}
+		majorsCursor.close();
+		
+		return abbrev;
 	}
 	
 	/**
@@ -366,6 +580,34 @@ public class DbAccess {
 			HashMap<String, Company> map = new HashMap<String, Company>();
 			for (Company company: companyList) {
 				map.put(company.getTableNum(), company);
+			}
+			return map;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param key - this parameter tells the method what to use for the key, options are as follows
+	 * 		0 - key with major name
+	 * 		1 - key with major abbrev
+	 * 		otherwise return null (may request for other keys if needed)
+	 * @param MajorList - an ArrayList with the company objects to be inserted into the hashmap
+	 * @param database - SQLite database object returned by ExternalDbOpenHelper.openDataBase
+	 * @return a hashmap with the major objects, keyed with the requested field, or null if the requested field was invalid
+	 */
+	public static HashMap<String, Major> getHashMapForMajorList (int key, ArrayList<Major> MajorList, SQLiteDatabase database) {
+		if (key == 0) {
+			HashMap<String, Major> map = new HashMap<String, Major>();
+			for (Major major: MajorList) {
+				map.put(major.getName(), major);
+			}
+			return map;
+		} else if (key == 1) {
+			HashMap<String, Major> map = new HashMap<String, Major>();
+			for (Major major: MajorList) {
+				map.put(major.getAbbrev(), major);
 			}
 			return map;
 		} else {

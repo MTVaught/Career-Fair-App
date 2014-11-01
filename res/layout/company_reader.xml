@@ -1,39 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
-    android:id="@+id/company_reader"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/company_name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Company Name:" />
+    <LinearLayout
+        android:id="@+id/company_reader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/company_major_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/company_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Company Name:" />
 
-    <TextView
-        android:id="@+id/company_position_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="4dip"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/company_workauths_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-    
-    <TextView
-        android:id="@+id/company_website_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-    
-</LinearLayout>
+        <TextView
+            android:id="@+id/company_major_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+        
+        <View
+            android:layout_width="1dp"
+            android:layout_height="4dip"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/company_position_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+        
+        <View
+            android:layout_width="1dp"
+            android:layout_height="4dip"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/company_workauths_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="4dip"
+            android:layout_weight="1" />
+        
+        <TextView
+            android:id="@+id/company_website_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </LinearLayout>
+
+</ScrollView>
