@@ -66,9 +66,8 @@ public class CompanyListFragment extends Fragment{
 	}
 
 
-	public static CompanyListFragment newInstance(int sectionNumber, ArrayList<String> companyName, ArrayList<Company> companies) {
+	public static CompanyListFragment newInstance(int sectionNumber, ArrayList<String> companyName) {
 		companyNames = companyName;
-		//companyList = companies;
 		CompanyListFragment fragment = new CompanyListFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -119,7 +118,7 @@ public class CompanyListFragment extends Fragment{
 		mCompanyListView.setAdapter(new ArrayAdapter<String>(getActionBar()
 				.getThemedContext(),
 				android.R.layout.simple_list_item_activated_1,
-				companyNames));
+				((MainActivity)getActivity()).filteredCompanyNames));
 		mCompanyListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mCompanyListView;
 	}

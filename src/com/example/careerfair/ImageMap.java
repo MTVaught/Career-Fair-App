@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -62,10 +63,11 @@ public class ImageMap extends ImageView
 	private boolean mFitImageToScreen=false;
 	
 	// database
-	private static SQLiteDatabase mDatabase;
+	private SQLiteDatabase mDatabase;
+	private HashMap<String,Company> mBoothMap;
 	private ArrayList<Company> mCompanies;
 	private static final String DB_NAME = "careerFairDB.db";
-	
+	private ArrayList<String> filteredCompanyNames;
 
 
 	// For certain images, it is best to always resize using the original
@@ -169,6 +171,8 @@ public class ImageMap extends ImageView
 	//possible to reduce memory consumption
 	protected BitmapFactory.Options options;
 
+	private Paint highlightPaint;
+
 	/*
 	 * Constructors
 	 */
@@ -213,17 +217,32 @@ public class ImageMap extends ImageView
 		this.mMaxSize = a.getFloat(R.styleable.ImageMap_maxSizeFactor, defaultMaxSize);
 
 		this.mapName = a.getString(R.styleable.ImageMap_map);
+		//setup db
+		mDatabase = MainActivity.appMainActivity.database;
+		filteredCompanyNames = MainActivity.appMainActivity.filteredCompanyNames;
+		if ( mapName.equals("varsitymap" ) )
+		{
+			mBoothMap = (HashMap<String, Company>) DbAccess.getTableCompanyMap(true, mDatabase);
+		}
+		else
+		{
+			mBoothMap = (HashMap<String, Company>) DbAccess.getTableCompanyMap(false, mDatabase);
+		}
+		
 		if (mapName != null)
 		{
-			loadMap(mapName);
+			loadMap(mapName );
 		}
+		
+
 	}
 
 	/**
 	 * parse the maps.xml resource and pull out the areas
 	 * @param map - the name of the map to load
+	 * @param filteredCompany 
 	 */
-	private void loadMap(String map) {
+	private void loadMap(String map ) {
 		boolean loading = false;
 		try {
 			XmlResourceParser xpp = getResources().getXml(R.xml.maps);
@@ -256,6 +275,14 @@ public class ImageMap extends ImageView
 							// attributes
 							//  name attribute is custom to this impl (not standard in html area tag)
 							String name = xpp.getAttributeValue(null, "name");
+							
+							String rid = id.replace("@+id/", "");
+							String bid = rid.replace("booth", "");
+							if ( mBoothMap.get(bid) != null)
+								name = mBoothMap.get(bid).getName();
+							
+								
+							
 							if (name == null) {
 								name = xpp.getAttributeValue(null, "title");
 							}
@@ -264,7 +291,13 @@ public class ImageMap extends ImageView
 							}
 
 							if ((shape != null) && (coords != null)) {
-								a = addShape(shape,name,coords,id);
+								boolean selected = false;
+								if ( filteredCompanyNames.contains( name ) )
+									selected = true;
+								a = addShape(shape,name,coords,id, selected);
+								
+								
+									
 								if (a != null) {
 									// add all of the area tag attributes
 									// so that they are available to the
@@ -300,28 +333,16 @@ public class ImageMap extends ImageView
 	 * @param name
 	 * @param coords
 	 * @param id
+	 * @param selected 
 	 * @return
 	 */
-	protected Area addShape( String shape, String name, String coords, String id)
+	protected Area addShape( String shape, String name, String coords, String id, boolean selected)
 	{
 		Area a = null;
 		String rid = id.replace("@+id/", "");
-		String bid = rid.replace("booth", "");
-		int _id=0;
-		
-		HashMap<String,Company> map;
-		
-		if ( mapName.equals("varsitymap" ) )
-		{
-			map = (HashMap<String, Company>) DbAccess.getTableCompanyMap(true, mDatabase);
-		}
-		else
-		{
-			map = (HashMap<String, Company>) DbAccess.getTableCompanyMap(false, mDatabase);
-		}
-		
-		name = map.get(bid).getName();
+		int _id=0;	
 				
+		
 		try
 		{
 			Class<R.id> res = R.id.class;
@@ -362,6 +383,8 @@ public class ImageMap extends ImageView
 			if (a != null)
 			{
 				addArea(a);
+				if ( selected )
+					a.toggleSelected();
 			}
 		}
 		return a;
@@ -445,7 +468,8 @@ public class ImageMap extends ImageView
 	{
 		// set up paint objects
 		initDrawingTools();
-
+		
+		
 		// create a scroller for flinging
 		mScroller = new Scroller(getContext());
 
@@ -456,7 +480,8 @@ public class ImageMap extends ImageView
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         
-		mDatabase = MainActivity.database;
+		
+		
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
 	}
@@ -547,6 +572,9 @@ public class ImageMap extends ImageView
 		bubblePaint.setColor(0xFFFFFFFF);
 		bubbleShadowPaint=new Paint();
 		bubbleShadowPaint.setColor(0xFF000000);
+		
+		highlightPaint = new Paint();
+		highlightPaint.setColor( Color.YELLOW );
 
 	}
 
@@ -1365,6 +1393,7 @@ public class ImageMap extends ImageView
 		int _id;
 		String _name;
 		HashMap<String,String> _values;
+		boolean selected = false;
 		Bitmap _decoration=null;
 
 		public Area(int id, String name) {
@@ -1378,6 +1407,13 @@ public class ImageMap extends ImageView
 			return _id;
 		}
 
+		public void toggleSelected() 
+		{ 
+			if ( selected == false)
+				selected = true;
+			else
+				selected = false;
+		}
 		public String getName() {
 			return _name;
 		}
@@ -1410,6 +1446,12 @@ public class ImageMap extends ImageView
 		// scaling and translation into account
 		public void onDraw(Canvas canvas)
 		{
+			if ( selected )
+			{
+				float x = (getOriginX() * mResizeFactorX) + mScrollLeft;
+				float y = (getOriginY() * mResizeFactorY) + mScrollTop; 
+				canvas.drawCircle(x, y, 8, highlightPaint );
+			}
 			if (_decoration != null)
 			{
 				float x = (getOriginX() * mResizeFactorX) + mScrollLeft - 17;
