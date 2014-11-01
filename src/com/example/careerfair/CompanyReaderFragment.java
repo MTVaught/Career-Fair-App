@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +61,7 @@ public class CompanyReaderFragment extends Fragment {
 		// Display Majors
 		text = (TextView) mCompanyReaderView
 				.findViewById(R.id.company_major_label);
-		text.setText("Majors: " + companyObj.getMajors().toString());
+		text.setText("Majors: " + companyObj.getMajorNames().toString());
 		
 		// Display Positions
 		text = (TextView) mCompanyReaderView
@@ -74,7 +76,10 @@ public class CompanyReaderFragment extends Fragment {
 		// Display Website URL
 		text = (TextView) mCompanyReaderView
 				.findViewById(R.id.company_website_label);
-		text.setText("Website: " + companyObj.getWebsite());
+		text.setText(Html.fromHtml("Website: <a href='" + companyObj.getWebsite() + "'> " + companyObj.getWebsite()+ " </a>"));
+		text.setClickable(true);
+		text.setMovementMethod(LinkMovementMethod.getInstance());
+	
 		
 		
 		
