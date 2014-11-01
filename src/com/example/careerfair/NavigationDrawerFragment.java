@@ -110,7 +110,6 @@ public class NavigationDrawerFragment extends Fragment {
 						getString(R.string.ListView),
 						getString(R.string.title_multipurposegym),
 						getString(R.string.title_woodgym),
-						getString(R.string.title_multipurposegym),
 						getString(R.string.PreferencesFragment), }));
 
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);

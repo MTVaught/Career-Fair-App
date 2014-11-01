@@ -111,7 +111,7 @@ CompanyListFragment.CompanyListCallbacks {
 			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
 					.commit();
 			break;
-		case 3;
+		case 3:
 			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
 			ArrayList<String> Positions = DbAccess.getAllPositions(database);
