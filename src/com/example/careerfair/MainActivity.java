@@ -165,7 +165,7 @@ CompanyListFragment.CompanyListCallbacks {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			getMenuInflater().inflate(R.menu.setting,(Menu) item);
+			//getMenuInflater().inflate(R.menu.setting,(Menu) item);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
