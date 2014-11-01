@@ -40,7 +40,7 @@ public class WoodGymFragment extends Fragment {
 		LinearLayout main = (LinearLayout) inflater.inflate(
 				R.layout.fragment_woodgym, container, false);
 		main.setOrientation(LinearLayout.HORIZONTAL);
-		mWoodMap = (ImageMap) main.findViewById(R.id.varsitymap);
+		mWoodMap = (ImageMap) main.findViewById(R.id.varsity);
 		mWoodMap.setImageResource(R.drawable.varsity);
 
 		// add click handler
