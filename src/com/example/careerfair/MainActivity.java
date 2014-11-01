@@ -42,6 +42,9 @@ CompanyListFragment.CompanyListCallbacks {
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
 	
+	//Holds reference to MainActivity object being used by the app;
+	public static MainActivity appMainActivity;
+	
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -81,7 +84,7 @@ CompanyListFragment.CompanyListCallbacks {
 		// update the main content by adding fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-
+		appMainActivity = this;
 		inCompanyView = false;
 
 		if (!databaseOpen) {

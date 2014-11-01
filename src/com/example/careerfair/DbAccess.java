@@ -40,10 +40,7 @@ public class DbAccess {
 		positionsCursor.moveToFirst();
 		if(!positionsCursor.isAfterLast()) {
 			do{
-				if (positionsCursor.getString(0).contains("Mid")) {
-					String name = positionsCursor.getString(0);
-					String stop = "";
-				}
+				
 				ArrayList<String> list = positionMap.get(positionsCursor.getString(0));
 				if (list==null) {
 					ArrayList<String> newlist = new ArrayList<String>();
@@ -72,10 +69,7 @@ public class DbAccess {
 		workAuthsCursor.moveToFirst();
 		if(!workAuthsCursor.isAfterLast()) {
 			do {
-				if (workAuthsCursor.getString(0).contains("Mid")) {
-					String name = workAuthsCursor.getString(0);
-					String stop = "";
-				}
+				
 				
 				ArrayList<String> list = workAuthMap.get(workAuthsCursor.getString(0));
 				if (list==null) {
@@ -100,10 +94,7 @@ public class DbAccess {
 		majorsCursor.moveToFirst();
 		if (!majorsCursor.isAfterLast()) {
 			do {
-				if (majorsCursor.getString(0).contains("Mid")) {
-					String companyName = majorsCursor.getString(0);
-					String stop = "";
-				}
+				
 				
 				String majorName = majorsCursor.getString(1);
 				String majorAbbrev = majorsCursor.getString(2);
