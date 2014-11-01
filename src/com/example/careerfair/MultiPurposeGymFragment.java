@@ -17,14 +17,14 @@ import android.widget.Toast;
 
 
 
-public class MultiPurposeGymFragment extends Fragment 
+public class MultiPurposeGymFragment extends Fragment
 {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String ARG_SECTION_NUMBER = "MultiPurpose";
 	private ImageMap mMultiMap;
-	
+
 
 
 	/**
@@ -32,7 +32,7 @@ public class MultiPurposeGymFragment extends Fragment
 	 */
 	public static MultiPurposeGymFragment newInstance(int sectionNumber)
 	{
-		
+
 		MultiPurposeGymFragment fragment = new MultiPurposeGymFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -40,27 +40,30 @@ public class MultiPurposeGymFragment extends Fragment
 		return fragment;
 	}
 
-	public MultiPurposeGymFragment() 
+	public MultiPurposeGymFragment()
 	{
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) 
+			Bundle savedInstanceState)
 	{
+
 		LinearLayout main = (LinearLayout) inflater.inflate( R.layout.fragment_multipurposegym, container, false );
-		main.setOrientation( LinearLayout.HORIZONTAL );	
+		main.setOrientation( LinearLayout.HORIZONTAL );
 		mMultiMap = (ImageMap)  main.findViewById( R.id.map );
 		mMultiMap.setImageResource( R.drawable.multi );
-		
+
+
 		//add click handler
 		mMultiMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
         {
 			@Override
 			public void onImageMapClicked(int id, ImageMap imageMap)
 			{
-				// when the area is tapped, show the name in a 
+				// when the area is tapped, show the name in a
 				// text bubble
+
 				mMultiMap.showBubble( id );
 			}
 
@@ -70,16 +73,16 @@ public class MultiPurposeGymFragment extends Fragment
 				Log.v("Booth: ", "" + id);
 			}
 		});
-		
+
 	    return main;
 	}
 
 	@Override
-	public void onAttach(Activity activity) 
+	public void onAttach(Activity activity)
 	{
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));
 	}
-	
+
 }
