@@ -111,7 +111,12 @@ CompanyListFragment.CompanyListCallbacks {
 			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
 					.commit();
 			break;
-	
+		case 3:
+			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
+			ArrayList<String> Positions = DbAccess.getAllPositions(database);
+			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+			break;
 		}
 
 	}
@@ -137,7 +142,9 @@ CompanyListFragment.CompanyListCallbacks {
 		case 2:
 			mTitle = getString(R.string.title_woodgym);
 			break;
-	
+		case 3:
+			mTitle = getString(R.string.PreferencesFragment);
+			break;
 		}
 	}
 
@@ -167,14 +174,8 @@ CompanyListFragment.CompanyListCallbacks {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		int position = item.getOrder();
 		if (id == R.id.action_settings) {
-			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
-			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
-			ArrayList<String> Positions = DbAccess.getAllPositions(database);
-			FragmentManager fragmentManager = super.getFragmentManager();
-			FragmentTransaction ft = fragmentManager.beginTransaction();
-			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+			//getMenuInflater().inflate(R.menu.setting,(Menu) item);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
