@@ -35,6 +35,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -61,7 +62,7 @@ public class ImageMap extends ImageView
 
 	// by default, this is true
 	private boolean mFitImageToScreen=false;
-	
+
 	// database
 	private SQLiteDatabase mDatabase;
 	private HashMap<String,Company> mBoothMap;
@@ -178,13 +179,13 @@ public class ImageMap extends ImageView
 	 */
 	public ImageMap(Context context) {
 		super(context);
-        //Creating the database
+		//Creating the database
 		init();
 	}
 
 	public ImageMap(Context context, AttributeSet attrs) {
 		super(context, attrs);
-        //Creating the database
+		//Creating the database
 		init();
 		loadAttributes(attrs);
 	}
@@ -195,7 +196,7 @@ public class ImageMap extends ImageView
 		init();
 		loadAttributes(attrs);
 	}
-	
+
 	/**
 	 * Set the image map database to the array list of companies
 	 */
@@ -203,7 +204,7 @@ public class ImageMap extends ImageView
 	{
 		mCompanies = companies;
 	}
-	
+
 	/**
 	 * get the map name from the attributes and load areas from xml
 	 * @param attrs
@@ -228,12 +229,12 @@ public class ImageMap extends ImageView
 		{
 			mBoothMap = (HashMap<String, Company>) DbAccess.getTableCompanyMap(false, mDatabase);
 		}
-		
+
 		if (mapName != null)
 		{
 			loadMap(mapName );
 		}
-		
+
 
 	}
 
@@ -275,14 +276,14 @@ public class ImageMap extends ImageView
 							// attributes
 							//  name attribute is custom to this impl (not standard in html area tag)
 							String name = xpp.getAttributeValue(null, "name");
-							
+
 							String rid = id.replace("@+id/", "");
-							String bid = rid.replace("booth", "");
+							String bid = rid.replace("@+id/booth", "");
 							if ( mBoothMap.get(bid) != null)
-								name = mBoothMap.get(bid).getName();
-							
-								
-							
+								name = mBoothMap.get(bid).getName() + ", " + bid;
+
+
+
 							if (name == null) {
 								name = xpp.getAttributeValue(null, "title");
 							}
@@ -294,10 +295,10 @@ public class ImageMap extends ImageView
 								boolean selected = false;
 								if ( filteredCompanyNames.contains( name ) )
 									selected = true;
-								a = addShape(shape,name,coords,id, selected);
-								
-								
-									
+								a = addShape(shape,name,coords,id, selected, bid);
+
+
+
 								if (a != null) {
 									// add all of the area tag attributes
 									// so that they are available to the
@@ -334,15 +335,28 @@ public class ImageMap extends ImageView
 	 * @param coords
 	 * @param id
 	 * @param selected 
+	 * @param bid2 
 	 * @return
 	 */
-	protected Area addShape( String shape, String name, String coords, String id, boolean selected)
+	protected Area addShape( String shape, String name, String coords, String id, boolean selected, String bId)
 	{
 		Area a = null;
 		String rid = id.replace("@+id/", "");
+		if ( bId != null )
+			bId = bId.replace("booth", "");
 		int _id=0;	
-				
-		
+
+		try 
+		{
+			if (mBoothMap.get(bId).getName() != null )
+				name = mBoothMap.get(bId).getName() + ", " + bId;
+			
+
+		}
+		catch (NullPointerException e)
+		{
+			Log.v("failed to load: ", bId);
+		}
 		try
 		{
 			Class<R.id> res = R.id.class;
@@ -361,9 +375,9 @@ public class ImageMap extends ImageView
 				if (v.length == 4)
 				{
 					a = new RectArea(_id, name, Float.parseFloat(v[0]),
-						Float.parseFloat(v[1]),
-						Float.parseFloat(v[2]),
-						Float.parseFloat(v[3]));
+							Float.parseFloat(v[1]),
+							Float.parseFloat(v[2]),
+							Float.parseFloat(v[3]), bId);
 				}
 			}
 			if (shape.equalsIgnoreCase("circle"))
@@ -371,20 +385,18 @@ public class ImageMap extends ImageView
 				String[] v = coords.split(",");
 				if (v.length == 3) {
 					a = new CircleArea(_id,name, Float.parseFloat(v[0]),
-						Float.parseFloat(v[1]),
-						Float.parseFloat(v[2])
-					);
+							Float.parseFloat(v[1]),
+							Float.parseFloat(v[2]), bId
+							);
 				}
 			}
 			if (shape.equalsIgnoreCase("poly"))
 			{
-				a = new PolyArea(_id,name, coords);
+				a = new PolyArea(_id,name, coords, bId);
 			}
 			if (a != null)
 			{
 				addArea(a);
-				if ( selected )
-					a.toggleSelected();
 			}
 		}
 		return a;
@@ -468,20 +480,20 @@ public class ImageMap extends ImageView
 	{
 		// set up paint objects
 		initDrawingTools();
-		
-		
+
+
 		// create a scroller for flinging
 		mScroller = new Scroller(getContext());
 
 		// get some default values from the system for touch/drag/fling
 		final ViewConfiguration configuration = ViewConfiguration
-			.get(getContext());
+				.get(getContext());
 		mTouchSlop = configuration.getScaledTouchSlop();
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-        
-		
-		
+
+
+
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
 	}
@@ -572,7 +584,7 @@ public class ImageMap extends ImageView
 		bubblePaint.setColor(0xFFFFFFFF);
 		bubbleShadowPaint=new Paint();
 		bubbleShadowPaint.setColor(0xFF000000);
-		
+
 		highlightPaint = new Paint();
 		highlightPaint.setColor( Color.YELLOW );
 
@@ -760,7 +772,7 @@ public class ImageMap extends ImageView
 			// If you get a recycled bitmap exception here, check to make sure
 			// you are not setting the bitmap both from XML and in code
 			Bitmap newbits = Bitmap.createScaledBitmap(mScaleFromOriginal ? mOriginal:mImage, newWidth,
-				newHeight, true);
+					newHeight, true);
 			// if successful, fix up all the tracking variables
 			if (newbits != null) {
 				if (mImage!=mOriginal) {
@@ -840,6 +852,18 @@ public class ImageMap extends ImageView
 	{
 		for (Area a : mAreaList)
 		{
+			String name = null;
+			if ( mBoothMap.get( a.getbId() ) != null ) 
+			{
+				name = mBoothMap.get( a.getbId() ).getName();
+			}
+			if ( name != null )
+			{
+				if ( filteredCompanyNames.contains( name ) )
+				{
+					a.toggleSelected();
+				}
+			}
 			a.onDraw(canvas);
 		}
 	}
@@ -854,6 +878,7 @@ public class ImageMap extends ImageView
 		drawMap(canvas);
 		drawLocations(canvas);
 		drawBubbles(canvas);
+		drawLocations(canvas);
 	}
 
 	/*
@@ -890,53 +915,53 @@ public class ImageMap extends ImageView
 		}
 
 		switch (action & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN:
-				// Clear all touch points
-				// In the case where some view up chain is messing with our
-				// touch events, it is possible to miss UP and POINTER_UP
-				// events.  Whenever ACTION_DOWN happens, it is intended
-				// to always be the first touch, so we will drop tracking
-				// for any points that may have been orphaned
-				for ( TouchPoint t: mTouchPoints.values() ) {
-					onLostTouch(t.getTrackingPointer());
-				}
-				// fall through planned
-			case MotionEvent.ACTION_POINTER_DOWN:
-				id = ev.getPointerId(index);
-				onTouchDown(id,ev.getX(index),ev.getY(index));
-				break;
+		case MotionEvent.ACTION_DOWN:
+			// Clear all touch points
+			// In the case where some view up chain is messing with our
+			// touch events, it is possible to miss UP and POINTER_UP
+			// events.  Whenever ACTION_DOWN happens, it is intended
+			// to always be the first touch, so we will drop tracking
+			// for any points that may have been orphaned
+			for ( TouchPoint t: mTouchPoints.values() ) {
+				onLostTouch(t.getTrackingPointer());
+			}
+			// fall through planned
+		case MotionEvent.ACTION_POINTER_DOWN:
+			id = ev.getPointerId(index);
+			onTouchDown(id,ev.getX(index),ev.getY(index));
+			break;
 
-			case MotionEvent.ACTION_MOVE:
-				for (int p=0;p<pointerCount;p++) {
-					id = ev.getPointerId(p);
-					TouchPoint t = mTouchPoints.get(id);
-					if (t!=null) {
-						onTouchMove(t,ev.getX(p),ev.getY(p));
-					}
-					// after all moves, check to see if we need
-					// to process a zoom
-					processZoom();
+		case MotionEvent.ACTION_MOVE:
+			for (int p=0;p<pointerCount;p++) {
+				id = ev.getPointerId(p);
+				TouchPoint t = mTouchPoints.get(id);
+				if (t!=null) {
+					onTouchMove(t,ev.getX(p),ev.getY(p));
 				}
-				break;
-			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_POINTER_UP:
-				id = ev.getPointerId(index);
-				onTouchUp(id);
-				break;
-			case MotionEvent.ACTION_CANCEL:
-				// Clear all touch points on ACTION_CANCEL
-				// according to the google devs, CANCEL means cancel
-				// tracking every touch.
-				// cf: http://groups.google.com/group/android-developers/browse_thread/thread/8b14591ead5608a0/ad711bf24520e5c4?pli=1
-				for ( TouchPoint t: mTouchPoints.values() ) {
-					onLostTouch(t.getTrackingPointer());
-				}
-				// let go of the velocity tracker per API Docs
-				if (mVelocityTracker != null) {
-					mVelocityTracker.recycle();
-					mVelocityTracker = null;
-				}
-				break;
+				// after all moves, check to see if we need
+				// to process a zoom
+				processZoom();
+			}
+			break;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+			id = ev.getPointerId(index);
+			onTouchUp(id);
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			// Clear all touch points on ACTION_CANCEL
+			// according to the google devs, CANCEL means cancel
+			// tracking every touch.
+			// cf: http://groups.google.com/group/android-developers/browse_thread/thread/8b14591ead5608a0/ad711bf24520e5c4?pli=1
+			for ( TouchPoint t: mTouchPoints.values() ) {
+				onLostTouch(t.getTrackingPointer());
+			}
+			// let go of the velocity tracker per API Docs
+			if (mVelocityTracker != null) {
+				mVelocityTracker.recycle();
+				mVelocityTracker = null;
+			}
+			break;
 		}
 		return true;
 	}
@@ -1035,9 +1060,9 @@ public class ImageMap extends ImageView
 							int yVelocity = (int) velocityTracker.getYVelocity();
 
 							int xfling = Math.abs(xVelocity) > mMinimumVelocity ? xVelocity
-								: 0;
+									: 0;
 							int yfling = Math.abs(yVelocity) > mMinimumVelocity ? yVelocity
-								: 0;
+									: 0;
 
 							if ((xfling != 0) || (yfling != 0)) {
 								fling(-xfling, -yfling);
@@ -1277,7 +1302,7 @@ public class ImageMap extends ImageView
 		int startY = mScrollTop;
 
 		mScroller.fling(startX, startY, -velocityX, -velocityY, mRightBound, 0,
-			mBottomBound, 0);
+				mBottomBound, 0);
 
 		invalidate();
 	}
@@ -1382,9 +1407,9 @@ public class ImageMap extends ImageView
 		}
 	}
 
-        /*
-         * Begin map area support
-         */
+	/*
+	 * Begin map area support
+	 */
 	/**
 	 *  Area is abstract Base for tappable map areas
 	 *   descendants provide hit test and focal point
@@ -1392,20 +1417,24 @@ public class ImageMap extends ImageView
 	abstract class Area {
 		int _id;
 		String _name;
+		String _bid;
 		HashMap<String,String> _values;
 		boolean selected = false;
 		Bitmap _decoration=null;
 
-		public Area(int id, String name) {
+		public Area(int id, String name, String bid) {
 			_id = id;
 			if (name != null) {
 				_name = name;
 			}
+			_bid = bid;
 		}
 
 		public int getId() {
 			return _id;
 		}
+
+		public String getbId() { return _bid; }
 
 		public void toggleSelected() 
 		{ 
@@ -1463,6 +1492,11 @@ public class ImageMap extends ImageView
 		abstract boolean isInArea(float x, float y);
 		abstract float getOriginX();
 		abstract float getOriginY();
+
+		public boolean isSelected() {
+			// TODO Auto-generated method stub
+			return selected;
+		}
 	}
 
 	/**
@@ -1475,8 +1509,8 @@ public class ImageMap extends ImageView
 		float _bottom;
 
 
-		RectArea(int id, String name, float left, float top, float right, float bottom) {
-			super(id,name);
+		RectArea(int id, String name, float left, float top, float right, float bottom, String bId) {
+			super(id,name, bId);
 			_left = left;
 			_top = top;
 			_right = right;
@@ -1522,8 +1556,8 @@ public class ImageMap extends ImageView
 		int left=-1;
 		int right=-1;
 
-		public PolyArea(int id, String name, String coords) {
-			super(id,name);
+		public PolyArea(int id, String name, String coords, String bId) {
+			super(id,name, bId);
 
 			// split the list of coordinates into points of the
 			// polygon and compute a bounding box
@@ -1604,7 +1638,7 @@ public class ImageMap extends ImageView
 			boolean c = false;
 			for (i = 0, j = _points-1; i < _points; j = i++) {
 				if ( ((ypoints.get(i)>testy) != (ypoints.get(j)>testy)) &&
-					(testx < (xpoints.get(j)-xpoints.get(i)) * (testy-ypoints.get(i)) / (ypoints.get(j)-ypoints.get(i)) + xpoints.get(i)) )
+						(testx < (xpoints.get(j)-xpoints.get(i)) * (testy-ypoints.get(i)) / (ypoints.get(j)-ypoints.get(i)) + xpoints.get(i)) )
 					c = !c;
 			}
 			return c;
@@ -1612,7 +1646,7 @@ public class ImageMap extends ImageView
 
 		// For debugging maps, it is occasionally helpful to see the
 		// bounding box for the polygons
-                /*
+		/*
                 @Override
                 public void onDraw(Canvas canvas) {
                     // draw the bounding box
@@ -1622,7 +1656,7 @@ public class ImageMap extends ImageView
                                                 bottom * mResizeFactorY + mScrollTop,
                                                 textOutlinePaint);
                 }
-                */
+		 */
 	}
 
 	/**
@@ -1633,8 +1667,8 @@ public class ImageMap extends ImageView
 		float _y;
 		float _radius;
 
-		CircleArea(int id, String name, float x, float y, float radius) {
-			super(id,name);
+		CircleArea(int id, String name, float x, float y, float radius, String bId) {
+			super(id,name, bId);
 			_x = x;
 			_y = y;
 			_radius = radius;
@@ -1787,6 +1821,12 @@ public class ImageMap extends ImageView
 
 				// draw the message
 				canvas.drawText(_text,l+(_w/2),t+_baseline-10,textPaint);
+				if ( _a.isSelected() )
+				{
+					float x =  mScrollLeft;
+					float y =  mScrollTop; 
+					canvas.drawCircle(x, y, 8, highlightPaint );
+				}
 			}
 		}
 
@@ -1818,9 +1858,9 @@ public class ImageMap extends ImageView
 	}
 
 	/*
-	* Misc getters
-	* TODO: setters for there?
-	*/
+	 * Misc getters
+	 * TODO: setters for there?
+	 */
 
 	public float getmMaxSize()
 	{
@@ -1836,4 +1876,11 @@ public class ImageMap extends ImageView
 	{
 		return mFitImageToScreen;
 	}
+
+	public void refresh() 
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

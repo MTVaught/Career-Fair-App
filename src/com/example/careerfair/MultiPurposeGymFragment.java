@@ -36,7 +36,12 @@ public class MultiPurposeGymFragment extends Fragment
 		MultiPurposeGymFragment fragment = new MultiPurposeGymFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+		
 		fragment.setArguments(args);
+		//if (mMultiMap != null )
+		//{
+		//	fragment.getView().invalidate();
+		//}
 		return fragment;
 	}
 
@@ -52,6 +57,7 @@ public class MultiPurposeGymFragment extends Fragment
 		main.setOrientation( LinearLayout.HORIZONTAL );	
 		mMultiMap = (ImageMap)  main.findViewById( R.id.map );
 		mMultiMap.setImageResource( R.drawable.multi );
+		//mMultiMap.invalidate();
 		
 		//add click handler
 		mMultiMap.addOnImageMapClickedHandler( new ImageMap.OnImageMapClickedHandler()
@@ -62,6 +68,7 @@ public class MultiPurposeGymFragment extends Fragment
 				// when the area is tapped, show the name in a 
 				// text bubble
 				mMultiMap.showBubble( id );
+				
 			}
 
 			@Override
