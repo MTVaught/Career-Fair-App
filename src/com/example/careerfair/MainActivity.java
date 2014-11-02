@@ -174,11 +174,18 @@ CompanyListFragment.CompanyListCallbacks {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			//getMenuInflater().inflate(R.menu.setting,(Menu) item);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		int position = item.getOrder();
+ 		if (id == R.id.action_settings) {
+			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
+			ArrayList<String> Positions = DbAccess.getAllPositions(database);
+			FragmentManager fragmentManager = super.getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+		//getMenuInflater().inflate(R.menu.setting,(Menu) item);
+ 			return true;
+ 		}
+ 		return super.onOptionsItemSelected(item);
 	}
 
 
