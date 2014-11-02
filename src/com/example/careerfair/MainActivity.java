@@ -4,6 +4,7 @@ package com.example.careerfair;
 
 import java.util.ArrayList;
 
+
 import com.google.gson.Gson;
 
 import android.app.ActionBar;
@@ -13,7 +14,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -31,6 +31,7 @@ CompanyListFragment.CompanyListCallbacks {
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CompanyListFragment mCompanyListFragment;
 	private CompanyReaderFragment mCompanyReaderFragment;
+	private WoodGymFragment mWoodGymFragment;
 
 	protected SQLiteDatabase database;
 	private ExternalDbOpenHelper dbOpenHelper;
@@ -41,10 +42,10 @@ CompanyListFragment.CompanyListCallbacks {
 	private boolean databaseOpen = false;
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
-	
+
 	//Holds reference to MainActivity object being used by the app;
 	public static MainActivity appMainActivity;
-	
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -65,14 +66,16 @@ CompanyListFragment.CompanyListCallbacks {
 				.findFragmentById(R.id.listView1);
 		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
 				.findFragmentById(R.id.company_reader);
+		mWoodGymFragment = (WoodGymFragment) getFragmentManager()
+				.findFragmentById(R.id.varsity);
 		mTitle = getTitle();
 
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		// Set up the company list
-		
-		
+
+
 		// Setup the shared Preferences
 		sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 		editor = sharedPref.edit();
@@ -97,21 +100,25 @@ CompanyListFragment.CompanyListCallbacks {
 			// Before sending the companies to be filled, filter out the incorrect ones
 			// companyNames AND companyList need to be of the same length
 			// Delete these comments here when implemented
-			
-			
+
+
 			ft.replace(R.id.container, CompanyListFragment.newInstance(position, filteredCompanyNames)).commit();
 			break;
 		case 1:
 			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
 		case 2:
+			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
+					.commit();
+			break;
+		case 3:
 			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
 			ArrayList<String> Positions = DbAccess.getAllPositions(database);
 			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
 			break;
 		}
-		
+
 	}
 
 	@Override
@@ -133,6 +140,9 @@ CompanyListFragment.CompanyListCallbacks {
 			mTitle = getString(R.string.title_multipurposegym);
 			break;
 		case 2:
+			mTitle = getString(R.string.title_woodgym);
+			break;
+		case 3:
 			mTitle = getString(R.string.PreferencesFragment);
 			break;
 		}
@@ -164,11 +174,18 @@ CompanyListFragment.CompanyListCallbacks {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			//getMenuInflater().inflate(R.menu.setting,(Menu) item);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		int position = item.getOrder();
+ 		if (id == R.id.action_settings) {
+			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
+			ArrayList<String> Positions = DbAccess.getAllPositions(database);
+			FragmentManager fragmentManager = super.getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+		//getMenuInflater().inflate(R.menu.setting,(Menu) item);
+ 			return true;
+ 		}
+ 		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -196,7 +213,7 @@ CompanyListFragment.CompanyListCallbacks {
 		companyNames = new ArrayList<String>();
 		DbAccess.fillCompanies(companyNames, database);
 		companyList = DbAccess.getAllCompanies(database);
-		
+
 		filterCompanies();
 
 		databaseOpen = true;
@@ -206,15 +223,15 @@ CompanyListFragment.CompanyListCallbacks {
 		long diff2 = end2 - start;
 
 	}
-	
+
 	protected void filterCompanies() {
 		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-		
+
 		ArrayList<String> majors;
 		ArrayList<String> workAuth;
 		ArrayList<String> position;
-		
+
 		Gson gson = new Gson();
 	    String jsonMajor = sharedPref.getString("majors", "");
 	    String jsonWorkAuth = sharedPref.getString("workAuths", "");
@@ -224,19 +241,19 @@ CompanyListFragment.CompanyListCallbacks {
 	    } else {
 	    	majors = gson.fromJson(jsonMajor, ArrayList.class);
 	    }
-	    
+
 	    if (jsonWorkAuth.equals("")) {
 	    	workAuth = new ArrayList<String>();
 	    } else {
 	    	workAuth = gson.fromJson(jsonWorkAuth, ArrayList.class);
 	    }
-		
+
 	    if (jsonPosition.equals("")) {
 	    	position = new ArrayList<String>();
 	    } else {
 	    	position = gson.fromJson(jsonPosition, ArrayList.class);
 	    }
-		
+
 	    filteredCompanyList = DbAccess.getCompaniesWith("", "", majors, workAuth, position, database);
 	    filteredCompanyNames = DbAccess.getFilteredNames(database);
 	}
