@@ -1,11 +1,6 @@
 package com.example.careerfair;
 
-
-
 import java.util.ArrayList;
-
-
-import com.google.gson.Gson;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -20,9 +15,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+
 public class MainActivity extends Activity implements
-NavigationDrawerFragment.NavigationDrawerCallbacks,
-CompanyListFragment.CompanyListCallbacks {
+		NavigationDrawerFragment.NavigationDrawerCallbacks,
+		CompanyListFragment.CompanyListCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -43,7 +40,7 @@ CompanyListFragment.CompanyListCallbacks {
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
 
-	//Holds reference to MainActivity object being used by the app;
+	// Holds reference to MainActivity object being used by the app;
 	public static MainActivity appMainActivity;
 
 	/**
@@ -64,7 +61,7 @@ CompanyListFragment.CompanyListCallbacks {
 				.findFragmentById(R.id.navigation_drawer);
 		mCompanyListFragment = (CompanyListFragment) getFragmentManager()
 				.findFragmentById(R.id.listView1);
-		mCompanyReaderFragment = (CompanyReaderFragment)getFragmentManager()
+		mCompanyReaderFragment = (CompanyReaderFragment) getFragmentManager()
 				.findFragmentById(R.id.company_reader);
 		mWoodGymFragment = (WoodGymFragment) getFragmentManager()
 				.findFragmentById(R.id.varsity);
@@ -74,7 +71,6 @@ CompanyListFragment.CompanyListCallbacks {
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		// Set up the company list
-
 
 		// Setup the shared Preferences
 		sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -94,28 +90,36 @@ CompanyListFragment.CompanyListCallbacks {
 			databaseOpen();
 		}
 
-		switch(position){
+		switch (position) {
 
 		case 0:
-			// Before sending the companies to be filled, filter out the incorrect ones
+			// Before sending the companies to be filled, filter out the
+			// incorrect ones
 			// companyNames AND companyList need to be of the same length
 			// Delete these comments here when implemented
 
-
-			ft.replace(R.id.container, CompanyListFragment.newInstance(position, filteredCompanyNames)).commit();
+			ft.replace(
+					R.id.container,
+					CompanyListFragment.newInstance(position,
+							filteredCompanyNames)).commit();
 			break;
 		case 1:
-			ft.replace(R.id.container, MultiPurposeGymFragment.newInstance(position)).commit();
+			ft.replace(R.id.container,
+					MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
 		case 2:
 			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
 					.commit();
 			break;
 		case 3:
-			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+			ArrayList<String> MajorAbbrevs = DbAccess
+					.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
 			ArrayList<String> Positions = DbAccess.getAllPositions(database);
-			ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
+			ft.replace(
+					R.id.container,
+					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
+							WorkAuths, Positions)).commit();
 			break;
 		}
 
@@ -127,7 +131,9 @@ CompanyListFragment.CompanyListCallbacks {
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		Company clickedCompany = filteredCompanyList.get(position);
-		ft.replace(R.id.container, CompanyReaderFragment.newInstance(position,clickedCompany)).commit();
+		ft.replace(R.id.container,
+				CompanyReaderFragment.newInstance(position, clickedCompany))
+				.commit();
 		inCompanyView = true;
 	}
 
@@ -175,41 +181,45 @@ CompanyListFragment.CompanyListCallbacks {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		int position = item.getOrder();
- 		if (id == R.id.action_settings) {
-			ArrayList<String> MajorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
+		if (id == R.id.action_settings) {
+			ArrayList<String> MajorAbbrevs = DbAccess
+					.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
 			ArrayList<String> Positions = DbAccess.getAllPositions(database);
 			FragmentManager fragmentManager = super.getFragmentManager();
 			FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.replace(R.id.container, PreferencesViewFragment.newInstance(position, MajorAbbrevs,WorkAuths,Positions)).commit();
-		//getMenuInflater().inflate(R.menu.setting,(Menu) item);
- 			return true;
- 		}
- 		return super.onOptionsItemSelected(item);
+			ft.replace(
+					R.id.container,
+					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
+							WorkAuths, Positions)).commit();
+			// getMenuInflater().inflate(R.menu.setting,(Menu) item);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
-
 
 	@Override
 	public void onBackPressed() {
 		Log.d("CDA", "onBackPressed Called");
-		if(inCompanyView){
+		if (inCompanyView) {
 			FragmentManager fragmentManager = getFragmentManager();
 			FragmentTransaction ft = fragmentManager.beginTransaction();
 			inCompanyView = false;
 			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
-			.commit();
+					.commit();
 		} else {
 		}
 	}
 
 	private void databaseOpen() {
 
-		long start = System.currentTimeMillis( );
+		long start = System.currentTimeMillis();
 
-		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(), "careerFairDB.db");
+		dbOpenHelper = new ExternalDbOpenHelper(this.getApplicationContext(),
+				"careerFairDB.db");
 		database = dbOpenHelper.openDataBase();
 
-		//Database is open
+		// Database is open
 		companyNames = new ArrayList<String>();
 		DbAccess.fillCompanies(companyNames, database);
 		companyList = DbAccess.getAllCompanies(database);
@@ -218,7 +228,7 @@ CompanyListFragment.CompanyListCallbacks {
 
 		databaseOpen = true;
 
-		long end2 = System.currentTimeMillis( );
+		long end2 = System.currentTimeMillis();
 
 		long diff2 = end2 - start;
 
@@ -227,34 +237,34 @@ CompanyListFragment.CompanyListCallbacks {
 	protected void filterCompanies() {
 		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-
 		ArrayList<String> majors;
 		ArrayList<String> workAuth;
 		ArrayList<String> position;
 
 		Gson gson = new Gson();
-	    String jsonMajor = sharedPref.getString("majors", "");
-	    String jsonWorkAuth = sharedPref.getString("workAuths", "");
-	    String jsonPosition = sharedPref.getString("positions", "");
-	    if (jsonMajor.equals("")) {
-	    	majors = new ArrayList<String>();
-	    } else {
-	    	majors = gson.fromJson(jsonMajor, ArrayList.class);
-	    }
+		String jsonMajor = sharedPref.getString("majors", "");
+		String jsonWorkAuth = sharedPref.getString("workAuths", "");
+		String jsonPosition = sharedPref.getString("positions", "");
+		if (jsonMajor.equals("")) {
+			majors = new ArrayList<String>();
+		} else {
+			majors = gson.fromJson(jsonMajor, ArrayList.class);
+		}
 
-	    if (jsonWorkAuth.equals("")) {
-	    	workAuth = new ArrayList<String>();
-	    } else {
-	    	workAuth = gson.fromJson(jsonWorkAuth, ArrayList.class);
-	    }
+		if (jsonWorkAuth.equals("")) {
+			workAuth = new ArrayList<String>();
+		} else {
+			workAuth = gson.fromJson(jsonWorkAuth, ArrayList.class);
+		}
 
-	    if (jsonPosition.equals("")) {
-	    	position = new ArrayList<String>();
-	    } else {
-	    	position = gson.fromJson(jsonPosition, ArrayList.class);
-	    }
+		if (jsonPosition.equals("")) {
+			position = new ArrayList<String>();
+		} else {
+			position = gson.fromJson(jsonPosition, ArrayList.class);
+		}
 
-	    filteredCompanyList = DbAccess.getCompaniesWith("", "", majors, workAuth, position, database);
-	    filteredCompanyNames = DbAccess.getFilteredNames(database);
+		filteredCompanyList = DbAccess.getCompaniesWith("", "", majors,
+				workAuth, position, database);
+		filteredCompanyNames = DbAccess.getFilteredNames(database);
 	}
 }
