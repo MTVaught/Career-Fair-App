@@ -1,4 +1,10 @@
-package com.example.careerfair;
+package com.fragments;
+
+import com.example.careerfair.R;
+import com.example.careerfair.R.drawable;
+import com.example.careerfair.R.layout;
+import com.example.careerfair.R.menu;
+import com.example.careerfair.R.string;
 
 import android.app.ActionBar;
 import android.app.Activity;

@@ -1,6 +1,9 @@
-package com.example.careerfair;
+package com.JUnit;
 
 import java.util.ArrayList;
+
+import com.database.Company;
+import com.database.Major;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

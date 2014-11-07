@@ -9,7 +9,7 @@
  * @version 1.0
  */
 
-package com.example.careerfair;
+package com.database;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

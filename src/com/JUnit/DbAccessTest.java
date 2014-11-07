@@ -1,6 +1,12 @@
-package com.example.careerfair;
+package com.JUnit;
 
 import java.util.ArrayList;
+
+import com.database.Company;
+import com.database.DbAccess;
+import com.database.ExternalDbOpenHelper;
+import com.database.Major;
+import com.fragments.MainActivity;
 
 import junit.framework.Assert;
 import android.content.Context;

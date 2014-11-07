@@ -1,4 +1,4 @@
-package com.example.careerfair;
+package com.helpers;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

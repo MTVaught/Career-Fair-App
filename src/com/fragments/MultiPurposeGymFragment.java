@@ -1,4 +1,10 @@
-package com.example.careerfair;
+package com.fragments;
+
+import com.example.careerfair.R;
+import com.example.careerfair.R.drawable;
+import com.example.careerfair.R.id;
+import com.example.careerfair.R.layout;
+import com.fragments.ImageMap.OnImageMapClickedHandler;
 
 import android.app.Activity;
 import android.app.Fragment;

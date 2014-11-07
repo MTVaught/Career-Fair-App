@@ -5,7 +5,7 @@
  * @version 1.0
  */
 
-package com.example.careerfair;
+package com.database;
 
 public class Major {
 	private String name = null;
