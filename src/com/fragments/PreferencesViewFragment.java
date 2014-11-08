@@ -1,9 +1,11 @@
 /**
  * 
  */
-package com.example.careerfair;
+package com.fragments;
 
 import java.util.ArrayList;
+
+import com.helpers.CheckBoxListener;
 
 import android.app.Activity;
 import android.app.Fragment;

@@ -1,4 +1,9 @@
-package com.example.careerfair;
+package com.fragments;
+
+import com.database.Company;
+import com.example.careerfair.R;
+import com.example.careerfair.R.id;
+import com.example.careerfair.R.layout;
 
 import android.app.Activity;
 import android.app.Fragment;

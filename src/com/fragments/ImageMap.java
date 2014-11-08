@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.example.careerfair;
+package com.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -46,7 +46,13 @@ import android.widget.Scroller;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.database.Company;
+import com.database.DbAccess;
 import com.example.careerfair.R;
+import com.example.careerfair.R.id;
+import com.example.careerfair.R.styleable;
+import com.example.careerfair.R.xml;
+import com.helpers.BitmapHelper;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

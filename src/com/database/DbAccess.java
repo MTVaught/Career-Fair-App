@@ -6,7 +6,7 @@
  * @version 1.1
  */
 
-package com.example.careerfair;
+package com.database;
 
 import java.util.ArrayList;
 import java.util.HashMap;

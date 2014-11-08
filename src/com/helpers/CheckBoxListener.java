@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.example.careerfair;
+package com.helpers;
 
 import java.util.ArrayList;
 import java.util.Map;

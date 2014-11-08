@@ -1,6 +1,9 @@
-package com.example.careerfair;
+package com.fragments;
 
 import java.util.ArrayList;
+
+import com.example.careerfair.R;
+import com.example.careerfair.R.layout;
 
 import android.app.ActionBar;
 import android.app.Activity;

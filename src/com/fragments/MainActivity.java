@@ -1,4 +1,4 @@
-package com.example.careerfair;
+package com.fragments;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.database.Company;
+import com.database.DbAccess;
+import com.database.ExternalDbOpenHelper;
+import com.example.careerfair.R;
+import com.example.careerfair.R.id;
+import com.example.careerfair.R.layout;
+import com.example.careerfair.R.menu;
+import com.example.careerfair.R.string;
 import com.google.gson.Gson;
 
 public class MainActivity extends Activity implements
