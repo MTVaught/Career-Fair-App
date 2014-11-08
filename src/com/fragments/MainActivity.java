@@ -148,7 +148,7 @@ public class MainActivity extends Activity implements
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 0:
-			mTitle = getString(R.string.ListView);
+			mTitle = getString(R.string.title_companylist);
 			break;
 		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
@@ -157,7 +157,7 @@ public class MainActivity extends Activity implements
 			mTitle = getString(R.string.title_woodgym);
 			break;
 		case 3:
-			mTitle = getString(R.string.PreferencesFragment);
+			mTitle = getString(R.string.title_preferencesview);
 			break;
 		}
 	}
