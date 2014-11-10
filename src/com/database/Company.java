@@ -36,12 +36,6 @@ public class Company {
 	 *            - the room name (hall/multipurpose/wood)
 	 * @param aMajors
 	 *            - an ArrayList of the majors this company is looking for
-	 * @param aMajorNames
-	 *            - an ArrayList of the names of the majors this company is
-	 *            looking for
-	 * @param aMajorAbbrevs
-	 *            - an ArrayList of the abbreviations of the majors this company
-	 *            is looking for
 	 * @param aPositions
 	 *            - an ArrayList of the positions a company is hiring
 	 * @param aWorkAuths
@@ -72,7 +66,7 @@ public class Company {
 		}
 	}
 
-	// ACCESS METHODS
+	
 
 	/**
 	 * getMajors

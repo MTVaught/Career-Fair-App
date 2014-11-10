@@ -25,15 +25,12 @@ public class DbAccess {
 	private static HashMap<String, ArrayList<String>> positionMap;
 
 	/**
-	 * getPositionsForCompany - gets all the positions a specific company is
-	 * hiring for
-	 * 
-	 * @param company
-	 *            - the name of the company to get the positions for
+	 * fillPositionMap - gets all the positions each company is
+	 * hiring for and places them into a map for later retrieval 
+	 *
 	 * @param database
 	 *            - SQLite database object returned by
 	 *            ExternalDbOpenHelper.openDataBase
-	 * @return an ArrayList filled with positions
 	 */
 	private static void fillPositionMap(SQLiteDatabase database) {
 		positionMap = new HashMap<String, ArrayList<String>>();
@@ -62,15 +59,12 @@ public class DbAccess {
 	}
 
 	/**
-	 * getWorkAuthsForCompany - gets all the work authorization types a specific
-	 * company is looking for
+	 * fillWorkAuthMap - gets all the work authorizations each company is
+	 * hiring for and places them into a map for later retrieval 
 	 * 
-	 * @param company
-	 *            - the name of the company to get the work authorizations for
 	 * @param database
 	 *            - SQLite database object returned by
 	 *            ExternalDbOpenHelper.openDataBase
-	 * @return an ArrayList filled with work authorizations
 	 */
 	private static void fillWorkAuthMap(SQLiteDatabase database) {
 		workAuthMap = new HashMap<String, ArrayList<String>>();
@@ -98,6 +92,14 @@ public class DbAccess {
 
 	}
 
+	/**
+	 * fillMajorMap - gets all the majors each company is
+	 * hiring for and places them into a map for later retrieval 
+	 * 
+	 * @param database
+	 *            - SQLite database object returned by
+	 *            ExternalDbOpenHelper.openDataBase
+	 */
 	private static void fillMajorMap(SQLiteDatabase database) {
 		majorMap = new HashMap<String, ArrayList<Major>>();
 		Cursor majorsCursor = database
@@ -184,14 +186,10 @@ public class DbAccess {
 	 */
 	public static void getAllCompanies(ArrayList<Company> companies,
 			SQLiteDatabase database) {
-		long start = System.currentTimeMillis();
 		Cursor companiesCursor = database
 				.rawQuery(
 						"SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');",
 						new String[0]);
-		long end = System.currentTimeMillis();
-		long diff = start - end;
-		diff = diff + 1;
 		companiesCursor.moveToFirst();
 		if (!companiesCursor.isAfterLast()) {
 			do {
@@ -200,7 +198,6 @@ public class DbAccess {
 				String tableNum = companiesCursor.getString(2);
 				String room = companiesCursor.getString(3);
 
-				long start2 = System.currentTimeMillis();
 				if (majorMap == null) {
 					fillMajorMap(database);
 				}
@@ -225,9 +222,6 @@ public class DbAccess {
 				Company newCompany = new Company(name, website, tableNum, room,
 						majorList, positionList, workAuthList);
 
-				long end2 = System.currentTimeMillis();
-				long diff2 = end2 - start2;
-				diff2 = diff2 + 1;
 				companies.add(newCompany);
 
 			} while (companiesCursor.moveToNext());
@@ -530,7 +524,7 @@ public class DbAccess {
 	 * @param database
 	 *            - SQLite database object returned by
 	 *            ExternalDbOpenHelper.openDataBase
-	 * @return an ArrayList filled with the major names
+	 * @return an ArrayList filled with the major names ordered by name
 	 */
 	public static ArrayList<String> getAllMajorNames(SQLiteDatabase database) {
 		String[] empty = {};
@@ -556,7 +550,7 @@ public class DbAccess {
 	 * @param database
 	 *            - SQLite database object returned by
 	 *            ExternalDbOpenHelper.openDataBase
-	 * @return an ArrayList filled with the major abbreviations
+	 * @return an ArrayList filled with the major abbreviations ordered by abbreviation
 	 */
 	public static ArrayList<String> getAllMajorAbbrevs(SQLiteDatabase database) {
 		String[] empty = {};
