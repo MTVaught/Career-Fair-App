@@ -188,7 +188,7 @@ public class DbAccess {
 			SQLiteDatabase database) {
 		Cursor companiesCursor = database
 				.rawQuery(
-						"SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');",
+						"SELECT DISTINCT company.name, company.website, location.tableNum, room.name FROM company, companyToLocation, location, room WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id ORDER BY replace(replace(lower(replace(company.name, 'The ', '')), '.', ''), ' ', '');",
 						new String[0]);
 		companiesCursor.moveToFirst();
 		if (!companiesCursor.isAfterLast()) {
@@ -334,7 +334,7 @@ public class DbAccess {
 				+ fromString
 				+ " "
 				+ whereString
-				+ " ORDER BY replace(replace(lower(company.name), '.', ''), ' ', '');";
+				+ " ORDER BY replace(replace(lower(replace(company.name, 'The ', '')), '.', ''), ' ', '');";
 		wholeQuery = wholeQuery + "";
 		Cursor companiesCursor = database.rawQuery(wholeQuery, new String[0]);
 		companiesCursor.moveToFirst();
