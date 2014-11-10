@@ -19,10 +19,6 @@ import com.database.Company;
 import com.database.DbAccess;
 import com.database.ExternalDbOpenHelper;
 import com.example.careerfair.R;
-import com.example.careerfair.R.id;
-import com.example.careerfair.R.layout;
-import com.example.careerfair.R.menu;
-import com.example.careerfair.R.string;
 import com.google.gson.Gson;
 
 public class MainActivity extends Activity implements
@@ -139,6 +135,7 @@ public class MainActivity extends Activity implements
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		Company clickedCompany = filteredCompanyList.get(position);
+		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
 				CompanyReaderFragment.newInstance(position, clickedCompany))
 				.commit();
@@ -148,7 +145,7 @@ public class MainActivity extends Activity implements
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 0:
-			mTitle = getString(R.string.ListView);
+			mTitle = getString(R.string.title_companylist);
 			break;
 		case 1:
 			mTitle = getString(R.string.title_multipurposegym);
@@ -157,7 +154,7 @@ public class MainActivity extends Activity implements
 			mTitle = getString(R.string.title_woodgym);
 			break;
 		case 3:
-			mTitle = getString(R.string.PreferencesFragment);
+			mTitle = getString(R.string.title_preferencesview);
 			break;
 		}
 	}
