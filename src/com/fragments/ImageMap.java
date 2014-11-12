@@ -162,6 +162,7 @@ public class ImageMap extends ImageView
 	 */
 	ArrayList<Area> mAreaList = new ArrayList<Area>();
 	SparseArray<Area> mIdToArea = new SparseArray<Area>();
+	HashMap<String,Integer> mAreaNameToId = new HashMap<String,Integer>();
 
 	// click handler list
 	ArrayList<OnImageMapClickedHandler> mCallbackList;
@@ -412,6 +413,9 @@ public class ImageMap extends ImageView
 	{
 		mAreaList.add(a);
 		mIdToArea.put(a.getId(), a);
+		//int subI = a.getName().indexOf(",");
+		//String name = a.getName().substring(0, subI);
+		mAreaNameToId.put( a.getName(), a.getId() );
 	}
 
 	public void addBubble(String text, int areaId )
@@ -846,6 +850,7 @@ public class ImageMap extends ImageView
 		{
 			int key = mBubbleMap.keyAt(i);
 			Bubble b = mBubbleMap.get(key);
+			
 			if (b != null)
 			{
 				b.onDraw(canvas);
@@ -1740,13 +1745,18 @@ public class ImageMap extends ImageView
 			_text = text;
 			_x = x*mResizeFactorX;
 			_y = y*mResizeFactorY;
+			if ( _x  == 0 && _y == 0 )
+			{
+				_x = _a.getOriginX();
+				_y = _a.getOriginY();
+			}
 			Rect bounds = new Rect();
 			textPaint.setTextScaleX(1.0f);
 			textPaint.getTextBounds(text, 0, _text.length(), bounds);
 			_h = bounds.bottom-bounds.top+20;
 			_w = bounds.right-bounds.left+20;
 
-			if (_w>mViewWidth) {
+			if (_w>mViewWidth && mViewWidth != -1) {
 				// too long for the display width...need to scale down
 				float newscale=((float)mViewWidth/(float)_w);
 				textPaint.setTextScaleX(newscale);

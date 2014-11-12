@@ -7,12 +7,15 @@ import com.example.careerfair.R.layout;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class CompanyReaderFragment extends Fragment {
@@ -34,6 +37,14 @@ public class CompanyReaderFragment extends Fragment {
 		CompanyReaderFragment fragment = new CompanyReaderFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
+	public static CompanyReaderFragment newInstance( Company company) {
+		companyObj = company;
+		CompanyReaderFragment fragment = new CompanyReaderFragment();
+		Bundle args = new Bundle();
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -84,6 +95,37 @@ public class CompanyReaderFragment extends Fragment {
 				+ " </a>"));
 		text.setClickable(true);
 		text.setMovementMethod(LinkMovementMethod.getInstance());
+		
+		//button for map view
+		Button MapButton = (Button) mCompanyReaderView
+		.findViewById(R.id.ShowMapButton);
+		
+		MapButton.setOnClickListener(new View.OnClickListener() {
+		   
+			public void onClick(View v) {
+				FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
+				FragmentTransaction ft = fragmentManager.beginTransaction();
+				
+				boolean isInMulti = false ;
+				if ( companyObj.getRoom().contains("Multi") )
+				{
+					isInMulti = true;
+				}
+				if ( isInMulti )
+				{
+					ft.replace(R.id.container,
+							MultiPurposeGymFragment.newInstance( companyObj ))
+							.commit();
+				}
+				else
+				{
+					ft.replace(R.id.container,
+							WoodGymFragment.newInstance( companyObj ))
+							.commit();
+				}
+		    }
+		});
+
 
 		return mCompanyReaderView;
 	}

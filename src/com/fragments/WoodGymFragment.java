@@ -1,7 +1,12 @@
 package com.fragments;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.database.Company;
+import com.database.DbAccess;
 import com.example.careerfair.R;
 
 /**
@@ -21,6 +28,9 @@ public class WoodGymFragment extends Fragment {
 	private static final String ARG_SECTION_NUMBER = "WoodGym";
 	// Object for storing the click area data
 	private ImageMap mWoodMap;
+	private SQLiteDatabase mDatabase;
+	private ArrayList<Company> mCompanies;
+	private Company mDefaultCompany;
 
 	/**
 	 * Creates a new instance of the fragment
@@ -36,7 +46,29 @@ public class WoodGymFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
+	
+	public static WoodGymFragment newInstance( Company company ) {
+		
+		WoodGymFragment fragment = new WoodGymFragment( company );
+		Bundle args = new Bundle();
+		fragment.setArguments(args);
+		
+		return fragment;
+	}
+	
+	public WoodGymFragment() {
+		
+		mDatabase = MainActivity.appMainActivity.database;
+		mCompanies = DbAccess.getAllCompanies( mDatabase);
+	}
 
+	public WoodGymFragment( Company c ) {
+		
+		mDatabase = MainActivity.appMainActivity.database;
+		mCompanies = DbAccess.getAllCompanies( mDatabase);
+		mDefaultCompany = c;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,9 +116,38 @@ public class WoodGymFragment extends Fragment {
 			@Override
 			public void onBubbleClicked(int id) {
 				Log.v("Booth: ", "" + id);
+				FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
+				FragmentTransaction ft = fragmentManager.beginTransaction();
+				String name = mWoodMap.mIdToArea.get( id ).getName();
+				int subI = name.indexOf(",");
+				name = name.substring(0, subI);
+				String bId = mWoodMap.mIdToArea.get( id ).getbId();
+				//replace with hashmap
+				Company clickedCompany = null;
+				for ( Company c : mCompanies )
+				{
+					if ( c.getName().equals(name)) 
+					{
+						clickedCompany = c;
+						break;
+					}
+				}
+				MainActivity.appMainActivity.setTitle( clickedCompany.getName() );
+				ft.replace(R.id.container,
+						CompanyReaderFragment.newInstance( clickedCompany ))
+						.commit();
+				MainActivity.appMainActivity.inCompanyView = true;
 
 			}
 		});
+		
+		if (mDefaultCompany != null )
+		{
+			String name = mDefaultCompany.getName() + ", " + mDefaultCompany.getTableNum();
+			int id = mWoodMap.mAreaNameToId.get( name ); 
+			mWoodMap.showBubble( id );
+		}
+		
 		return main;
 	}
 
