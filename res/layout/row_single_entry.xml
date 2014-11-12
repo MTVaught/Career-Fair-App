@@ -2,19 +2,11 @@
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" >
-
-    <TextView
-         android:id="@+id/majorAbbrev"
+    
+     <TextView
+         android:id="@+id/position"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:text="majorAbbrev" />
-    
-    <TextView
-        android:id="@+id/majorFull"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="majorFull:" />
-    
-    
+         android:text="position" />
 
 </TableRow>

@@ -36,7 +36,7 @@ public class CompanyReaderFragment extends Fragment {
 	private static final String ARG_SECTION_NUMBER = "CompanyReader";
 
 	private static Company companyObj;
-	private View mCompanyReaderView;
+	//private View mCompanyReaderView;
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -72,6 +72,11 @@ public class CompanyReaderFragment extends Fragment {
 		tv.setText("Company: " + companyObj.getName());
 		ll.addView(tv);
 		
+		// Print a header for the Major table
+		tv = new TextView(getActivity());
+		tv.setText("\nMajor List Below:");
+		ll.addView(tv);
+		
 		// Create a table for majors
 		TableLayout majorTable = new TableLayout(getActivity());
 		ArrayList<String> majorNames = companyObj.getMajorNames();
@@ -83,26 +88,102 @@ public class CompanyReaderFragment extends Fragment {
 		
 		for (int i = 0; i < majorNames.size(); i++) {
 			
+			// Pull the two String values
 			String majorFullStr = majorNames.get(i);
 			String majorAbbrevStr = majorAbbrevs.get(i);
 			
-			Log.w("myApp", majorFullStr);
-			Log.w("myApp", majorAbbrevStr);
+			// Create a row from template
+			TableRow row = (TableRow) inflater.inflate(R.layout.major_row, container, false);
+			
+			// Set the text for the two template values
+			TextView majorAbbrev = (TextView) row.findViewById(R.id.majorAbbrev);
+		    majorAbbrev.setText("\t" + majorAbbrevStr);
 			
 			
-			TableRow row = (TableRow) inflater.inflate(R.layout.major_row, null, false);
+			TextView majorFull = (TextView) row.findViewById(R.id.majorFull);
+			majorFull.setText("\t" + majorFullStr);
 			
-			TextView majorFull = (TextView) sv.findViewById(R.id.majorFull);
-			Log.w("myApp", "test here");
-			majorFull.setText("" + majorFullStr);
+			
 		    
-		    TextView majorAbbrev = (TextView) sv.findViewById(R.id.majorAbbrev);
-		    majorAbbrev.setText(majorAbbrevStr);
-			
+		    // Add the row to the table
 		    majorTable.addView(row);
 			
 		}
 		
+		// Add the table to the view
+		ll.addView(majorTable);
+		
+		// Print a header for the position table
+		tv = new TextView(getActivity());
+		tv.setText("\nPosition list Below:");
+		ll.addView(tv);
+		
+		// Create a table for positions
+		TableLayout positionTable = new TableLayout(getActivity());
+		ArrayList<String> positionStrings = companyObj.getPositions();
+		
+		for (int i = 0; i < positionStrings.size(); i++) {
+			
+			// Pull the two String values
+			String positionStr = positionStrings.get(i);
+			
+			// Create a row from template
+			TableRow row = (TableRow) inflater.inflate(R.layout.row_single_entry, container, false);
+			
+			// Set the text for the two template values
+			TextView position = (TextView) row.findViewById(R.id.position);
+			position.setText("\t" + positionStr);
+			
+		    // Add the row to the table
+			positionTable.addView(row);
+			
+		}
+		
+		// Add the table to the view
+		ll.addView(positionTable);
+		
+		// Print a header for the work authorization table
+		tv = new TextView(getActivity());
+		tv.setText("\nWork Authorization list below:");
+		ll.addView(tv);
+		
+		// Create a table for work authorizations
+		TableLayout workAuthTable = new TableLayout(getActivity());
+		ArrayList<String> WorkAuthStrings = companyObj.getWorkAuth();
+		
+		for (int i = 0; i < WorkAuthStrings.size(); i++) {
+			
+			// Pull the two String values
+			String workAuthStr = WorkAuthStrings.get(i);
+			
+			// Create a row from template
+			TableRow row = (TableRow) inflater.inflate(R.layout.row_single_entry, container, false);
+			
+			// Set the text for the Work Authorization
+			TextView workAuth = (TextView) row.findViewById(R.id.position);
+			workAuth.setText("\t" + workAuthStr);
+			
+		    // Add the row to the table
+			workAuthTable.addView(row);
+			
+		}
+		
+		// Add the table to the view
+		ll.addView(workAuthTable);
+		
+		// Print a blank line
+		tv = new TextView(getActivity());
+		tv.setText("");
+		ll.addView(tv);
+		
+		// Display website URL
+		tv = new TextView(getActivity());
+		tv.setText(Html.fromHtml("Website: <a href='"
+				+ companyObj.getWebsite() + "'> " + companyObj.getWebsite()
+				+ " </a>"));
+		tv.setClickable(true);
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
+		ll.addView(tv);
 		
 		return sv;
 	}
