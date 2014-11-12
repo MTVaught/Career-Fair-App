@@ -76,19 +76,17 @@ public class PreferencesViewFragment extends Fragment {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		sv.addView(ll);
 
-		TextView tv = new TextView(getActivity());
-		tv.setText("Set your preferences below");
-		ll.addView(tv);
-
 		// Add reset button, Listener is added later
 		Button resetButton = new Button(getActivity());		 
 		resetButton.setText("Reset All Filters");
 		ResetButtonListener resetButtonListen = new ResetButtonListener(sharedPref,MajorAbbrevs,WorkAuths,Positions,checkBoxArray);
 		resetButton.setOnClickListener(resetButtonListen);
 		ll.addView(resetButton);
-
-
 		
+		TextView tv = new TextView(getActivity());
+		tv.setText("Set your preferences below");
+		tv.setTextSize(24);
+		ll.addView(tv);
 
 		TextView WorkAuthText = new TextView(getActivity());
 		WorkAuthText.setText("Work Authorizations");
