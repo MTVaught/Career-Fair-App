@@ -70,9 +70,7 @@ public class PreferencesViewFragment extends Fragment {
 		
 		// Store all the checkboxes in an array
 		ArrayList<CheckBox> checkBoxArray = new ArrayList<CheckBox>();
-
-		Context context = getActivity();
-
+		
 		ScrollView sv = new ScrollView(getActivity());
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -109,7 +107,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(WorkAuths.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("workAuths",
-					WorkAuths.get(i), sharedPref, editor, getActivity());
+					WorkAuths.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
@@ -135,7 +133,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(Positions.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("positions",
-					Positions.get(i), sharedPref, editor, getActivity());
+					Positions.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
@@ -161,7 +159,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(MajorAbbrevs.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("majors",
-					MajorAbbrevs.get(i), sharedPref, editor, getActivity());
+					MajorAbbrevs.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
