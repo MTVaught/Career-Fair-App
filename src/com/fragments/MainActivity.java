@@ -34,13 +34,12 @@ public class MainActivity extends Activity implements
 	 * navigation drawer.
 	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-	private CompanyListFragment mCompanyListFragment;
-	private CompanyReaderFragment mCompanyReaderFragment;
-	private WoodGymFragment mWoodGymFragment;
+	//private CompanyListFragment mCompanyListFragment;
+	//private CompanyReaderFragment mCompanyReaderFragment;
+	//private WoodGymFragment mWoodGymFragment;
 
 	protected SQLiteDatabase database;
 	private ExternalDbOpenHelper dbOpenHelper;
-	private ArrayList<Company> companyList;
 	private ArrayList<String> companyNames;
 	protected ArrayList<Company> filteredCompanyList;
 	protected ArrayList<String> filteredCompanyNames;
@@ -62,17 +61,14 @@ public class MainActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		FragmentManager fragmentManager = getFragmentManager();
-		// FragmentTransaction ft = fragmentManager.beginTransaction();
-
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		mCompanyListFragment = (CompanyListFragment) getFragmentManager()
-				.findFragmentById(R.id.listView1);
-		mCompanyReaderFragment = (CompanyReaderFragment) getFragmentManager()
-				.findFragmentById(R.id.company_reader);
-		mWoodGymFragment = (WoodGymFragment) getFragmentManager()
-				.findFragmentById(R.id.varsity);
+		//mCompanyListFragment = (CompanyListFragment) getFragmentManager()
+		//		.findFragmentById(R.id.listView1);
+		//mCompanyReaderFragment = (CompanyReaderFragment) getFragmentManager()
+		//		.findFragmentById(R.id.company_reader);
+		//mWoodGymFragment = (WoodGymFragment) getFragmentManager()
+		//		.findFragmentById(R.id.varsity);
 		mTitle = getTitle();
 
 		// Set up the drawer.
@@ -230,7 +226,7 @@ public class MainActivity extends Activity implements
 		// Database is open
 		companyNames = new ArrayList<String>();
 		DbAccess.fillCompanies(companyNames, database);
-		companyList = DbAccess.getAllCompanies(database);
+		DbAccess.getAllCompanies(database);
 
 		filterCompanies();
 

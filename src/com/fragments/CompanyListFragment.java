@@ -3,6 +3,7 @@ package com.fragments;
 import java.util.ArrayList;
 
 import com.example.careerfair.R;
+import com.example.careerfair.R.id;
 import com.example.careerfair.R.layout;
 
 import android.app.ActionBar;
@@ -11,6 +12,7 @@ import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,8 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-
+import android.widget.Button;
+import android.widget.ScrollView;
+	/**
+	* @authour zichengl
+	*/
 public class CompanyListFragment extends Fragment {
 	private static final String DB_NAME = "careerFairDB.db";
 	/**
@@ -46,12 +54,13 @@ public class CompanyListFragment extends Fragment {
 	// private boolean mFromSavedInstanceState;
 	// private boolean mUserLearnedDrawer;
 	// private SQLiteDatabase database;
-	private ListView mCompanyListView;
+	private View mCompanyListView;
 	private CompanyListCallbacks mCallbacks;
 	private ActionBarDrawerToggle mDrawerToggle;
 	// private ExternalDbOpenHelper dbOpenHelper;
 	// private static ArrayList<Company> companyList;
 	private static ArrayList<String> companyNames;
+	private static ArrayList<String> companyNameTag = new ArrayList<String>();
 
 	/*
 	 * ArrayList to store the information returned by the database
@@ -76,7 +85,9 @@ public class CompanyListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		
+        
 		// Read in the flag indicating whether or not the user has demonstrated
 		// awareness of the
 		// drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -99,21 +110,69 @@ public class CompanyListFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		// Inflate the layout for this fragment
-		this.mCompanyListView = (ListView) inflater.inflate(
-				R.layout.company_list, container, false);
-		this.mCompanyListView
-				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		/* non-javadoc
+		 * changed the xml file .The basic company_list.xml layout is <RelativeLayout> now
+		 * and the ListView is one its subView
+		 */
+		this.mCompanyListView =  inflater.inflate(
+		R.layout.company_list, container, false);
+		
+		/*non-javadoc
+		 * To get the ListView of the layout
+		 */
+		ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+		
+		
+		lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						selectItem(position);
 					}
 				});
-		mCompanyListView.setAdapter(new ArrayAdapter<String>(getActionBar()
+		lv1.setAdapter(new ArrayAdapter<String>(getActionBar()
 				.getThemedContext(),
 				android.R.layout.simple_list_item_activated_1,
-				((MainActivity) getActivity()).filteredCompanyNames));
-		mCompanyListView.setItemChecked(mCurrentSelectedPosition, true);
+				((MainActivity)getActivity()).filteredCompanyNames));                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+		lv1.setItemChecked(mCurrentSelectedPosition, true);
+		
+		
+		
+		/*
+		 * non-java-doc
+		 * Setup the alphabet array from filteredCompanyNames
+		 */
+
+		
+		for(int i=0;i<companyNameTag.size();i++){
+			
+			LinearLayout ll = (LinearLayout)mCompanyListView.findViewById(id.scroll_alphabet);
+			
+			Button btn1 = new Button(getActivity());
+			btn1.setWidth(32);
+			btn1.setHeight(9);
+			btn1.setText(companyNameTag.get(i).toString());
+			btn1.setTag(companyNameTag.get(i).toString());
+			ll.addView(btn1);
+			//set up the button listener to listen to clicked index
+			btn1.setOnClickListener(new Button.OnClickListener(){ 
+				@Override
+				public void onClick(View v) {
+					String firstLetter = (String) v.getTag();
+					int index = 0;
+					if (((MainActivity)getActivity()).filteredCompanyNames != null) {
+						for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
+							if (string.startsWith(firstLetter)) {
+								index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
+								break;
+							}
+						}
+					}
+					ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+					lv1.setSelectionFromTop(index, 0);
+				}
+				});    
+			}
 		return mCompanyListView;
 	}
 
@@ -129,7 +188,8 @@ public class CompanyListFragment extends Fragment {
 	private void selectItem(int position) {
 		mCurrentSelectedPosition = position;
 		if (mCompanyListView != null) {
-			mCompanyListView.setItemChecked(position, true);
+			ListView lv1 = (ListView)mCompanyListView.findViewById(id.listView1);
+			lv1.setItemChecked(position, true);
 		}
 		// if (mDrawerLayout != null) {
 		// mDrawerLayout.closeDrawer(mFragmentContainerView);
@@ -149,6 +209,16 @@ public class CompanyListFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		/*
+		 * non-java-doc
+		 * Setup the alphabet array from filteredCompanyNames
+		 */
+		for(String string: ((MainActivity)getActivity()).filteredCompanyNames){
+			String tag = string.substring(0, 1);
+				if (!companyNameTag.contains(tag))
+					companyNameTag.add(tag);
+					
+		}
 		try {
 			mCallbacks = (CompanyListCallbacks) activity;
 		} catch (ClassCastException e) {
@@ -165,6 +235,8 @@ public class CompanyListFragment extends Fragment {
 	public void onDetach() {
 		super.onDetach();
 		mCallbacks = null;
+		//clean out the array when detach
+		companyNameTag = new ArrayList<String>();
 		// database = null;
 	}
 
