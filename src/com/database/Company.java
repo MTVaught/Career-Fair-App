@@ -54,7 +54,7 @@ public class Company {
 		majorAbbrevs = new ArrayList<String>();
 		for (Major major : majors) {
 			majorNames.add(major.getName());
-			majorAbbrevs.add(major.getName());
+			majorAbbrevs.add(major.getAbbrev());
 		}
 		positions = aPositions;
 		workAuths = aWorkAuths;
