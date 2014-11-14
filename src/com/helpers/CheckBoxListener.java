@@ -6,14 +6,11 @@ package com.helpers;
 import java.util.ArrayList;
 import java.util.Map;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -27,7 +24,6 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 	SharedPreferences.Editor editor;
 	String prefKey;
 	String category;
-	Context context;
 
 	/**
 	 * 
@@ -37,13 +33,12 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 	}
 
 	public CheckBoxListener(String category, String prefKey,
-			SharedPreferences sharedPref, Editor editor, Context context) {
+			SharedPreferences sharedPref, Editor editor) {
 		// TODO Auto-generated constructor stub
 		this.category = category;
 		this.prefKey = prefKey;
 		this.sharedPref = sharedPref;
 		this.editor = editor;
-		this.context = context;
 	}
 
 	/*
@@ -83,24 +78,6 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 		editor.putBoolean(prefKey, isChecked);
 		editor.commit();
 
-		//Display toast message. Toast does not allow for custom durations.
-		//This 'hack' was found on stackoverflow, where it is possible to cancel the 
-		//toast after a certain duration
-		//http://stackoverflow.com/questions/3775074/set-toast-appear-length/9715422#9715422
-		int duration = 500;
-		
-		final Toast toast = Toast.makeText(context, "Saved", Toast.LENGTH_SHORT);
-		toast.show();
-		
-		Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               toast.cancel(); 
-           }
-        }, duration);
-		
-        
 		Log.w("myApp", "Before sharedPref Print");
 		// Temp code to print what is in sharedPreferences in the LogCat window
 		// in Eclipse

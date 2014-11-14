@@ -6,6 +6,7 @@ package com.fragments;
 import java.util.ArrayList;
 
 import com.helpers.CheckBoxListener;
+import com.helpers.ResetButtonListener;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -61,28 +63,30 @@ public class PreferencesViewFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		Context context = getActivity();
+		// Bring the MainActivity's sharedPreferences into this fragment
+		SharedPreferences sharedPref = getActivity().getPreferences(
+				Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		
+		// Store all the checkboxes in an array
+		ArrayList<CheckBox> checkBoxArray = new ArrayList<CheckBox>();
 		
 		ScrollView sv = new ScrollView(getActivity());
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setOrientation(LinearLayout.VERTICAL);
 		sv.addView(ll);
 
+		// Add reset button, Listener is added later
+		Button resetButton = new Button(getActivity());		 
+		resetButton.setText("Reset All Filters");
+		ResetButtonListener resetButtonListen = new ResetButtonListener(sharedPref,MajorAbbrevs,WorkAuths,Positions,checkBoxArray);
+		resetButton.setOnClickListener(resetButtonListen);
+		ll.addView(resetButton);
+		
 		TextView tv = new TextView(getActivity());
 		tv.setText("Set your preferences below");
+		tv.setTextSize(24);
 		ll.addView(tv);
-
-		// EditText et = new EditText(getActivity());
-		// et.setText("weeeeeeeeeee~!");
-		// ll.addView(et);
-
-		// Button b = new Button(getActivity());
-		// b.setText("I don't do anything, but I was added dynamically. :)");
-		// ll.addView(b);
-
-		SharedPreferences sharedPref = getActivity().getPreferences(
-				Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPref.edit();
 
 		TextView WorkAuthText = new TextView(getActivity());
 		WorkAuthText.setText("Work Authorizations");
@@ -91,7 +95,8 @@ public class PreferencesViewFragment extends Fragment {
 		for (int i = 0; i < WorkAuths.size(); i++) {
 
 			CheckBox cb = new CheckBox(getActivity());
-
+			checkBoxArray.add(cb);
+			
 			// If it was previously checked, set it to that state in the
 			// SharedPreferences
 			Boolean checked = sharedPref.contains(WorkAuths.get(i));
@@ -102,7 +107,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(WorkAuths.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("workAuths",
-					WorkAuths.get(i), sharedPref, editor, getActivity());
+					WorkAuths.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
@@ -116,6 +121,7 @@ public class PreferencesViewFragment extends Fragment {
 		for (int i = 0; i < Positions.size(); i++) {
 
 			CheckBox cb = new CheckBox(getActivity());
+			checkBoxArray.add(cb);
 
 			// If it was previously checked, set it to that state in the
 			// SharedPreferences
@@ -127,7 +133,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(Positions.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("positions",
-					Positions.get(i), sharedPref, editor, getActivity());
+					Positions.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
@@ -141,6 +147,7 @@ public class PreferencesViewFragment extends Fragment {
 		for (int i = 0; i < MajorAbbrevs.size(); i++) {
 
 			CheckBox cb = new CheckBox(getActivity());
+			checkBoxArray.add(cb);
 
 			// If it was previously checked, set it to that state in the
 			// SharedPreferences
@@ -152,7 +159,7 @@ public class PreferencesViewFragment extends Fragment {
 
 			cb.setText(MajorAbbrevs.get(i));
 			CheckBoxListener cbListen = new CheckBoxListener("majors",
-					MajorAbbrevs.get(i), sharedPref, editor, getActivity());
+					MajorAbbrevs.get(i), sharedPref, editor);
 			cb.setOnCheckedChangeListener(cbListen);
 
 			ll.addView(cb);
