@@ -1745,10 +1745,11 @@ public class ImageMap extends ImageView
 			_text = text;
 			_x = x*mResizeFactorX;
 			_y = y*mResizeFactorY;
+			//if we are coming from the list view, multiply by the default resize factor
 			if ( _x  == 0 && _y == 0 )
 			{
-				_x = _a.getOriginX();
-				_y = _a.getOriginY();
+				_x = (float) (x*( 1.497619 ));
+				_y = (float) (y*( 1.4978355 ));
 			}
 			Rect bounds = new Rect();
 			textPaint.setTextScaleX(1.0f);
@@ -1773,7 +1774,7 @@ public class ImageMap extends ImageView
 			if (_left < 0) {
 				_left = 0;
 			}
-			if ((_left + _w) > mExpandWidth) {
+			if ((_left + _w) > mExpandWidth && mExpandWidth != 0 ) {
 				_left = mExpandWidth - _w;
 			}
 			if (_top < 0) {
