@@ -1,8 +1,5 @@
-/** 
- * This class handles ActionEvents for the checkboxes when setting preference options.
+/**
  * 
- * @author Andrew Hanson
- * @version 1.0
  */
 package com.helpers;
 
@@ -20,6 +17,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+/**
+ * @author andrewzComp
+ *
+ */
 public class CheckBoxListener implements OnCheckedChangeListener {
 
 	SharedPreferences sharedPref;
@@ -29,27 +30,15 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 	Context context;
 
 	/**
-	 * CheckBoxListener
 	 * 
-	 * Default constructor
 	 */
-	public CheckBoxListener() {}
+	public CheckBoxListener() {
+		// TODO Auto-generated constructor stub
+	}
 
-	/**
-	 * CheckBoxListener
-	 * 
-	 * Constructor for setting up the checkbox based upon passed-in parameters.
-	 * 
-	 * @param category.
-	 * @param prefKey.
-	 * @param sharedPref. The global sharedPreferences object where data is stored
-	 * @param editor. The editor for the sharedPreferences.
-	 * @param context. The application's context, in this case it is the mainActivity
-	 * 
-	 */
 	public CheckBoxListener(String category, String prefKey,
 			SharedPreferences sharedPref, Editor editor, Context context) {
-		
+		// TODO Auto-generated constructor stub
 		this.category = category;
 		this.prefKey = prefKey;
 		this.sharedPref = sharedPref;
@@ -57,13 +46,8 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 		this.context = context;
 	}
 
-	/**
-	 * onCheckedChanged (non-Javadoc)
-	 * 
-	 * Called when the checked state of a compound button has changed.
-	 * 
-	 * @param buttonView. The compound button view whose state has changed.
-	 * @param isChecked. The new checked state of buttonView.
+	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * android.widget.CompoundButton.OnCheckedChangeListener#onCheckedChanged
@@ -71,6 +55,8 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 	 */
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		// TODO Auto-generated method stub
+		// Log.w("myApp", ""+ isChecked);
 
 		// Test code for shared prefs
 		ArrayList<String> list;
@@ -97,7 +83,7 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 		editor.putBoolean(prefKey, isChecked);
 		editor.commit();
 
-		//Display a toast message. Toast does not allow for custom durations.
+		//Display toast message. Toast does not allow for custom durations.
 		//This 'hack' was found on stackoverflow, where it is possible to cancel the 
 		//toast after a certain duration
 		//http://stackoverflow.com/questions/3775074/set-toast-appear-length/9715422#9715422
@@ -107,17 +93,19 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 		toast.show();
 		
 		Handler handler = new Handler();
-	        handler.postDelayed(new Runnable() {
-	           @Override
-	           public void run() {
-	               toast.cancel(); 
-	           }
-	        }, duration);
+        handler.postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               toast.cancel(); 
+           }
+        }, duration);
 		
-        	// Debug code to print out what is in sharedPreferences to the log window
+        
 		Log.w("myApp", "Before sharedPref Print");
-		
+		// Temp code to print what is in sharedPreferences in the LogCat window
+		// in Eclipse
 		Map<String, ?> keys = sharedPref.getAll();
+
 		for (Map.Entry<String, ?> entry : keys.entrySet()) {
 			Log.d("map values", entry.getKey() + ": "
 					+ entry.getValue().toString());
@@ -126,4 +114,5 @@ public class CheckBoxListener implements OnCheckedChangeListener {
 		Log.w("myApp", "After sharedPref Print");
 
 	}
+
 }
