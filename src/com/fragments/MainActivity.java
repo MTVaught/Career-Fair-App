@@ -91,8 +91,11 @@ public class MainActivity extends Activity implements
 		}
 
 		switch (position) {
-
 		case 0:
+			ft.replace(R.id.container,
+					WelcomeMessageFragment.newInstance(position)).commit();
+			break;
+		case 1:
 			// Before sending the companies to be filled, filter out the
 			// incorrect ones
 			// companyNames AND companyList need to be of the same length
@@ -103,15 +106,15 @@ public class MainActivity extends Activity implements
 					CompanyListFragment.newInstance(position,
 							filteredCompanyNames)).commit();
 			break;
-		case 1:
+		case 2:
 			ft.replace(R.id.container,
 					MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
-		case 2:
+		case 3:
 			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
 					.commit();
 			break;
-		case 3:
+		case 4:
 			ArrayList<String> MajorAbbrevs = DbAccess
 					.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
@@ -121,6 +124,7 @@ public class MainActivity extends Activity implements
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
 							WorkAuths, Positions)).commit();
 			break;
+
 		}
 
 	}
@@ -141,17 +145,21 @@ public class MainActivity extends Activity implements
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 0:
-			mTitle = getString(R.string.title_companylist);
+			mTitle = getString(R.string.title_welcomemessage);
 			break;
 		case 1:
-			mTitle = getString(R.string.title_multipurposegym);
+			mTitle = getString(R.string.title_companylist);
 			break;
 		case 2:
-			mTitle = getString(R.string.title_woodgym);
+			mTitle = getString(R.string.title_multipurposegym);
 			break;
 		case 3:
+			mTitle = getString(R.string.title_woodgym);
+			break;
+		case 4:
 			mTitle = getString(R.string.title_preferencesview);
 			break;
+
 		}
 	}
 

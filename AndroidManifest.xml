@@ -10,7 +10,7 @@
     
     
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-    android:targetPackage="com.example.careerfair"
+    android:targetPackage="com"
     android:label="Company Tests" />
 
     <application
