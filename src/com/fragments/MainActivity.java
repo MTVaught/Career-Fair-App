@@ -185,8 +185,10 @@ public class MainActivity extends Activity implements
 
 	/**
 	 * onCreateOptionsMenu
-	 * @param menu -
-	 * @return boolean - 
+	 * Initialize the contents of the Activity's standard options menu. You should place your menu items in to menu. This is only called once, the first time the options menu is displayed. 
+	 * To update the menu every time it is displayed, see onPrepareOptionsMenu(Menu).
+	 * @param menu - The options menu in which you place your items.
+	 * @return boolean - You must return true for the menu to be displayed; if you return false it will not be shown.
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
