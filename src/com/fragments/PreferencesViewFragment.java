@@ -1,5 +1,8 @@
-/**
+/** 
+ * This class handles setting the filtering options.
  * 
+ * @author Andrew Hanson
+ * @version 1.0
  */
 package com.fragments;
 
@@ -192,6 +195,14 @@ public class PreferencesViewFragment extends Fragment {
 		return sv;
 	}
 
+	/**
+	 * onAttach
+	 * 
+	 * Called when a fragment is first attached to its activity. onCreate(Bundle) will be called after this.
+	 * 
+	 * @param activity. The activity this fragment is associated with.
+	 * 
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -199,6 +210,12 @@ public class PreferencesViewFragment extends Fragment {
 				ARG_SECTION_NUMBER));
 	}
 
+	/**
+	 * onDestroyView
+	 * 
+	 * Called when the view previously created by onCreateView(LayoutInflater, ViewGroup, Bundle) has been detached from the fragment
+	 * 
+	 */
 	@Override
 	public void onDestroyView() {
 		SharedPreferences sharedPref = getActivity().getPreferences(
