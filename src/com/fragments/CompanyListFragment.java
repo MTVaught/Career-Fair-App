@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Button;
 import android.widget.ScrollView;
 	/**
+	 * 
 	* @authour zichengl
 	*/
 public class CompanyListFragment extends Fragment {
@@ -39,17 +40,7 @@ public class CompanyListFragment extends Fragment {
 	 */
 	private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
-	/**
-	 * Returns a new instance of this fragment for the given section number.
-	 */
-	public static CompanyListFragment newInstance(int sectionNumber) {
-		CompanyListFragment fragment = new CompanyListFragment();
-		Bundle args = new Bundle();
-		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-		fragment.setArguments(args);
-		return fragment;
-	}
-
+	
 	private int mCurrentSelectedPosition = 0;
 	// private boolean mFromSavedInstanceState;
 	// private boolean mUserLearnedDrawer;
@@ -71,6 +62,13 @@ public class CompanyListFragment extends Fragment {
 	public CompanyListFragment() {
 
 	}
+	
+	/**newInstance
+	 * Returns a new instance of this fragment for the given section number.
+	 * @para sectionNumber - 
+	 * @para companyName - the filtedCompanyNames in the MainActivity 
+	 * @return Return a new instance of this fragment
+	 */
 
 	public static CompanyListFragment newInstance(int sectionNumber,
 			ArrayList<String> companyName) {
@@ -81,8 +79,21 @@ public class CompanyListFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
+	
+	public static CompanyListFragment newInstance(int sectionNumber) {
+		CompanyListFragment fragment = new CompanyListFragment();
+		Bundle args = new Bundle();
+		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
+	/**onCreate 
+	 * Called to initialize the fragment
+	 * @ savedInstanceState - if fragment is re-created from previous saved state ,this is the state
+	 * 
+	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -106,6 +117,17 @@ public class CompanyListFragment extends Fragment {
 	}
 
 	@Override
+	/**onCreateView
+	 * 
+	 * Android Auto generated method for the fragment to create the view of the CompanyList.
+	 * It will create a basic listview of CompanyList and scrollable alphabetic index buttons 
+	 *  
+	 * @para inflater - The LayoutInflater object that can be used to inflate any view in this fragment
+	 * @para container - if non-null,this is the parent view that the fragment's UI should be attached to.
+	 * The fragment should not add view itself ,but this can be used to generate the LayoutParams of the view
+	 * @para savedInstanceState - if fragment is re-created from previous saved state ,this is the state
+	 * @return mCompanyListView the returned user interface for companyListView   
+	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
@@ -125,6 +147,13 @@ public class CompanyListFragment extends Fragment {
 		
 		lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
+					/**onItemClick
+					 * Called when item in the adapterView is clicked
+					 * @para parent - The adapter view where the click happened
+					 * @para view - The view within the Adapter View that was clicked
+					 * @para position - the position of view in the adapter
+					 * @para id The Row id of the item that was clicked
+					 */
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						selectItem(position);
@@ -149,8 +178,6 @@ public class CompanyListFragment extends Fragment {
 			LinearLayout ll = (LinearLayout)mCompanyListView.findViewById(id.scroll_alphabet);
 			
 			Button btn1 = new Button(getActivity());
-			btn1.setWidth(32);
-			btn1.setHeight(9);
 			btn1.setText(companyNameTag.get(i).toString());
 			btn1.setTag(companyNameTag.get(i).toString());
 			ll.addView(btn1);
@@ -178,12 +205,22 @@ public class CompanyListFragment extends Fragment {
 
 	// http://developer.android.com/training/multiscreen/index.html
 	@Override
+	/**onActivityCreated
+	 * Called when fragment's activity has been created and this fragment's view hierarchy instantiated
+	 * @para savedInstanceState - if fragment is re-created from previous saved state ,this is the state
+	 */
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		// Indicate that this fragment would like to influence the set of
 		// actions in the action bar.
 		setHasOptionsMenu(true);
 	}
+	/**selectItem
+	 * Called in onItemClick(AdapterView<?> parent, View view,int position, long id)
+	 * if the mCompanyListView is not null ,Set the item clicked to be checked 
+	 * And if mCallbacks is not null,call its method.
+	 * @param position - the index of clicked item in the list
+	 */
 
 	private void selectItem(int position) {
 		mCurrentSelectedPosition = position;
@@ -198,15 +235,25 @@ public class CompanyListFragment extends Fragment {
 			mCallbacks.onCompanyListItemSelected(position);
 		}
 	}
-
+    /**CompanyListCallbacks
+     * The interface which must be implemented by MainActivity to handle the click events
+     * @author zichengl
+     *
+     */
+	
 	public static interface CompanyListCallbacks {
-		/**
-		 * Called when an item in the CompanyList drawer is selected.
+		/**onCompanyListItemSelected
+		 * Called in selectItem(int position) when an item in the CompanyList drawer is selected.
+		 * @para position - the index of clicked item in the list
 		 */
 		void onCompanyListItemSelected(int position);
 	}
 
 	@Override
+	/**onAttach
+	 * Called when this fragment is first attached to its activity
+	 * @para activity - the activity it belongs to
+	 */
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		/*
@@ -219,6 +266,7 @@ public class CompanyListFragment extends Fragment {
 					companyNameTag.add(tag);
 					
 		}
+		
 		try {
 			mCallbacks = (CompanyListCallbacks) activity;
 		} catch (ClassCastException e) {
@@ -232,6 +280,9 @@ public class CompanyListFragment extends Fragment {
 	}
 
 	@Override
+	/**onDetach
+	 * called when this fragment is no longer attached to its activity
+	 */
 	public void onDetach() {
 		super.onDetach();
 		mCallbacks = null;
@@ -239,25 +290,43 @@ public class CompanyListFragment extends Fragment {
 		companyNameTag = new ArrayList<String>();
 		// database = null;
 	}
-
+    
 	@Override
+	/**onSaveInstanceState
+     * Called to ask the fragment to save its current dynamic state.So it can later be reconstructed in a new instance 
+     * of its process is restarted .(Refer to official JavaDoc)
+     * @para Bundle in which to place your state
+     */
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
 	}
 
 	@Override
+	/**onConfigurationChanged
+	 * Called by the system when the device configuration changes while your component is running
+	 * @para newConfig - The new device configuration
+	 */
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		// Forward the new configuration the drawer toggle component.
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
-
+	/**getActionBar
+	 * Retrieve a reference to this activity's action bar
+	 * @return The activity's action bar ,or null if it does not have one
+	 */
+	
 	private ActionBar getActionBar() {
 		return getActivity().getActionBar();
 	}
 
 	@Override
+	/**onCreateOptionsMenu
+	 * Initialize the contents of the Activity's standard options menu.(refer to offical JavaDoc)
+	 * @para The options menu where you place your items
+	 */
+	
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// If the drawer is open, show the global app actions in the action bar.
 		// See also

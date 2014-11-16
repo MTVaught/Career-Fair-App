@@ -1,5 +1,8 @@
-/**
+/** 
+ * This class handles setting the filtering options.
  * 
+ * @author Andrew Hanson
+ * @version 1.0
  */
 package com.fragments;
 
@@ -22,10 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-/**
- * @author andrewzComp
- *
- */
 public class PreferencesViewFragment extends Fragment {
 
 	private static final String ARG_SECTION_NUMBER = "PreferencesView";
@@ -35,12 +34,24 @@ public class PreferencesViewFragment extends Fragment {
 	static ArrayList<String> Positions;
 
 	/**
+	 * PreferencesViewFragment
 	 * 
+	 * Default constructor
 	 */
-	public PreferencesViewFragment() {
-		// TODO Auto-generated constructor stub
-	}
+	public PreferencesViewFragment() {}
 
+	/**
+	 * newInstance
+	 * 
+	 * Returns a new instance of this fragment for the given section number.
+	 * 
+	 * @param sectionNumber
+	 * @param Abbrevs. List of Abbreviations
+	 * @param Auths. List of Authorizations
+	 * @param Pos. List of of positions
+	 * 
+	 * @return PreferencesViewFragment, the newely created fragment
+	 */
 	public static PreferencesViewFragment newInstance(int sectionNumber,
 			ArrayList<String> Abbrevs, ArrayList<String> Auths,
 			ArrayList<String> Pos) {
@@ -59,6 +70,19 @@ public class PreferencesViewFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 	}
 
+	/**
+	 * onCreateView 
+	 * 
+	 * Create the view displayed for settings the filters. This is done dynamically.
+	 * 	this will display the filters for majors, positions, workauthorizations
+	 * 
+	 * @param inflater. The LayoutInflater object that can be used to inflate any views in the fragment
+	 * @param container. If non-null, this is the parent view that the fragment's UI should be attached to. 
+	 * 			The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
+	 * @param savedInstanceState. If non-null, this fragment is being re-constructed from a previous saved state as given here.
+	 * 
+	 * @return View. Return the View for the fragment's UI, or null
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -71,7 +95,7 @@ public class PreferencesViewFragment extends Fragment {
 		// Store all the checkboxes in an array
 		ArrayList<CheckBox> checkBoxArray = new ArrayList<CheckBox>();
 
-		
+		// Create view and layout
 		ScrollView sv = new ScrollView(getActivity());
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -119,6 +143,7 @@ public class PreferencesViewFragment extends Fragment {
 		PositionText.setText("Positions");
 		ll.addView(PositionText);
 
+		// Populate 
 		for (int i = 0; i < Positions.size(); i++) {
 
 			CheckBox cb = new CheckBox(getActivity());
@@ -170,6 +195,14 @@ public class PreferencesViewFragment extends Fragment {
 		return sv;
 	}
 
+	/**
+	 * onAttach
+	 * 
+	 * Called when a fragment is first attached to its activity. onCreate(Bundle) will be called after this.
+	 * 
+	 * @param activity. The activity this fragment is associated with.
+	 * 
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -177,6 +210,12 @@ public class PreferencesViewFragment extends Fragment {
 				ARG_SECTION_NUMBER));
 	}
 
+	/**
+	 * onDestroyView
+	 * 
+	 * Called when the view previously created by onCreateView(LayoutInflater, ViewGroup, Bundle) has been detached from the fragment
+	 * 
+	 */
 	@Override
 	public void onDestroyView() {
 		SharedPreferences sharedPref = getActivity().getPreferences(

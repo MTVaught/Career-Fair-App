@@ -7,12 +7,6 @@ import com.example.careerfair.R;
 //import com.example.careerfair.R.id;
 //import com.example.careerfair.R.layout;
 
-
-
-
-
-
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -39,9 +33,15 @@ public class CompanyReaderFragment extends Fragment {
 	//private View mCompanyReaderView;
 
 	/**
+	 * newInstance
+	 * 
 	 * Returns a new instance of this fragment for the given section number.
+	 * 
+	 * @param sectionNumber
+	 * @param company, a pointer to the company to be loaded
+	 * 
+	 * @return CompanyReaderFragment, the newely created fragment
 	 */
-
 	public static CompanyReaderFragment newInstance(int sectionNumber,
 			Company company) {
 		companyObj = company;
@@ -53,15 +53,27 @@ public class CompanyReaderFragment extends Fragment {
 	}
 
 	// Default constructor
-	public CompanyReaderFragment() {
+	public CompanyReaderFragment() {}
 
-	}
-
-	
+	/**
+	 * onCreateView 
+	 * 
+	 * Create the view displayed for a company. This is done dynamically.
+	 * 	this will display the name, majors, positions, workauthorizations,
+	 * 	website, and a button to view it on the map
+	 * 
+	 * @param inflater. The LayoutInflater object that can be used to inflate any views in the fragment
+	 * @param container. If non-null, this is the parent view that the fragment's UI should be attached to. 
+	 * 			The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
+	 * @param savedInstanceState. If non-null, this fragment is being re-constructed from a previous saved state as given here.
+	 * 
+	 * @return View. Return the View for the fragment's UI, or null
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		// Create the view and add a layout to it
 		ScrollView sv = new ScrollView(getActivity());
 		LinearLayout ll = new LinearLayout(getActivity());
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -82,10 +94,12 @@ public class CompanyReaderFragment extends Fragment {
 		ArrayList<String> majorNames = companyObj.getMajorNames();
 		ArrayList<String> majorAbbrevs = companyObj.getMajorAbbrevs();
 		
+		// Quick check, this is for logging purposes
 		if (majorNames.size() != majorAbbrevs.size()) {
 			Log.w("myApp", "MajorNames was a different size then MajorAbbrevs in CompanyReaderFragment");
 		}
 		
+		// Loop through all the majors and add them
 		for (int i = 0; i < majorNames.size(); i++) {
 			
 			// Pull the two String values
@@ -97,14 +111,11 @@ public class CompanyReaderFragment extends Fragment {
 			
 			// Set the text for the two template values
 			TextView majorAbbrev = (TextView) row.findViewById(R.id.majorAbbrev);
-		    majorAbbrev.setText("\t" + majorAbbrevStr);
-			
+		    	majorAbbrev.setText("\t" + majorAbbrevStr);
 			
 			TextView majorFull = (TextView) row.findViewById(R.id.majorFull);
 			majorFull.setText("\t" + majorFullStr);
 			
-			
-		    
 		    // Add the row to the table
 		    majorTable.addView(row);
 			
@@ -122,6 +133,7 @@ public class CompanyReaderFragment extends Fragment {
 		TableLayout positionTable = new TableLayout(getActivity());
 		ArrayList<String> positionStrings = companyObj.getPositions();
 		
+		// Go through all the positions
 		for (int i = 0; i < positionStrings.size(); i++) {
 			
 			// Pull the two String values
@@ -134,7 +146,7 @@ public class CompanyReaderFragment extends Fragment {
 			TextView position = (TextView) row.findViewById(R.id.position);
 			position.setText("\t" + positionStr);
 			
-		    // Add the row to the table
+			// Add the row to the table
 			positionTable.addView(row);
 			
 		}
@@ -151,6 +163,7 @@ public class CompanyReaderFragment extends Fragment {
 		TableLayout workAuthTable = new TableLayout(getActivity());
 		ArrayList<String> WorkAuthStrings = companyObj.getWorkAuth();
 		
+		// Loop through all the work authorizations
 		for (int i = 0; i < WorkAuthStrings.size(); i++) {
 			
 			// Pull the two String values
@@ -163,7 +176,7 @@ public class CompanyReaderFragment extends Fragment {
 			TextView workAuth = (TextView) row.findViewById(R.id.position);
 			workAuth.setText("\t" + workAuthStr);
 			
-		    // Add the row to the table
+		    	// Add the row to the table
 			workAuthTable.addView(row);
 			
 		}
@@ -228,6 +241,13 @@ public class CompanyReaderFragment extends Fragment {
 //		return mCompanyReaderView;
 //	}
 
+	/**
+	 * onAttach
+	 * 
+	 * Called when a fragment is first attached to its activity. onCreate(Bundle) will be called after this.
+	 * 
+	 * @param activity. The parent activity for this fragment.
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
