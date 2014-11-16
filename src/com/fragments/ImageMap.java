@@ -502,7 +502,7 @@ public class ImageMap extends ImageView
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
-
+		
 
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
@@ -734,7 +734,7 @@ public class ImageMap extends ImageView
 				}
 
 				mScrollTop = 0;
-				mScrollLeft = 0;
+				mScrollLeft = -( (mViewWidth/2) - 50);
 
 				// scale the bitmap
 				if (resize) {
@@ -742,6 +742,7 @@ public class ImageMap extends ImageView
 				} else {
 					mExpandWidth=newWidth;
 					mExpandHeight=newHeight;
+					
 
 					mResizeFactorX = ((float) newWidth / mImageWidth);
 					mResizeFactorY = ((float) newHeight / mImageHeight);
@@ -1490,7 +1491,7 @@ public class ImageMap extends ImageView
 			{
 				float x = (getOriginX() * mResizeFactorX) + mScrollLeft;
 				float y = (getOriginY() * mResizeFactorY) + mScrollTop; 
-				canvas.drawCircle(x, y, 8, highlightPaint );
+				//canvas.drawCircle( x, y, 7, highlightPaint );
 			}
 			if (_decoration != null)
 			{
@@ -1536,6 +1537,29 @@ public class ImageMap extends ImageView
 				}
 			}
 			return ret;
+		}
+		
+		public void onDraw(Canvas canvas)
+		{
+			super.onDraw( canvas );
+			if ( selected )
+			{
+				float l = (_left * mResizeFactorX) + mScrollLeft;
+				float t = (_top * mResizeFactorY) + mScrollTop; 
+				float b = (_bottom * mResizeFactorX);
+				float r = (_right * mResizeFactorY) + mScrollLeft; 
+				highlightPaint.setStrokeWidth( 3 );
+				//top line
+				canvas.drawLine( l, t, r, t, highlightPaint);
+				//right side
+				canvas.drawLine( l, t, l, b, highlightPaint );
+				//left side
+				canvas.drawLine( r, t, r, b, highlightPaint );
+				//bottom
+				canvas.drawLine( l, b, r, b, highlightPaint );
+				
+				
+			}
 		}
 
 		public float getOriginX() {
@@ -1748,8 +1772,17 @@ public class ImageMap extends ImageView
 			//if we are coming from the list view, multiply by the default resize factor
 			if ( _x  == 0 && _y == 0 )
 			{
-				_x = (float) (x*( 1.497619 ));
-				_y = (float) (y*( 1.4978355 ));
+				mImageHeight = mImage.getHeight();
+				mImageWidth = mImage.getWidth();
+				mAspect = (float)mImageWidth / mImageHeight;
+				mViewWidth = getResources().getDisplayMetrics().widthPixels;
+				mViewHeight = getResources().getDisplayMetrics().heightPixels;
+				int dpi = getResources().getDisplayMetrics().densityDpi;
+				mViewHeight = mViewHeight - ( 48*(dpi/160) ); //48dp is the navigation bar
+															  //dp = 1px on 160dpi screen
+				setInitialImageBounds();
+				_x = x*mResizeFactorX;
+				_y = y*mResizeFactorY;
 			}
 			Rect bounds = new Rect();
 			textPaint.setTextScaleX(1.0f);
