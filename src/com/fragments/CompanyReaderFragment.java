@@ -199,9 +199,8 @@ public class CompanyReaderFragment extends Fragment {
 		ll.addView(tv);
         
 		//button for map view
-		Button MapButton = (Button) sv
-		.findViewById(R.id.ShowMapButton);
-		
+		Button MapButton = new Button( getActivity() );
+		MapButton.setText("Show Map");
 		MapButton.setOnClickListener(new View.OnClickListener() {
 		   
 			public void onClick(View v) {
@@ -227,6 +226,8 @@ public class CompanyReaderFragment extends Fragment {
 				}
 		    }
 		});		
+		ll.addView( MapButton );
+		
 		return sv;
 
 	}
