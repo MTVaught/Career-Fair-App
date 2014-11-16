@@ -15,6 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+/**
+ * MultiPurposeGymFragment
+ * 
+ * Handles the setup and execution of the Multi-Purpose Room map.
+ * 
+ * @author byrnedj
+ * @author MTVaught
+ * 
+ */
 public class MultiPurposeGymFragment extends Fragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
@@ -42,6 +51,10 @@ public class MultiPurposeGymFragment extends Fragment {
 	public MultiPurposeGymFragment() {
 	}
 
+	/**
+	 * @author byrnedj
+	 * @author MTVaught
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -50,6 +63,7 @@ public class MultiPurposeGymFragment extends Fragment {
 				R.layout.fragment_multipurposegym, container, false);
 		main.setOrientation(LinearLayout.HORIZONTAL);
 		mMultiMap = (ImageMap) main.findViewById(R.id.map);
+		//Points the image displayed to the .png of the MultiPurpose map
 		mMultiMap.setImageResource(R.drawable.multi);
 
 		// add click handler

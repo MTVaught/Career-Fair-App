@@ -53,18 +53,17 @@ public class MainActivity extends Activity implements
 	private CharSequence mTitle;
 	boolean inCompanyView = false;
 
+	/**
+	 * onCreate
+	 * Called when the activity is starting. This is where most initialization should go (also refer to official Javadocs)
+	 * @param savedInstanceState -if the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		//mCompanyListFragment = (CompanyListFragment) getFragmentManager()
-		//		.findFragmentById(R.id.listView1);
-		//mCompanyReaderFragment = (CompanyReaderFragment) getFragmentManager()
-		//		.findFragmentById(R.id.company_reader);
-		//mWoodGymFragment = (WoodGymFragment) getFragmentManager()
-		//		.findFragmentById(R.id.varsity);
 		mTitle = getTitle();
 
 		// Set up the drawer.
@@ -78,6 +77,11 @@ public class MainActivity extends Activity implements
 
 	}
 
+	/**
+	 * onNavigationDrawerItemSelected
+	 * Changes the displayed fragment based on what the user selected in the Navigation Drawer
+	 * @param position - a number corresponding to the order in the navigation drawer 
+	 */
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by adding fragments
@@ -86,6 +90,7 @@ public class MainActivity extends Activity implements
 		appMainActivity = this;
 		inCompanyView = false;
 
+		//Check if the database is open, if not, call the method to open the database
 		if (!databaseOpen) {
 			databaseOpen();
 		}
@@ -96,16 +101,12 @@ public class MainActivity extends Activity implements
 					WelcomeMessageFragment.newInstance(position)).commit();
 			break;
 		case 1:
-			// Before sending the companies to be filled, filter out the
-			// incorrect ones
-			// companyNames AND companyList need to be of the same length
-			// Delete these comments here when implemented
-
-			ft.replace(
+ft.replace(
 					R.id.container,
 					CompanyListFragment.newInstance(position,
 							filteredCompanyNames)).commit();
 			break;
+
 		case 2:
 			ft.replace(R.id.container,
 					MultiPurposeGymFragment.newInstance(position)).commit();
@@ -129,9 +130,14 @@ public class MainActivity extends Activity implements
 
 	}
 
+	/**
+	 * onCompanyListItemSelected
+	 * Switches to the "detailed"/CompanyReaderView
+	 * @param position - the position of the company that was clicked in the ArrayList of companies
+	 */
 	@Override
 	public void onCompanyListItemSelected(int position) {
-		// TODO Auto-generated method stub
+
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		Company clickedCompany = filteredCompanyList.get(position);
@@ -142,8 +148,16 @@ public class MainActivity extends Activity implements
 		inCompanyView = true;
 	}
 
+	/**
+	 * onSectionAttached
+	 * Changes the title on the top bar based on the passed number
+	 * @param number - a number corresponding to the order in the navigation drawer
+	 */
 	public void onSectionAttached(int number) {
+		// Changes the title displayed on the top bar based upon the passed number.
+		// Corresponds to the order in the navigation drawer.
 		switch (number) {
+
 		case 0:
 			mTitle = getString(R.string.title_welcomemessage);
 			break;
@@ -157,12 +171,17 @@ public class MainActivity extends Activity implements
 			mTitle = getString(R.string.title_woodgym);
 			break;
 		case 4:
+
 			mTitle = getString(R.string.title_preferencesview);
 			break;
 
 		}
 	}
 
+	/**
+	 * restoreActionBar (Generated)
+	 * Called when exiting navigation bar to restore the action bar
+	 */
 	public void restoreActionBar() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -170,6 +189,13 @@ public class MainActivity extends Activity implements
 		actionBar.setTitle(mTitle);
 	}
 
+	/**
+	 * onCreateOptionsMenu
+	 * Initialize the contents of the Activity's standard options menu. You should place your menu items in to menu. This is only called once, the first time the options menu is displayed. 
+	 * To update the menu every time it is displayed, see onPrepareOptionsMenu(Menu).
+	 * @param menu - The options menu in which you place your items.
+	 * @return boolean - You must return true for the menu to be displayed; if you return false it will not be shown.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -183,6 +209,11 @@ public class MainActivity extends Activity implements
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	/**onOptionsItemSelected 
+	 * Three Dot Drop-down Menu
+	 * @param item - the selected item of options menu
+	 * @return true - if the item is selected.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -207,6 +238,12 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * onBackPressed
+	 * Controls the actions taken when the back arrow is pressed while in the android application.
+	 * By default, no action is taken unless the user is in the Detailed Company View, then they
+	 * are taken to the List of Companies.
+	 */
 	@Override
 	public void onBackPressed() {
 		Log.d("CDA", "onBackPressed Called");
@@ -220,6 +257,10 @@ public class MainActivity extends Activity implements
 		}
 	}
 
+	/**
+	 * databaseOpen
+	 * Opens database and fills initial company lists (with all of the companies) and filters based on shared preferences
+	 */
 	private void databaseOpen() {
 
 		long start = System.currentTimeMillis();
@@ -233,6 +274,7 @@ public class MainActivity extends Activity implements
 		DbAccess.fillCompanies(companyNames, database);
 		DbAccess.getAllCompanies(database);
 
+		//Calls the filterCompanies method to filter based on shared preferences
 		filterCompanies();
 
 		databaseOpen = true;
@@ -243,6 +285,10 @@ public class MainActivity extends Activity implements
 
 	}
 
+	/**
+	 * filterCompanies
+	 * Pulls information from shared preferences and updates filtered company lists
+	 */
 	protected void filterCompanies() {
 		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
@@ -250,10 +296,13 @@ public class MainActivity extends Activity implements
 		ArrayList<String> workAuth;
 		ArrayList<String> position;
 
+		//Get preferences from SharedPreferences and "de-serialize" them
 		Gson gson = new Gson();
 		String jsonMajor = sharedPref.getString("majors", "");
 		String jsonWorkAuth = sharedPref.getString("workAuths", "");
 		String jsonPosition = sharedPref.getString("positions", "");
+		
+		//Check if there was any information stored in shared preferences
 		if (jsonMajor.equals("")) {
 			majors = new ArrayList<String>();
 		} else {
@@ -272,6 +321,7 @@ public class MainActivity extends Activity implements
 			position = gson.fromJson(jsonPosition, ArrayList.class);
 		}
 
+		//Get the new filteredCompanyList based on the shared preferences 
 		filteredCompanyList = DbAccess.getCompaniesWith("", "", majors,
 				workAuth, position, database);
 		filteredCompanyNames = DbAccess.getFilteredNames(database);

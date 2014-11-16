@@ -13,10 +13,19 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+/**
+ * DbAccessTest
+ * Contains a set of JUnit test cases to test the DbAccess class
+ * @author hewilder
+ */
 public class DbAccessTest extends AndroidTestCase {
 
 	SQLiteDatabase database;
 
+	/**
+	 * setUp
+	 * Sets up necessary resources for test
+	 */
 	@Override
 	protected void setUp() throws Exception {
 		
@@ -30,13 +39,19 @@ public class DbAccessTest extends AndroidTestCase {
 		super.setUp();
 	}
 
-	//Destroy objects when test is finished
+	/**
+	 * tearDown
+	 * Destroy objects when test is finished
+	 */
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
-	//Tests fillCompanies method
+	/**
+	 * testFillCompanies
+	 * Tests fillCompanies method
+	 */
 	public void testFillCompanies() {
 		ArrayList<Company> companies = new ArrayList<Company>();
 		DbAccess.fillCompanies(companies, database);
@@ -45,7 +60,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertNotNull(companies);
 	}
 
-	//Tests getFilteredNames method
+	/**
+	 * getFilteredNames
+	 * Tests getFilteredNames method
+	 */
 	public void testGetFilteredNames() {
 		testGetCompaniesWith();
 		ArrayList<String> filteredNames = DbAccess.getFilteredNames(database);
@@ -55,7 +73,10 @@ public class DbAccessTest extends AndroidTestCase {
 
 	}
 
-	//Tests getAllCompanies (returns ArrayList)
+	/**
+	 * testGetAllCompaniesArrayListOfCompanySQLiteDatabase
+	 * Tests getAllCompanies (returns ArrayList)
+	 */
 	public void testGetAllCompaniesArrayListOfCompanySQLiteDatabase() {
 		ArrayList<Company> companies = new ArrayList<Company>();
 		DbAccess.getAllCompanies(companies, database);
@@ -64,7 +85,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertNotNull(companies);
 	}
 
-	//Tests getAllCompanies (void return)
+	/**
+	 * testGetAllCompaniesSQLiteDatabase
+	 * Tests getAllCompanies (void return)
+	 */
 	public void testGetAllCompaniesSQLiteDatabase() {
 		ArrayList<Company> companies;
 		companies = DbAccess.getAllCompanies(database);
@@ -73,7 +97,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertNotNull(companies);
 	}
 
-	//Tests getCompaniesWith
+	/**
+	 * testGetCompaniesWith
+	 * Tests getCompaniesWith
+	 */
 	public void testGetCompaniesWith() {
 		ArrayList<Company> companies = DbAccess.getCompaniesWith("", "",
 				new ArrayList<String>(), new ArrayList<String>(),
@@ -83,22 +110,34 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertNotNull(companies);
 	}
 
-	// Deprecated (currently unused after performance fixes)
+	/**
+	 * testGetMajorsForCompany
+	 * Deprecated (currently unused after performance fixes)
+	 */
 	public void testGetMajorsForCompany() {
 
 	}
 
-	// Deprecated (currently unused after performance fixes)
+	/**
+	 * testGetPositionsForCompany
+	 * Deprecated (currently unused after performance fixes)
+	 */
 	public void testGetPositionsForCompany() {
 
 	}
 
-	// Deprecated (currently unused after performance fixes)
+	/**
+	 * testGetWorkAuthsForCompany
+	 * Deprecated (currently unused after performance fixes)
+	 */
 	public void testGetWorkAuthsForCompany() {
 
 	}
 
-	//Tests getAllMajors
+	/**
+	 * testGetAllMajors
+	 * Tests getAllMajors
+	 */
 	public void testGetAllMajors() {
 		ArrayList<Major> majorsByName = DbAccess.getAllMajors(database, true);
 		ArrayList<Major> majorsByAbbrev = DbAccess
@@ -114,7 +153,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertTrue(majorsByAbbrev.size() == 84);
 	}
 
-	//Tests getAllMajorNames
+	/**
+	 * testGetAllMajorNames
+	 * Tests getAllMajorNames
+	 */
 	public void testGetAllMajorNames() {
 		ArrayList<String> majorNames = DbAccess.getAllMajorNames(database);
 
@@ -125,7 +167,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertTrue(majorNames.size() == 84);
 	}
 
-	//Tests getAllMajorAbbrevs method
+	/**
+	 * testGetAllMajorAbbrevs
+	 * Tests getAllMajorAbbrevs method
+	 */
 	public void testGetAllMajorAbbrevs() {
 		ArrayList<String> majorAbbrevs = DbAccess.getAllMajorAbbrevs(database);
 
@@ -136,7 +181,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertTrue(majorAbbrevs.size() == 84);
 	}
 
-	//Tests getAllWorkAuths method
+	/**
+	 * testGetAllWorkAuths
+	 * Tests getAllWorkAuths method
+	 */
 	public void testGetAllWorkAuths() {
 		ArrayList<String> workAuths = DbAccess.getAllWorkAuths(database);
 
@@ -147,7 +195,10 @@ public class DbAccessTest extends AndroidTestCase {
 		Assert.assertTrue(workAuths.size() == 6);
 	}
 
-	//Tests getAllPositions method
+	/**
+	 * testGetAllPositions
+	 * Tests getAllPositions method
+	 */
 	public void testGetAllPositions() {
 		ArrayList<String> positions = DbAccess.getAllPositions(database);
 
