@@ -23,7 +23,39 @@ public class DbAccess {
 	private static HashMap<String, ArrayList<Major>> majorMap;
 	private static HashMap<String, ArrayList<String>> workAuthMap;
 	private static HashMap<String, ArrayList<String>> positionMap;
+	
+	private static ArrayList<String> lastFilteredNamesBlank = new ArrayList<String>();
+	private static ArrayList<Company> lastFilteredBlank = new ArrayList<Company>();
+	private static ArrayList<String> lastFilteredNamesNotBlank = new ArrayList<String>();
+	private static ArrayList<Company> lastFilteredNotBlank = new ArrayList<Company>();
+	
 
+	/**
+	 * getFilteredNamesSep
+	 * @param getBlanks - set to true if you want the filtered names that had a blank filter, false otherwise
+	 * @return an ArrayList<String> of the company names last filtered that either had (if true) or did not have (if false) a blank for a filtered value 
+	 */
+	public static ArrayList<String> getFilteredNamesSep(boolean getBlanks) {
+		if (getBlanks) {
+			return lastFilteredNamesBlank;
+		} else {
+			return lastFilteredNamesNotBlank;
+		}
+	}
+	
+	/**
+	 * getFilteredSep
+	 * @param getBlanks - set to true if you want the filtered companies that had a blank filter, false otherwise
+	 * @return an ArrayList<Company> of the companies last filtered that either had (if true) or did not have (if false) a blank for a filtered value 
+	 */
+	public static ArrayList<Company> getFilteredSep(boolean getBlanks) {
+		if (getBlanks) {
+			return lastFilteredBlank;
+		} else {
+			return lastFilteredNotBlank;
+		}
+	}
+	
 	/**
 	 * fillPositionMap - gets all the positions each company is
 	 * hiring for and places them into a map for later retrieval 
@@ -79,9 +111,11 @@ public class DbAccess {
 
 				ArrayList<String> list = workAuthMap.get(workAuthsCursor
 						.getString(0));
+			
 				if (list == null) {
 					ArrayList<String> newlist = new ArrayList<String>();
 					newlist.add(workAuthsCursor.getString(1));
+					String companyName = workAuthsCursor.getString(0);
 					workAuthMap.put(workAuthsCursor.getString(0), newlist);
 				} else {
 					list.add(workAuthsCursor.getString(1));
@@ -274,7 +308,11 @@ public class DbAccess {
 			SQLiteDatabase database) {
 		ArrayList<Company> companies = new ArrayList<Company>();
 		lastFilteredNames = new ArrayList<String>();
-
+		lastFilteredNamesBlank = new ArrayList<String>();
+		lastFilteredBlank = new ArrayList<Company>();
+		
+		lastFilteredNamesNotBlank = new ArrayList<String>();
+		lastFilteredNotBlank = new ArrayList<Company>();
 		// Set default from and where strings (if there are no filters
 		// specified)
 		String fromString = "FROM company, companyToLocation, location, room";
@@ -368,10 +406,28 @@ public class DbAccess {
 				if (workAuthList == null) {
 					workAuthList = new ArrayList<String>();
 				}
+				
 				Company newCompany = new Company(name, website, tableNum, room,
 						majorList, positionList, workAuthList);
 				companies.add(newCompany);
-
+				
+				//Determine if any of the fields matched a blank
+				
+				
+				
+				if (!filterMajor.isEmpty() && majorList.isEmpty()) {
+					lastFilteredNamesBlank.add(name);
+					lastFilteredBlank.add(newCompany);
+				} else if (!filterWorkAuth.isEmpty() && workAuthList.isEmpty()) {
+					lastFilteredNamesBlank.add(name);
+					lastFilteredBlank.add(newCompany);
+				} else if (!filterPosition.isEmpty() && positionList.isEmpty()) {
+					lastFilteredNamesBlank.add(name);
+					lastFilteredBlank.add(newCompany);
+				} else {
+					lastFilteredNamesNotBlank.add(name);
+					lastFilteredNotBlank.add(newCompany);
+				}
 			} while (companiesCursor.moveToNext());
 		}
 		companiesCursor.close();
@@ -440,6 +496,7 @@ public class DbAccess {
 		if (!positionsCursor.isAfterLast()) {
 			do {
 				positions.add(positionsCursor.getString(0));
+								
 			} while (positionsCursor.moveToNext());
 		}
 		positionsCursor.close();
@@ -510,7 +567,9 @@ public class DbAccess {
 			do {
 				String majorName = majorsCursor.getString(0);
 				String majorAbbrev = majorsCursor.getString(1);
-				majors.add(new Major(majorName, majorAbbrev));
+				if (!majorName.equals("")) {
+					majors.add(new Major(majorName, majorAbbrev));
+				}
 			} while (majorsCursor.moveToNext());
 		}
 		majorsCursor.close();
@@ -587,7 +646,8 @@ public class DbAccess {
 		workAuthsCursor.moveToFirst();
 		if (!workAuthsCursor.isAfterLast()) {
 			do {
-				workAuths.add(workAuthsCursor.getString(0));
+				if(!workAuthsCursor.getString(0).equals("") )
+					workAuths.add(workAuthsCursor.getString(0));
 			} while (workAuthsCursor.moveToNext());
 		}
 		workAuthsCursor.close();
@@ -612,7 +672,10 @@ public class DbAccess {
 		positionsCursor.moveToFirst();
 		if (!positionsCursor.isAfterLast()) {
 			do {
-				positions.add(positionsCursor.getString(0));
+				if (!positionsCursor.getString(0).equals("")) {
+					positions.add(positionsCursor.getString(0));
+				}
+				
 			} while (positionsCursor.moveToNext());
 		}
 

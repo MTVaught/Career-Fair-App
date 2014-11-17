@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import com.helpers.CheckBoxListener;
 import com.helpers.ResetButtonListener;
+import com.helpers.separateListListener;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,7 +24,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class PreferencesViewFragment extends Fragment {
 
@@ -101,6 +104,11 @@ public class PreferencesViewFragment extends Fragment {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		sv.addView(ll);
 
+		TextView tv = new TextView(getActivity());
+		tv.setText("Set your preferences below");
+		tv.setTextSize(24);
+		ll.addView(tv);
+		
 		// Add reset button, Listener is added later
 		Button resetButton = new Button(getActivity());		 
 		resetButton.setText("Reset All Filters");
@@ -108,10 +116,13 @@ public class PreferencesViewFragment extends Fragment {
 		resetButton.setOnClickListener(resetButtonListen);
 		ll.addView(resetButton);
 		
-		TextView tv = new TextView(getActivity());
-		tv.setText("Set your preferences below");
-		tv.setTextSize(24);
-		ll.addView(tv);
+		TextView separateButtonLabel = new TextView(getActivity());
+		separateButtonLabel.setText("Move companies missing information for filtered fields to the bottom of the list");
+		ll.addView(separateButtonLabel);
+		
+		Switch separateCompanyList = new Switch(getActivity());
+		separateCompanyList.setOnCheckedChangeListener(new separateListListener(separateCompanyList, sharedPref, editor, getActivity()));
+		ll.addView(separateCompanyList);
 
 		TextView WorkAuthText = new TextView(getActivity());
 		WorkAuthText.setText("Work Authorizations");

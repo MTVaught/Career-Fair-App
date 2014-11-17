@@ -2,13 +2,17 @@ package com.fragments;
 
 import java.util.ArrayList;
 
+import com.database.DbAccess;
 import com.example.careerfair.R;
 import com.example.careerfair.R.id;
 import com.example.careerfair.R.layout;
+import com.helpers.SeparatedListAdapter;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -125,81 +129,114 @@ public class CompanyListFragment extends Fragment {
 	 * @para inflater - The LayoutInflater object that can be used to inflate any view in this fragment
 	 * @para container - if non-null,this is the parent view that the fragment's UI should be attached to.
 	 * The fragment should not add view itself ,but this can be used to generate the LayoutParams of the view
-	 * @para savedInstanceState - if fragment is re-created from previous saved state ,this is the state
+	 * @param savedInstanceState - if fragment is re-created from previous saved state ,this is the state
 	 * @return mCompanyListView the returned user interface for companyListView   
 	 */
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		
 		// Inflate the layout for this fragment
 		/* non-javadoc
 		 * changed the xml file .The basic company_list.xml layout is <RelativeLayout> now
 		 * and the ListView is one its subView
 		 */
 		this.mCompanyListView =  inflater.inflate(
-		R.layout.company_list, container, false);
-		
+				R.layout.company_list, container, false);
+
 		/*non-javadoc
 		 * To get the ListView of the layout
 		 */
 		ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
-		
-		
-		lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-					@Override
-					/**onItemClick
-					 * Called when item in the adapterView is clicked
-					 * @para parent - The adapter view where the click happened
-					 * @para view - The view within the Adapter View that was clicked
-					 * @para position - the position of view in the adapter
-					 * @para id The Row id of the item that was clicked
-					 */
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						selectItem(position);
-					}
-				});
-		lv1.setAdapter(new ArrayAdapter<String>(getActionBar()
-				.getThemedContext(),
-				android.R.layout.simple_list_item_activated_1,
-				((MainActivity)getActivity()).filteredCompanyNames));                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-		lv1.setItemChecked(mCurrentSelectedPosition, true);
-		
-		
-		
-		/*
-		 * non-java-doc
-		 * Setup the alphabet array from filteredCompanyNames
-		 */
 
-		
-		for(int i=0;i<companyNameTag.size();i++){
+		// Bring the MainActivity's sharedPreferences into this fragment
+		SharedPreferences sharedPref = getActivity().getPreferences(
+						Context.MODE_PRIVATE);
 			
-			LinearLayout ll = (LinearLayout)mCompanyListView.findViewById(id.scroll_alphabet);
+		if (sharedPref.getBoolean("separateLists", true)) {
+			SeparatedListAdapter adapter = new SeparatedListAdapter(this.getActivity());
+			adapter.addSection("Matches", new ArrayAdapter<String>(getActionBar().getThemedContext(), android.R.layout.simple_list_item_activated_1, DbAccess.getFilteredNamesSep(false) ));
+			if (DbAccess.getFilteredNamesSep(true).size() > 0) {
+				adapter.addSection("Other Possible Matches (Information Missing)", new ArrayAdapter<String>(getActionBar().getThemedContext(), android.R.layout.simple_list_item_activated_1, DbAccess.getFilteredNamesSep(true) ));
+			}
 			
-			Button btn1 = new Button(getActivity());
-			btn1.setText(companyNameTag.get(i).toString());
-			btn1.setTag(companyNameTag.get(i).toString());
-			ll.addView(btn1);
-			//set up the button listener to listen to clicked index
-			btn1.setOnClickListener(new Button.OnClickListener(){ 
+			lv1.setAdapter(adapter);
+			
+			lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				@Override
-				public void onClick(View v) {
-					String firstLetter = (String) v.getTag();
-					int index = 0;
-					if (((MainActivity)getActivity()).filteredCompanyNames != null) {
-						for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
-							if (string.startsWith(firstLetter)) {
-								index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
-								break;
+				/**onItemClick
+				 * Called when item in the adapterView is clicked
+				 * @param parent - The adapter view where the click happened
+				 * @param view - The view within the Adapter View that was clicked
+				 * @param position - the position of view in the adapter
+				 * @param id The Row id of the item that was clicked
+				 */
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					SeparatedListAdapter adapter = (SeparatedListAdapter) parent.getAdapter();
+					adapter.getItem(position);
+					selectItem(position, adapter.getLastSearchedPosition());
+				}
+			});
+		} else {
+
+			
+
+			lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				/**onItemClick
+				 * Called when item in the adapterView is clicked
+				 * @param parent - The adapter view where the click happened
+				 * @param view - The view within the Adapter View that was clicked
+				 * @param position - the position of view in the adapter
+				 * @param id The Row id of the item that was clicked
+				 */
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					selectItem(position);
+				}
+			});
+			lv1.setAdapter(new ArrayAdapter<String>(getActionBar()
+					.getThemedContext(),
+					android.R.layout.simple_list_item_activated_1,
+					((MainActivity)getActivity()).filteredCompanyNames));                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			lv1.setItemChecked(mCurrentSelectedPosition, true);
+
+
+
+			/*
+			 * non-java-doc
+			 * Setup the alphabet array from filteredCompanyNames
+			 */
+
+
+			for(int i=0;i<companyNameTag.size();i++){
+
+				LinearLayout ll = (LinearLayout)mCompanyListView.findViewById(id.scroll_alphabet);
+
+				Button btn1 = new Button(getActivity());
+				btn1.setText(companyNameTag.get(i).toString());
+				btn1.setTag(companyNameTag.get(i).toString());
+				ll.addView(btn1);
+				//set up the button listener to listen to clicked index
+				btn1.setOnClickListener(new Button.OnClickListener(){ 
+					@Override
+					public void onClick(View v) {
+						String firstLetter = (String) v.getTag();
+						int index = 0;
+						if (((MainActivity)getActivity()).filteredCompanyNames != null) {
+							for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
+								if (string.startsWith(firstLetter)) {
+									index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
+									break;
+								}
 							}
 						}
+						ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+						lv1.setSelectionFromTop(index, 0);
 					}
-					ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
-					lv1.setSelectionFromTop(index, 0);
-				}
 				});    
 			}
+		}
 		return mCompanyListView;
 	}
 
@@ -235,18 +272,40 @@ public class CompanyListFragment extends Fragment {
 			mCallbacks.onCompanyListItemSelected(position);
 		}
 	}
+	
+	/**selectItem
+	 * Called in onItemClick(AdapterView<?> parent, View view,int position, long id)
+	 * if the mCompanyListView is not null ,Set the item clicked to be checked 
+	 * And if mCallbacks is not null,call its method.
+	 * @param position - the index of clicked item in the list
+	 */
+
+	private void selectItem(int absPosition, int relPosition) {
+		mCurrentSelectedPosition = absPosition;
+		if (mCompanyListView != null) {
+			ListView lv1 = (ListView)mCompanyListView.findViewById(id.listView1);
+			lv1.setItemChecked(absPosition, true);
+		}
+		// if (mDrawerLayout != null) {
+		// mDrawerLayout.closeDrawer(mFragmentContainerView);
+		// }
+		if (mCallbacks != null) {
+			mCallbacks.onCompanyListItemSelected(absPosition, relPosition);
+		}
+	}
+	
     /**CompanyListCallbacks
      * The interface which must be implemented by MainActivity to handle the click events
      * @author zichengl
      *
      */
-	
 	public static interface CompanyListCallbacks {
 		/**onCompanyListItemSelected
 		 * Called in selectItem(int position) when an item in the CompanyList drawer is selected.
 		 * @para position - the index of clicked item in the list
 		 */
 		void onCompanyListItemSelected(int position);
+		void onCompanyListItemSelected(int absPosition, int relPosition);
 	}
 
 	@Override
