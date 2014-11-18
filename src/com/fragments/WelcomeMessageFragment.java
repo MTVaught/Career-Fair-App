@@ -63,20 +63,18 @@ public class WelcomeMessageFragment extends Fragment {
 		// Content
 		tv = new TextView(getActivity());
 		tv.setTextSize(17);
-		tv.setText("Pellentesque habitant morbi tristique senectus et netus et"
-				+ " malesuada fames ac turpis egestas. Vestibulum tortor quam,"
-				+ " feugiat vitae, ultricies eget, tempor sit amet, ante. Done"
-				+ "c eu libero sit amet quam egestas semper. Aenean ultricies "
-				+ "mi vitae est. Mauris placerat eleifend leo. Quisque sit ame"
-				+ "t est et sapien ullamcorper pharetra. Vestibulum erat wisi,"
-				+ " condimentum sed, commodo vitae, ornare sit amet, wisi. Aen"
-				+ "ean fermentum, elit eget tincidunt condimentum, eros ipsum "
-				+ "rutrum orci, sagittis tempus lacus enim ac dui. Donec non e"
-				+ "nim in turpis pulvinar facilisis. Ut felis. Praesent dapibu"
-				+ "s, neque id cursus faucibus, tortor neque egestas augue, eu"
-				+ " vulputate magna eros eu erat. Aliquam erat volutpat. Nam d"
-				+ "ui mi, tincidunt quis, accumsan porttitor, facilisis luctus"
-				+ ", metus");
+		tv.setText("The list of all companies attending the career fair can be"
+				+ " navigated to through the left navigation drawer. The list"
+				+ " is populated in alphabetical order ignoring \"the\" at"
+				+ " the beginning of company names. To quickly navigate to a "
+				+ "company, use the quick navigation bar on the right of the "
+				+ "screen to select a letter in the alphabet to jump to that "
+				+ "position in the list.\n"
+				+ "To view more details about any company, simply tap on the "
+				+ "name in the list. A detailed view of the company will "
+				+ "appear. From this menu you can navigate to the company's "
+				+ "booth location. To return to the list, use the back button"
+				+ " of your android device.");
 		ll.addView(tv);
 
 		// The Map Views Title
@@ -90,20 +88,13 @@ public class WelcomeMessageFragment extends Fragment {
 		// Content
 		tv = new TextView(getActivity());
 		tv.setTextSize(17);
-		tv.setText("Pellentesque habitant morbi tristique senectus et netus et"
-				+ " malesuada fames ac turpis egestas. Vestibulum tortor quam,"
-				+ " feugiat vitae, ultricies eget, tempor sit amet, ante. Done"
-				+ "c eu libero sit amet quam egestas semper. Aenean ultricies "
-				+ "mi vitae est. Mauris placerat eleifend leo. Quisque sit ame"
-				+ "t est et sapien ullamcorper pharetra. Vestibulum erat wisi,"
-				+ " condimentum sed, commodo vitae, ornare sit amet, wisi. Aen"
-				+ "ean fermentum, elit eget tincidunt condimentum, eros ipsum "
-				+ "rutrum orci, sagittis tempus lacus enim ac dui. Donec non e"
-				+ "nim in turpis pulvinar facilisis. Ut felis. Praesent dapibu"
-				+ "s, neque id cursus faucibus, tortor neque egestas augue, eu"
-				+ " vulputate magna eros eu erat. Aliquam erat volutpat. Nam d"
-				+ "ui mi, tincidunt quis, accumsan porttitor, facilisis luctus"
-				+ ", metus");
+		tv.setText("There are two maps in this application: "
+				+ "The Multi-Purpose Room and the Varsity Gym.\n"
+				+ "Both are operated the same way. The maps support pinch-to-"
+				+ "zoom and panning. To see what company is at a table, tap on"
+				+ " the table. A bubble will appear containing the company "
+				+ "name and the booth number. Tapping on the bubble will open "
+				+ "up a screen with more details about that company.");
 		ll.addView(tv);
 
 		// Filter Options Title
