@@ -108,20 +108,16 @@ public class WelcomeMessageFragment extends Fragment {
 		// Content
 		tv = new TextView(getActivity());
 		tv.setTextSize(17);
-		tv.setText("Pellentesque habitant morbi tristique senectus et netus et"
-				+ " malesuada fames ac turpis egestas. Vestibulum tortor quam,"
-				+ " feugiat vitae, ultricies eget, tempor sit amet, ante. Done"
-				+ "c eu libero sit amet quam egestas semper. Aenean ultricies "
-				+ "mi vitae est. Mauris placerat eleifend leo. Quisque sit ame"
-				+ "t est et sapien ullamcorper pharetra. Vestibulum erat wisi,"
-				+ " condimentum sed, commodo vitae, ornare sit amet, wisi. Aen"
-				+ "ean fermentum, elit eget tincidunt condimentum, eros ipsum "
-				+ "rutrum orci, sagittis tempus lacus enim ac dui. Donec non e"
-				+ "nim in turpis pulvinar facilisis. Ut felis. Praesent dapibu"
-				+ "s, neque id cursus faucibus, tortor neque egestas augue, eu"
-				+ " vulputate magna eros eu erat. Aliquam erat volutpat. Nam d"
-				+ "ui mi, tincidunt quis, accumsan porttitor, facilisis luctus"
-				+ ", metus");
+		tv.setText("The filter options are designed so that job offers for "
+				+ "specific work authorization, employment terms, and majors "
+				+ "can be easily identified and located.\n"
+				+ "The recommended use of these filters is to check all that "
+				+ "apply. The application will automatically filter from "
+				+ "those results. The list of companies will automatically "
+				+ "repopulate based on the filter. The maps will display a "
+				+ "yellow rectangle around the booths that match the filtering"
+				+ ". To quickly remove all filtering, use the reset filters "
+				+ "button, located at the top of the filtering menu.");
 		ll.addView(tv);
 		return sv;
 	}
