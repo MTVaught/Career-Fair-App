@@ -240,7 +240,7 @@ public class CompanyListFragment extends Fragment {
 						int index = 0;
 						if (((MainActivity)getActivity()).filteredCompanyNames != null) {
 							for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
-								if (string.replace("The","").startsWith(firstLetter)) {
+								if (string.replace("The","").trim().startsWith(firstLetter)) {
 									index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
 									break;
 								}
@@ -353,7 +353,7 @@ public class CompanyListFragment extends Fragment {
 		 * Setup the alphabet array from filteredCompanyNames
 		 */
 		for(String string: ((MainActivity)getActivity()).filteredCompanyNames){
-			String tag = string.substring(0, 1);
+			String tag = string.replace("The","").trim().substring(0, 1);
 				if (!companyNameTag.contains(tag))
 					companyNameTag.add(tag);
 					
