@@ -57,6 +57,10 @@ public class CompanyListFragment extends Fragment {
 	private static ArrayList<String> companyNames;
 	private static ArrayList<String> companyNameTag = new ArrayList<String>();
 	
+	private static ArrayList<String> companyNameTagNoBlank = new ArrayList<String>();
+	private static ArrayList<String> companyNameTagBlank = new ArrayList<String>();
+	
+	
 	private static int goToPosition;
 	private static int goToOffset;
 	private static boolean positionSaved;
@@ -192,6 +196,77 @@ public class CompanyListFragment extends Fragment {
 					selectItem(position, adapter.getLastSearchedPosition());
 				}
 			});
+			
+			LinearLayout ll = (LinearLayout)mCompanyListView.findViewById(id.scroll_alphabet);
+			
+			for(int i=0;i<companyNameTagNoBlank.size();i++){
+
+				Button btn1 = new Button(getActivity());
+				btn1.setText(companyNameTagNoBlank.get(i).toString());
+				btn1.setTag(companyNameTagNoBlank.get(i).toString());
+				ll.addView(btn1);
+				//set up the button listener to listen to clicked index
+				btn1.setOnClickListener(new Button.OnClickListener(){ 
+					@Override
+					public void onClick(View v) {
+						String firstLetter = (String) v.getTag();
+						int index = 0;
+						ArrayList<String> filteredNames = DbAccess.getFilteredNamesSep(false);
+						if (filteredNames != null) {
+							for (String string : filteredNames) {
+								if (string.replace("The ","").trim().startsWith(firstLetter)) {
+									index = filteredNames.indexOf(string);
+									break;
+								}
+							}
+						}
+						ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+						lv1.setSelectionFromTop(index + 1, 0);
+					}
+				});    
+			}
+			if (DbAccess.getFilteredNamesSep(true).size() > 0) {
+				Button btn2 = new Button(getActivity());
+				btn2.setText("-");
+				btn2.setOnClickListener(new Button.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+						lv1.setSelectionFromTop(DbAccess.getFilteredNamesSep(false).size()+1, 0);
+					}
+				});
+				ll.addView(btn2);
+				
+				for(int i=0;i<companyNameTagBlank.size();i++){
+
+					Button btn1 = new Button(getActivity());
+					btn1.setText(companyNameTagBlank.get(i).toString());
+					btn1.setTag(companyNameTagBlank.get(i).toString());
+					ll.addView(btn1);
+			
+					//set up the button listener to listen to clicked index
+					btn1.setOnClickListener(new Button.OnClickListener(){ 
+						@Override
+						public void onClick(View v) {
+							String firstLetter = (String) v.getTag();
+							int index = 0;
+							ArrayList<String> filteredNames = DbAccess.getFilteredNamesSep(true);
+							int nonBlankSize = DbAccess.getFilteredNamesSep(false).size();
+							if (filteredNames != null) {
+								for (String string : filteredNames) {
+									if (string.replace("The ","").trim().startsWith(firstLetter)) {
+										index = filteredNames.indexOf(string);
+										break;
+									}
+								}
+							}
+							ListView lv1 = (ListView) mCompanyListView.findViewById(id.listView1);
+							lv1.setSelectionFromTop(index + nonBlankSize + 2, 0);
+						}
+					});    
+				}
+			}
+			
 		} else {
 
 			
@@ -240,7 +315,7 @@ public class CompanyListFragment extends Fragment {
 						int index = 0;
 						if (((MainActivity)getActivity()).filteredCompanyNames != null) {
 							for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
-								if (string.replace("The","").trim().startsWith(firstLetter)) {
+								if (string.replace("The ","").trim().startsWith(firstLetter)) {
 									index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
 									break;
 								}
@@ -348,16 +423,36 @@ public class CompanyListFragment extends Fragment {
 	 */
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		/*
-		 * non-java-doc
-		 * Setup the alphabet array from filteredCompanyNames
-		 */
-		for(String string: ((MainActivity)getActivity()).filteredCompanyNames){
-			String tag = string.replace("The","").trim().substring(0, 1);
-				if (!companyNameTag.contains(tag))
-					companyNameTag.add(tag);
-					
+		
+		SharedPreferences sharedPref = getActivity().getPreferences(
+				Context.MODE_PRIVATE);
+	
+		if (sharedPref.getBoolean("separateLists", true)) {
+			//Setup the alphabet array from filteredCompanyNames
+			for(String string: DbAccess.getFilteredNamesSep(false)){
+				String tag = string.replace("The ","").trim().substring(0, 1);
+					if (!companyNameTagNoBlank.contains(tag))
+						companyNameTagNoBlank.add(tag);
+						
+			}
+			
+			//Setup the alphabet array from filteredCompanyNames
+			for(String string: DbAccess.getFilteredNamesSep(true)){
+				String tag = string.replace("The ","").trim().substring(0, 1);
+					if (!companyNameTagBlank.contains(tag))
+						companyNameTagBlank.add(tag);
+						
+			}
+		} else {
+			//Setup the alphabet array from filteredCompanyNames
+			for(String string: ((MainActivity)getActivity()).filteredCompanyNames){
+				String tag = string.replace("The ","").trim().substring(0, 1);
+					if (!companyNameTag.contains(tag))
+						companyNameTag.add(tag);
+						
+			}
 		}
+		
 		
 		try {
 			mCallbacks = (CompanyListCallbacks) activity;
