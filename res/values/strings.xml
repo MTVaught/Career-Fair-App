@@ -10,5 +10,6 @@
     <string name="title_woodgym">Varsity Gym</string>
     <string name="title_preferencesview">Filter Options</string>
     <string name="title_welcomemessage">Welcome</string>
+    <string name="ButtonTextMap">Show Map</string>
 
 </resources>

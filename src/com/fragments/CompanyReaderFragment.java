@@ -9,6 +9,8 @@ import com.example.careerfair.R;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -48,6 +51,14 @@ public class CompanyReaderFragment extends Fragment {
 		CompanyReaderFragment fragment = new CompanyReaderFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
+	public static CompanyReaderFragment newInstance( Company company) {
+		companyObj = company;
+		CompanyReaderFragment fragment = new CompanyReaderFragment();
+		Bundle args = new Bundle();
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -194,11 +205,44 @@ public class CompanyReaderFragment extends Fragment {
 		tv.setText(Html.fromHtml("Website: <a href='"
 				+ companyObj.getWebsite() + "'> " + companyObj.getWebsite()
 				+ " </a>"));
-		tv.setClickable(true);
+
+		
+        tv.setClickable(true);
 		tv.setMovementMethod(LinkMovementMethod.getInstance());
 		ll.addView(tv);
+        
+		//button for map view
+		Button MapButton = new Button( getActivity() );
+		MapButton.setText("Show Map");
+		MapButton.setOnClickListener(new View.OnClickListener() {
+		   
+			public void onClick(View v) {
+				FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
+				FragmentTransaction ft = fragmentManager.beginTransaction();
+				
+				boolean isInMulti = false ;
+				if ( companyObj.getRoom().contains("Multi") )
+				{
+					isInMulti = true;
+				}
+				if ( isInMulti )
+				{
+					ft.replace(R.id.container,
+							MultiPurposeGymFragment.newInstance( companyObj ))
+							.commit();
+				}
+				else
+				{
+					ft.replace(R.id.container,
+							WoodGymFragment.newInstance( companyObj ))
+							.commit();
+				}
+		    }
+		});		
+		ll.addView( MapButton );
 		
 		return sv;
+
 	}
 	
 //	@Override

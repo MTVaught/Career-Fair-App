@@ -162,6 +162,7 @@ public class ImageMap extends ImageView
 	 */
 	ArrayList<Area> mAreaList = new ArrayList<Area>();
 	SparseArray<Area> mIdToArea = new SparseArray<Area>();
+	HashMap<String,Integer> mAreaNameToId = new HashMap<String,Integer>();
 
 	// click handler list
 	ArrayList<OnImageMapClickedHandler> mCallbackList;
@@ -412,6 +413,9 @@ public class ImageMap extends ImageView
 	{
 		mAreaList.add(a);
 		mIdToArea.put(a.getId(), a);
+		//int subI = a.getName().indexOf(",");
+		//String name = a.getName().substring(0, subI);
+		mAreaNameToId.put( a.getName(), a.getId() );
 	}
 
 	public void addBubble(String text, int areaId )
@@ -498,7 +502,7 @@ public class ImageMap extends ImageView
 		mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
-
+		
 
 		//find out the screen density
 		densityFactor = getResources().getDisplayMetrics().density;
@@ -730,7 +734,7 @@ public class ImageMap extends ImageView
 				}
 
 				mScrollTop = 0;
-				mScrollLeft = 0;
+				mScrollLeft = -( (mViewWidth/2) - 50);
 
 				// scale the bitmap
 				if (resize) {
@@ -738,6 +742,7 @@ public class ImageMap extends ImageView
 				} else {
 					mExpandWidth=newWidth;
 					mExpandHeight=newHeight;
+					
 
 					mResizeFactorX = ((float) newWidth / mImageWidth);
 					mResizeFactorY = ((float) newHeight / mImageHeight);
@@ -846,6 +851,7 @@ public class ImageMap extends ImageView
 		{
 			int key = mBubbleMap.keyAt(i);
 			Bubble b = mBubbleMap.get(key);
+			
 			if (b != null)
 			{
 				b.onDraw(canvas);
@@ -1485,7 +1491,7 @@ public class ImageMap extends ImageView
 			{
 				float x = (getOriginX() * mResizeFactorX) + mScrollLeft;
 				float y = (getOriginY() * mResizeFactorY) + mScrollTop; 
-				canvas.drawCircle(x, y, 8, highlightPaint );
+				//canvas.drawCircle( x, y, 7, highlightPaint );
 			}
 			if (_decoration != null)
 			{
@@ -1531,6 +1537,29 @@ public class ImageMap extends ImageView
 				}
 			}
 			return ret;
+		}
+		
+		public void onDraw(Canvas canvas)
+		{
+			super.onDraw( canvas );
+			if ( selected )
+			{
+				float l = (_left * mResizeFactorX) + mScrollLeft;
+				float t = (_top * mResizeFactorY) + mScrollTop; 
+				float b = (_bottom * mResizeFactorX);
+				float r = (_right * mResizeFactorY) + mScrollLeft; 
+				highlightPaint.setStrokeWidth( 3 );
+				//top line
+				canvas.drawLine( l, t, r, t, highlightPaint);
+				//right side
+				canvas.drawLine( l, t, l, b, highlightPaint );
+				//left side
+				canvas.drawLine( r, t, r, b, highlightPaint );
+				//bottom
+				canvas.drawLine( l, b, r, b, highlightPaint );
+				
+				
+			}
 		}
 
 		public float getOriginX() {
@@ -1740,13 +1769,28 @@ public class ImageMap extends ImageView
 			_text = text;
 			_x = x*mResizeFactorX;
 			_y = y*mResizeFactorY;
+			//if we are coming from the list view, multiply by the default resize factor
+			if ( _x  == 0 && _y == 0 )
+			{
+				mImageHeight = mImage.getHeight();
+				mImageWidth = mImage.getWidth();
+				mAspect = (float)mImageWidth / mImageHeight;
+				mViewWidth = getResources().getDisplayMetrics().widthPixels;
+				mViewHeight = getResources().getDisplayMetrics().heightPixels;
+				int dpi = getResources().getDisplayMetrics().densityDpi;
+				mViewHeight = mViewHeight - ( 48*(dpi/160) ); //48dp is the navigation bar
+															  //dp = 1px on 160dpi screen
+				setInitialImageBounds();
+				_x = x*mResizeFactorX;
+				_y = y*mResizeFactorY;
+			}
 			Rect bounds = new Rect();
 			textPaint.setTextScaleX(1.0f);
 			textPaint.getTextBounds(text, 0, _text.length(), bounds);
 			_h = bounds.bottom-bounds.top+20;
 			_w = bounds.right-bounds.left+20;
 
-			if (_w>mViewWidth) {
+			if (_w>mViewWidth && mViewWidth != -1) {
 				// too long for the display width...need to scale down
 				float newscale=((float)mViewWidth/(float)_w);
 				textPaint.setTextScaleX(newscale);
@@ -1763,7 +1807,7 @@ public class ImageMap extends ImageView
 			if (_left < 0) {
 				_left = 0;
 			}
-			if ((_left + _w) > mExpandWidth) {
+			if ((_left + _w) > mExpandWidth && mExpandWidth != 0 ) {
 				_left = mExpandWidth - _w;
 			}
 			if (_top < 0) {

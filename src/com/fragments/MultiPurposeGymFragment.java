@@ -1,5 +1,9 @@
 package com.fragments;
 
+import java.util.ArrayList;
+
+import com.database.Company;
+import com.database.DbAccess;
 import com.example.careerfair.R;
 import com.example.careerfair.R.drawable;
 import com.example.careerfair.R.id;
@@ -8,6 +12,9 @@ import com.fragments.ImageMap.OnImageMapClickedHandler;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +37,9 @@ public class MultiPurposeGymFragment extends Fragment {
 	 */
 	private static final String ARG_SECTION_NUMBER = "MultiPurpose";
 	private ImageMap mMultiMap;
+	private SQLiteDatabase mDatabase;
+	private ArrayList<Company> mCompanies;
+	private Company mDefaultCompany;
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -47,8 +57,27 @@ public class MultiPurposeGymFragment extends Fragment {
 		// }
 		return fragment;
 	}
+	
+	public static MultiPurposeGymFragment newInstance( Company company ) {
+		
+		MultiPurposeGymFragment fragment = new MultiPurposeGymFragment( company );
+		Bundle args = new Bundle();
+		fragment.setArguments(args);
+		
+		return fragment;
+	}
 
 	public MultiPurposeGymFragment() {
+		
+		mDatabase = MainActivity.appMainActivity.database;
+		mCompanies = DbAccess.getAllCompanies( mDatabase);
+	}
+	
+	public MultiPurposeGymFragment( Company c ) {
+		
+		mDatabase = MainActivity.appMainActivity.database;
+		mCompanies = DbAccess.getAllCompanies( mDatabase);
+		mDefaultCompany = c;
 	}
 
 	/**
@@ -81,8 +110,35 @@ public class MultiPurposeGymFragment extends Fragment {
 					@Override
 					public void onBubbleClicked(int id) {
 						Log.v("Booth: ", "" + id);
+						FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
+						FragmentTransaction ft = fragmentManager.beginTransaction();
+						String name = mMultiMap.mIdToArea.get( id ).getName();
+						int subI = name.indexOf(",");
+						name = name.substring(0, subI);
+						String bId = mMultiMap.mIdToArea.get( id ).getbId();
+						//replace with hashmap
+						Company clickedCompany = null;
+						for ( Company c : mCompanies )
+						{
+							if ( c.getName().equals(name)) 
+							{
+								clickedCompany = c;
+								break;
+							}
+						}
+						MainActivity.appMainActivity.setTitle( clickedCompany.getName() );
+						ft.replace(R.id.container,
+								CompanyReaderFragment.newInstance( clickedCompany ))
+								.commit();
+						MainActivity.appMainActivity.inCompanyView = true;
 					}
 				});
+		
+		if (mDefaultCompany != null )
+		{
+			String name = mDefaultCompany.getName() + ", " + mDefaultCompany.getTableNum();
+			mMultiMap.showBubble( mMultiMap.mAreaNameToId.get( name ) );
+		}
 
 		return main;
 	}
