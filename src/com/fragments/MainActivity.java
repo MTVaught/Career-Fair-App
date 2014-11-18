@@ -103,22 +103,17 @@ public class MainActivity extends Activity implements
 			ft.replace(
 					R.id.container,
 					CompanyListFragment.newInstance(position,
-							filteredCompanyNames));
-			ft.addToBackStack(null);
-			ft.commit();
+							filteredCompanyNames)).commit();
 			break;
 		//Displays Multipurpose Gym map
 		case 1:
 			ft.replace(R.id.container,
-					MultiPurposeGymFragment.newInstance(position));
-			ft.addToBackStack(null);
-			ft.commit();
+					MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
 		//Displays Wood Gym map
 		case 2:
-			ft.replace(R.id.container, WoodGymFragment.newInstance(position));
-			ft.addToBackStack(null);
-			ft.commit();
+			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
+					.commit();
 			break;
 		//Displays the filter
 		case 3:
@@ -129,9 +124,7 @@ public class MainActivity extends Activity implements
 			ft.replace(
 					R.id.container,
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
-							WorkAuths, Positions));
-			ft.addToBackStack(null);
-			ft.commit();
+							WorkAuths, Positions)).commit();
 			break;
 		}
 
@@ -150,9 +143,8 @@ public class MainActivity extends Activity implements
 		Company clickedCompany = filteredCompanyList.get(position);
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
-				CompanyReaderFragment.newInstance(position, clickedCompany));
-		ft.addToBackStack(null);
-		ft.commit();
+				CompanyReaderFragment.newInstance(position, clickedCompany))
+				.commit();
 		inCompanyView = true;
 	}
 
@@ -240,6 +232,24 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * onBackPressed
+	 * Controls the actions taken when the back arrow is pressed while in the android application.
+	 * By default, no action is taken unless the user is in the Detailed Company View, then they
+	 * are taken to the List of Companies.
+	 */
+	@Override
+	public void onBackPressed() {
+		Log.d("CDA", "onBackPressed Called");
+		if (inCompanyView) {
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			inCompanyView = false;
+			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+					.commit();
+		} else {
+		}
+	}
 
 	/**
 	 * databaseOpen
