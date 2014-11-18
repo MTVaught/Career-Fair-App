@@ -56,6 +56,10 @@ public class CompanyListFragment extends Fragment {
 	// private static ArrayList<Company> companyList;
 	private static ArrayList<String> companyNames;
 	private static ArrayList<String> companyNameTag = new ArrayList<String>();
+	
+	private static int goToPosition;
+	private static int goToOffset;
+	private static boolean positionSaved;
 
 	/*
 	 * ArrayList to store the information returned by the database
@@ -89,6 +93,17 @@ public class CompanyListFragment extends Fragment {
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
+		return fragment;
+	}
+	
+	public static CompanyListFragment newInstance(int sectionNumber, int aGoToPosition, int aGoToOffset) {
+		CompanyListFragment fragment = new CompanyListFragment();
+		Bundle args = new Bundle();
+		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+		fragment.setArguments(args);
+		goToPosition = aGoToPosition;
+		goToOffset = aGoToOffset;
+		positionSaved = true;
 		return fragment;
 	}
 
@@ -225,7 +240,7 @@ public class CompanyListFragment extends Fragment {
 						int index = 0;
 						if (((MainActivity)getActivity()).filteredCompanyNames != null) {
 							for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
-								if (string.startsWith(firstLetter)) {
+								if (string.replace("The","").startsWith(firstLetter)) {
 									index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
 									break;
 								}
@@ -236,6 +251,10 @@ public class CompanyListFragment extends Fragment {
 					}
 				});    
 			}
+		}
+		if (positionSaved) {
+			lv1.setSelectionFromTop(goToPosition, goToOffset);
+			positionSaved = false;
 		}
 		return mCompanyListView;
 	}
@@ -308,6 +327,20 @@ public class CompanyListFragment extends Fragment {
 		void onCompanyListItemSelected(int absPosition, int relPosition);
 	}
 
+	@Override 
+	public void onPause() {
+		super.onPause();
+		ListView lv1 = (ListView)mCompanyListView.findViewById(id.listView1);
+		// save index and top position
+		int index = lv1.getFirstVisiblePosition();
+		View v = lv1.getChildAt(0);
+		int top = (v == null) ? 0 : v.getTop();
+		
+		MainActivity main = (MainActivity)getActivity();
+		main.mLastPosition = index;
+		main.mLastOffset = top;
+	}
+	
 	@Override
 	/**onAttach
 	 * Called when this fragment is first attached to its activity

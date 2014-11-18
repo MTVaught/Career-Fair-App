@@ -39,6 +39,8 @@ public class MainActivity extends Activity implements
 	private ArrayList<String> companyNames;
 	protected ArrayList<Company> filteredCompanyList;
 	protected ArrayList<String> filteredCompanyNames;
+	public int mLastPosition = -1;
+	public int mLastOffset = 0;
 	private boolean databaseOpen = false;
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
@@ -146,6 +148,7 @@ public class MainActivity extends Activity implements
 				CompanyReaderFragment.newInstance(position, clickedCompany))
 				.commit();
 		inCompanyView = true;
+		//mLastPosition = position;
 	}
 	
 	/**
@@ -169,6 +172,7 @@ public class MainActivity extends Activity implements
 				CompanyReaderFragment.newInstance(absPosition, clickedCompany))
 				.commit();
 		inCompanyView = true;
+		//mLastPosition = absPosition;
 	}
 
 	/**
@@ -268,8 +272,14 @@ public class MainActivity extends Activity implements
 			FragmentManager fragmentManager = getFragmentManager();
 			FragmentTransaction ft = fragmentManager.beginTransaction();
 			inCompanyView = false;
-			ft.replace(R.id.container, CompanyListFragment.newInstance(0))
-					.commit();
+			if (mLastPosition != -1) {
+				ft.replace(R.id.container, CompanyListFragment.newInstance(0, mLastPosition, mLastOffset))
+				.commit();
+			} else {
+				ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+				.commit();
+			}
+			
 		} else {
 		}
 	}
