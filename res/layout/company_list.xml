@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+    android:layout_height="fill_parent">
 <ListView
         style= "@style/ListFont"
         android:baselineAligned="false"
         android:id= "@+id/listView1"
         android:background="#cccc"
-        android:layout_width="0dp"
+        android:layout_width="600dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:choiceMode="singleChoice"
         android:fastScrollEnabled="true"
         
         />
  <ScrollView
      android:layout_width="wrap_content" android:layout_height="wrap_content"
-     
+     android:layout_alignParentRight="true"
      >
 	<LinearLayout
 	    android:id = "@+id/scroll_alphabet"
@@ -29,5 +26,5 @@
        
     </ScrollView>
     
-</LinearLayout>
+</RelativeLayout>
 
