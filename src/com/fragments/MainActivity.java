@@ -103,19 +103,24 @@ public class MainActivity extends Activity implements
 					WelcomeMessageFragment.newInstance(position)).commit();
 			break;
 		case 1:
-ft.replace(
+        ft.replace(
 					R.id.container,
 					CompanyListFragment.newInstance(position,
-							filteredCompanyNames)).commit();
+							filteredCompanyNames));
+        ft.addToBackStack(null);
+        ft.commit();
 			break;
 
 		case 2:
 			ft.replace(R.id.container,
-					MultiPurposeGymFragment.newInstance(position)).commit();
+					MultiPurposeGymFragment.newInstance(position));
+			ft.addToBackStack(null);
+			ft.commit();
 			break;
 		case 3:
-			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
-					.commit();
+			ft.replace(R.id.container, WoodGymFragment.newInstance(position));
+			ft.addToBackStack(null);
+			ft.commit();
 			break;
 		case 4:
 			ArrayList<String> MajorAbbrevs = DbAccess
@@ -125,7 +130,9 @@ ft.replace(
 			ft.replace(
 					R.id.container,
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
-							WorkAuths, Positions)).commit();
+							WorkAuths, Positions));
+			ft.addToBackStack(null);
+			ft.commit();
 			break;
 
 		}
@@ -145,8 +152,9 @@ ft.replace(
 		Company clickedCompany = filteredCompanyList.get(position);
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
-				CompanyReaderFragment.newInstance(position, clickedCompany))
-				.commit();
+				CompanyReaderFragment.newInstance(position, clickedCompany));
+		ft.addToBackStack(null);
+		ft.commit();
 		inCompanyView = true;
 		//mLastPosition = position;
 	}
@@ -169,8 +177,9 @@ ft.replace(
 		}
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
-				CompanyReaderFragment.newInstance(absPosition, clickedCompany))
-				.commit();
+				CompanyReaderFragment.newInstance(absPosition, clickedCompany));
+		ft.addToBackStack(null);
+		ft.commit();
 		inCompanyView = true;
 		//mLastPosition = absPosition;
 	}
@@ -258,38 +267,16 @@ ft.replace(
 			ft.replace(
 					R.id.container,
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
-							WorkAuths, Positions)).commit();
+							WorkAuths, Positions));
+					ft.addToBackStack(null);
+					ft.commit();
 			// getMenuInflater().inflate(R.menu.setting,(Menu) item);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * onBackPressed
-	 * Controls the actions taken when the back arrow is pressed while in the android application.
-	 * By default, no action is taken unless the user is in the Detailed Company View, then they
-	 * are taken to the List of Companies.
-	 */
-	@Override
-	public void onBackPressed() {
-		Log.d("CDA", "onBackPressed Called");
-		if (inCompanyView) {
-			FragmentManager fragmentManager = getFragmentManager();
-			FragmentTransaction ft = fragmentManager.beginTransaction();
-			inCompanyView = false;
-			if (mLastPosition != -1) {
-				ft.replace(R.id.container, CompanyListFragment.newInstance(0, mLastPosition, mLastOffset))
-				.commit();
-			} else {
-				ft.replace(R.id.container, CompanyListFragment.newInstance(0))
-				.commit();
-			}
-			
-		} else {
-		}
-	}
-
+	
 	/**
 	 * databaseOpen
 	 * Opens database and fills initial company lists (with all of the companies) and filters based on shared preferences

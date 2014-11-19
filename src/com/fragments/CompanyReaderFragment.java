@@ -228,14 +228,16 @@ public class CompanyReaderFragment extends Fragment {
 				if ( isInMulti )
 				{
 					ft.replace(R.id.container,
-							MultiPurposeGymFragment.newInstance( companyObj ))
-							.commit();
+							MultiPurposeGymFragment.newInstance( companyObj ));
+					ft.addToBackStack(null);
+					ft.commit();
 				}
 				else
 				{
 					ft.replace(R.id.container,
-							WoodGymFragment.newInstance( companyObj ))
-							.commit();
+							WoodGymFragment.newInstance( companyObj ));
+					ft.addToBackStack(null);
+					ft.commit();
 				}
 		    }
 		});		
