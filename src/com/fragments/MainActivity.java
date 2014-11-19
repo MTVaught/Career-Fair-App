@@ -100,7 +100,9 @@ public class MainActivity extends Activity implements
 		switch (position) {
 		case 0:
 			ft.replace(R.id.container,
-					WelcomeMessageFragment.newInstance(position)).commit();
+					WelcomeMessageFragment.newInstance(position));
+			ft.addToBackStack(null);
+			ft.commit();
 			break;
 		case 1:
         ft.replace(
