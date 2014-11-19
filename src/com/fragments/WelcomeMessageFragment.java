@@ -1,5 +1,8 @@
 package com.fragments;
 
+import com.example.careerfair.R;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Typeface;
@@ -132,7 +135,21 @@ public class WelcomeMessageFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));
 	}
+	/**onResume
+	 * Called when this fragment is visible to user .Right now this method is just used to reset the title of the ActionBar
+	 * when user using Back button to get back to a fragment which is previously invisible to user
+	 */
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ActionBar ab = getActivity().getActionBar();
+		((MainActivity)getActivity()).mTitle = getString(R.string.title_welcomemessage);
+		ab.setTitle(((MainActivity)getActivity()).mTitle);
+	}
+	
 }
