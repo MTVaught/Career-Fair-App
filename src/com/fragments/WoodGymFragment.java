@@ -134,9 +134,8 @@ public class WoodGymFragment extends Fragment {
 				}
 				MainActivity.appMainActivity.setTitle( clickedCompany.getName() );
 				ft.replace(R.id.container,
-						CompanyReaderFragment.newInstance( clickedCompany ));
-				ft.addToBackStack(null);
-				ft.commit();
+						CompanyReaderFragment.newInstance( clickedCompany ))
+						.commit();
 				MainActivity.appMainActivity.inCompanyView = true;
 
 			}

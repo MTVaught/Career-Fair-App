@@ -39,6 +39,8 @@ public class MainActivity extends Activity implements
 	private ArrayList<String> companyNames;
 	protected ArrayList<Company> filteredCompanyList;
 	protected ArrayList<String> filteredCompanyNames;
+	public int mLastPosition = -1;
+	public int mLastOffset = 0;
 	private boolean databaseOpen = false;
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
@@ -96,32 +98,26 @@ public class MainActivity extends Activity implements
 		}
 
 		switch (position) {
-
-		//Displays listView
 		case 0:
-
-			ft.replace(
+			ft.replace(R.id.container,
+					WelcomeMessageFragment.newInstance(position)).commit();
+			break;
+		case 1:
+ft.replace(
 					R.id.container,
 					CompanyListFragment.newInstance(position,
-							filteredCompanyNames));
-			ft.addToBackStack(null);
-			ft.commit();
+							filteredCompanyNames)).commit();
 			break;
-		//Displays Multipurpose Gym map
-		case 1:
-			ft.replace(R.id.container,
-					MultiPurposeGymFragment.newInstance(position));
-			ft.addToBackStack(null);
-			ft.commit();
-			break;
-		//Displays Wood Gym map
+
 		case 2:
-			ft.replace(R.id.container, WoodGymFragment.newInstance(position));
-			ft.addToBackStack(null);
-			ft.commit();
+			ft.replace(R.id.container,
+					MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
-		//Displays the filter
 		case 3:
+			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
+					.commit();
+			break;
+		case 4:
 			ArrayList<String> MajorAbbrevs = DbAccess
 					.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
@@ -129,10 +125,9 @@ public class MainActivity extends Activity implements
 			ft.replace(
 					R.id.container,
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
-							WorkAuths, Positions));
-			ft.addToBackStack(null);
-			ft.commit();
+							WorkAuths, Positions)).commit();
 			break;
+
 		}
 
 	}
@@ -150,10 +145,34 @@ public class MainActivity extends Activity implements
 		Company clickedCompany = filteredCompanyList.get(position);
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
-				CompanyReaderFragment.newInstance(position, clickedCompany));
-		ft.addToBackStack(null);
-		ft.commit();
+				CompanyReaderFragment.newInstance(position, clickedCompany))
+				.commit();
 		inCompanyView = true;
+		//mLastPosition = position;
+	}
+	
+	/**
+	 * onCompanyListItemSelected
+	 * Switches to the "detailed"/CompanyReaderView
+	 * @param position - the position of the company that was clicked in the ArrayList of companies
+	 */
+	@Override
+	public void onCompanyListItemSelected(int absPosition, int relPosition) {
+
+		FragmentManager fragmentManager = super.getFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		Company clickedCompany;
+		if (absPosition - 1 > relPosition) {
+			clickedCompany = DbAccess.getFilteredSep(true).get(relPosition);
+		} else {
+			clickedCompany = DbAccess.getFilteredSep(false).get(relPosition);
+		}
+		mTitle = clickedCompany.getName();
+		ft.replace(R.id.container,
+				CompanyReaderFragment.newInstance(absPosition, clickedCompany))
+				.commit();
+		inCompanyView = true;
+		//mLastPosition = absPosition;
 	}
 
 	/**
@@ -165,18 +184,24 @@ public class MainActivity extends Activity implements
 		// Changes the title displayed on the top bar based upon the passed number.
 		// Corresponds to the order in the navigation drawer.
 		switch (number) {
-		case 0: //The List of Companies
+
+		case 0:
+			mTitle = getString(R.string.title_welcomemessage);
+			break;
+		case 1:
 			mTitle = getString(R.string.title_companylist);
 			break;
-		case 1: //Multi-purpose room map
+		case 2:
 			mTitle = getString(R.string.title_multipurposegym);
 			break;
-		case 2: //Wood gym map
+		case 3:
 			mTitle = getString(R.string.title_woodgym);
 			break;
-		case 3: //Filter Settings
+		case 4:
+
 			mTitle = getString(R.string.title_preferencesview);
 			break;
+
 		}
 	}
 
@@ -241,6 +266,30 @@ public class MainActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * onBackPressed
+	 * Controls the actions taken when the back arrow is pressed while in the android application.
+	 * By default, no action is taken unless the user is in the Detailed Company View, then they
+	 * are taken to the List of Companies.
+	 */
+	@Override
+	public void onBackPressed() {
+		Log.d("CDA", "onBackPressed Called");
+		if (inCompanyView) {
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			inCompanyView = false;
+			if (mLastPosition != -1) {
+				ft.replace(R.id.container, CompanyListFragment.newInstance(0, mLastPosition, mLastOffset))
+				.commit();
+			} else {
+				ft.replace(R.id.container, CompanyListFragment.newInstance(0))
+				.commit();
+			}
+			
+		} else {
+		}
+	}
 
 	/**
 	 * databaseOpen

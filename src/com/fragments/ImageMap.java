@@ -17,6 +17,14 @@
 
 package com.fragments;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -43,21 +51,10 @@ import android.view.ViewConfiguration;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.database.Company;
 import com.database.DbAccess;
 import com.example.careerfair.R;
-import com.example.careerfair.R.id;
-import com.example.careerfair.R.styleable;
-import com.example.careerfair.R.xml;
 import com.helpers.BitmapHelper;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ImageMap extends ImageView
 {
@@ -230,11 +227,11 @@ public class ImageMap extends ImageView
 		filteredCompanyNames = MainActivity.appMainActivity.filteredCompanyNames;
 		if ( mapName.equals("varsitymap" ) )
 		{
-			mBoothMap = (HashMap<String, Company>) DbAccess.getTableCompanyMap(true, mDatabase);
+			mBoothMap = DbAccess.getTableCompanyMap(true, mDatabase);
 		}
 		else
 		{
-			mBoothMap = (HashMap<String, Company>) DbAccess.getTableCompanyMap(false, mDatabase);
+			mBoothMap = DbAccess.getTableCompanyMap(false, mDatabase);
 		}
 
 		if (mapName != null)
@@ -898,6 +895,7 @@ public class ImageMap extends ImageView
 	 *   This handler manages an arbitrary number of points
 	 *   and detects taps, moves, flings, and zooms
 	 */
+	@Override
 	public boolean onTouchEvent(@NonNull MotionEvent ev)
 	{
 		int id;
@@ -1243,19 +1241,19 @@ public class ImageMap extends ImageView
 		 */
 		if (mResizeFactorX > 1)
 		{
-			testx = (int)(((float)testx/mResizeFactorX));
+			testx = (int)((testx/mResizeFactorX));
 		}
 		else
 		{
-			testx = (int)(((float)testx/mResizeFactorX)/densityFactor);
+			testx = (int)((testx/mResizeFactorX)/densityFactor);
 		}
 		if (mResizeFactorY > 1)
 		{
-			testy = (int)(((float)testy/mResizeFactorY));
+			testy = (int)((testy/mResizeFactorY));
 		}
 		else
 		{
-			testy = (int)(((float)testy/mResizeFactorY)/densityFactor);
+			testy = (int)((testy/mResizeFactorY)/densityFactor);
 		}
 
 		// check if bubble tapped first
@@ -1284,7 +1282,7 @@ public class ImageMap extends ImageView
 			// then check for area taps
 			for (Area a : mAreaList)
 			{
-				if (a.isInArea((float)testx,(float)testy))
+				if (a.isInArea(testx,testy))
 				{
 					if (mCallbackList != null) {
 						for (OnImageMapClickedHandler h : mCallbackList)
@@ -1529,6 +1527,7 @@ public class ImageMap extends ImageView
 			_bottom = bottom;
 		}
 
+		@Override
 		public boolean isInArea(float x, float y) {
 			boolean ret = false;
 			if ((x > _left) && (x < _right)) {
@@ -1539,6 +1538,7 @@ public class ImageMap extends ImageView
 			return ret;
 		}
 		
+		@Override
 		public void onDraw(Canvas canvas)
 		{
 			super.onDraw( canvas );
@@ -1546,7 +1546,7 @@ public class ImageMap extends ImageView
 			{
 				float l = (_left * mResizeFactorX) + mScrollLeft;
 				float t = (_top * mResizeFactorY) + mScrollTop; 
-				float b = (_bottom * mResizeFactorX);
+				float b = (_bottom * mResizeFactorX) + mScrollTop;
 				float r = (_right * mResizeFactorY) + mScrollLeft; 
 				highlightPaint.setStrokeWidth( 3 );
 				//top line
@@ -1562,10 +1562,12 @@ public class ImageMap extends ImageView
 			}
 		}
 
+		@Override
 		public float getOriginX() {
 			return _left;
 		}
 
+		@Override
 		public float getOriginY() {
 			return _top;
 		}
@@ -1710,6 +1712,7 @@ public class ImageMap extends ImageView
 
 		}
 
+		@Override
 		public boolean isInArea(float x, float y) {
 			boolean ret = false;
 
@@ -1725,10 +1728,12 @@ public class ImageMap extends ImageView
 			return ret;
 		}
 
+		@Override
 		public float getOriginX() {
 			return _x;
 		}
 
+		@Override
 		public float getOriginY() {
 			return _y;
 		}
