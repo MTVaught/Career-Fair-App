@@ -210,7 +210,8 @@ public class MainActivity extends Activity implements
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
-
+  //deleted override onBackPressed() here 
+	
 	/**onOptionsItemSelected 
 	 * Three Dot Drop-down Menu
 	 * @param item - the selected item of options menu
@@ -260,7 +261,7 @@ public class MainActivity extends Activity implements
 
 		//Calls the filterCompanies method to filter based on shared preferences
 		filterCompanies();
-
+        
 		databaseOpen = true;
 
 		long end2 = System.currentTimeMillis();
