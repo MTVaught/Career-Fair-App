@@ -1,11 +1,5 @@
 package com.fragments;
 
-import com.example.careerfair.R;
-import com.example.careerfair.R.drawable;
-import com.example.careerfair.R.layout;
-import com.example.careerfair.R.menu;
-import com.example.careerfair.R.string;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -25,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.example.careerfair.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation
@@ -113,6 +109,7 @@ public class NavigationDrawerFragment extends Fragment {
 				.getThemedContext(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, new String[] {
+						getString(R.string.title_welcomemessage),
 						getString(R.string.title_companylist),
 						getString(R.string.title_multipurposegym),
 						getString(R.string.title_woodgym),

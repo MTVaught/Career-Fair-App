@@ -98,27 +98,26 @@ public class MainActivity extends Activity implements
 		}
 
 		switch (position) {
-
-		//Displays listView
 		case 0:
-
-			ft.replace(
+			ft.replace(R.id.container,
+					WelcomeMessageFragment.newInstance(position)).commit();
+			break;
+		case 1:
+ft.replace(
 					R.id.container,
 					CompanyListFragment.newInstance(position,
 							filteredCompanyNames)).commit();
 			break;
-		//Displays Multipurpose Gym map
-		case 1:
+
+		case 2:
 			ft.replace(R.id.container,
 					MultiPurposeGymFragment.newInstance(position)).commit();
 			break;
-		//Displays Wood Gym map
-		case 2:
+		case 3:
 			ft.replace(R.id.container, WoodGymFragment.newInstance(position))
 					.commit();
 			break;
-		//Displays the filter
-		case 3:
+		case 4:
 			ArrayList<String> MajorAbbrevs = DbAccess
 					.getAllMajorAbbrevs(database);
 			ArrayList<String> WorkAuths = DbAccess.getAllWorkAuths(database);
@@ -128,6 +127,7 @@ public class MainActivity extends Activity implements
 					PreferencesViewFragment.newInstance(position, MajorAbbrevs,
 							WorkAuths, Positions)).commit();
 			break;
+
 		}
 
 	}
@@ -184,18 +184,24 @@ public class MainActivity extends Activity implements
 		// Changes the title displayed on the top bar based upon the passed number.
 		// Corresponds to the order in the navigation drawer.
 		switch (number) {
-		case 0: //The List of Companies
+
+		case 0:
+			mTitle = getString(R.string.title_welcomemessage);
+			break;
+		case 1:
 			mTitle = getString(R.string.title_companylist);
 			break;
-		case 1: //Multi-purpose room map
+		case 2:
 			mTitle = getString(R.string.title_multipurposegym);
 			break;
-		case 2: //Wood gym map
+		case 3:
 			mTitle = getString(R.string.title_woodgym);
 			break;
-		case 3: //Filter Settings
+		case 4:
+
 			mTitle = getString(R.string.title_preferencesview);
 			break;
+
 		}
 	}
 
