@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import com.helpers.CheckBoxListener;
 import com.helpers.ResetButtonListener;
+import com.helpers.separateListListener;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,7 +24,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class PreferencesViewFragment extends Fragment {
 
@@ -101,18 +104,35 @@ public class PreferencesViewFragment extends Fragment {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		sv.addView(ll);
 
+		/**
+		TextView tv = new TextView(getActivity());
+		tv.setText("Set your preferences below");
+		tv.setTextSize(24);
+		ll.addView(tv);
+		*/		
+		
+		Switch separateCompanyList = new Switch(getActivity());
+		separateCompanyList.setOnCheckedChangeListener(new separateListListener(separateCompanyList, sharedPref, editor, getActivity()));
+		separateCompanyList.setText("Move companies missing information for filtered fields to the bottom of the list");
+		ll.addView(separateCompanyList);
+		
+		View ruler = new View(getActivity());
+		ruler.setBackgroundColor(0xFF33b5e5);
+		ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
+		ll.addView(ruler, params);
+		
 		// Add reset button, Listener is added later
 		Button resetButton = new Button(getActivity());		 
 		resetButton.setText("Reset All Filters");
 		ResetButtonListener resetButtonListen = new ResetButtonListener(sharedPref,MajorAbbrevs,WorkAuths,Positions,checkBoxArray);
 		resetButton.setOnClickListener(resetButtonListen);
-		ll.addView(resetButton);
-		
-		TextView tv = new TextView(getActivity());
-		tv.setText("Set your preferences below");
-		tv.setTextSize(24);
-		ll.addView(tv);
+		ll.addView(resetButton);	
 
+		//Add a horizontal rule
+		View ruler2 = new View(getActivity());
+		ruler2.setBackgroundColor(0xFF33b5e5);
+		ll.addView(ruler2, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+		
 		TextView WorkAuthText = new TextView(getActivity());
 		WorkAuthText.setText("Work Authorizations");
 		ll.addView(WorkAuthText);
@@ -139,6 +159,11 @@ public class PreferencesViewFragment extends Fragment {
 
 		}
 
+		//Add a horizontal rule
+		View ruler3 = new View(getActivity());
+		ruler3.setBackgroundColor(0xFF33b5e5);
+		ll.addView(ruler3, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+		
 		TextView PositionText = new TextView(getActivity());
 		PositionText.setText("Positions");
 		ll.addView(PositionText);
@@ -166,6 +191,11 @@ public class PreferencesViewFragment extends Fragment {
 
 		}
 
+		//Add a horizontal rule
+		View ruler4 = new View(getActivity());
+		ruler4.setBackgroundColor(0xFF33b5e5);
+		ll.addView(ruler4, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
+				
 		TextView majorText = new TextView(getActivity());
 		majorText.setText("Majors");
 		ll.addView(majorText);
