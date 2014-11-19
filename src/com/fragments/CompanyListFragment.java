@@ -507,6 +507,19 @@ public class CompanyListFragment extends Fragment {
 	private ActionBar getActionBar() {
 		return getActivity().getActionBar();
 	}
+	
+	/**onResume
+	 * Called when this fragment is visible to user .Right now this method is just used to reset the title of the ActionBar
+	 * when user using Back button to get back to a fragment which is previously invisible to user
+	 */
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ActionBar ab = getActionBar();
+		((MainActivity)getActivity()).mTitle = getString(R.string.title_companylist);
+		ab.setTitle(((MainActivity)getActivity()).mTitle);
+	}
 
 	@Override
 	/**onCreateOptionsMenu

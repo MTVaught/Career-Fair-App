@@ -7,6 +7,7 @@ import com.example.careerfair.R;
 //import com.example.careerfair.R.id;
 //import com.example.careerfair.R.layout;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -299,6 +300,18 @@ public class CompanyReaderFragment extends Fragment {
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));
+	}
+	/**onResume
+	 * Called when this fragment is visible to user .Right now this method is just used to reset the title of the ActionBar
+	 * when user using Back button to get back to a fragment which is previously invisible to user
+	 */
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ActionBar ab = getActivity().getActionBar();
+		((MainActivity)getActivity()).mTitle = companyObj.getName();
+		ab.setTitle(((MainActivity)getActivity()).mTitle);
 	}
 
 }

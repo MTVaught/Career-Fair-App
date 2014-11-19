@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
 	 */
-	private CharSequence mTitle;
+	protected CharSequence mTitle;
 	boolean inCompanyView = false;
 
 	/**
@@ -348,4 +348,5 @@ public class MainActivity extends Activity implements
 				workAuth, position, database);
 		filteredCompanyNames = DbAccess.getFilteredNames(database);
 	}
+
 }
