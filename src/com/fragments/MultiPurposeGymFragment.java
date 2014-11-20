@@ -10,6 +10,7 @@ import com.example.careerfair.R.id;
 import com.example.careerfair.R.layout;
 import com.fragments.ImageMap.OnImageMapClickedHandler;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -128,8 +129,9 @@ public class MultiPurposeGymFragment extends Fragment {
 						}
 						MainActivity.appMainActivity.setTitle( clickedCompany.getName() );
 						ft.replace(R.id.container,
-								CompanyReaderFragment.newInstance( clickedCompany ))
-								.commit();
+								CompanyReaderFragment.newInstance( clickedCompany ));
+						ft.addToBackStack(null);
+						ft.commit();
 						MainActivity.appMainActivity.inCompanyView = true;
 					}
 				});
@@ -148,6 +150,19 @@ public class MultiPurposeGymFragment extends Fragment {
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(
 				ARG_SECTION_NUMBER));
+	}
+	
+	/**onResume
+	 * Called when this fragment is visible to user .Right now this method is just used to reset the title of the ActionBar
+	 * when user using Back button to get back to a fragment which is previously invisible to user
+	 */
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ActionBar ab = getActivity().getActionBar();
+		((MainActivity)getActivity()).mTitle = getString(R.string.title_multipurposegym);
+		ab.setTitle(((MainActivity)getActivity()).mTitle);
 	}
 
 }
