@@ -288,7 +288,8 @@ public class ImageMap extends ImageView
 							String bid = rid.replace("@+id/booth", "");
 							if ( mBoothMap.get(bid) != null)
 								name = mBoothMap.get(bid).getName() + ", " + bid;
-
+							else
+								name = "Undefined";
 
 
 							if (name == null) {
