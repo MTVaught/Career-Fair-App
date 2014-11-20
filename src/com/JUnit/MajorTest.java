@@ -5,6 +5,11 @@ import com.database.Major;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+/**
+ * MajorTest
+ * Contains JUnit test cases to test Major object
+ * @author hewilder
+ */
 public class MajorTest extends TestCase {
 
 	private Major mTest;
@@ -22,13 +27,18 @@ public class MajorTest extends TestCase {
 		super.setUp();
 	}
 
-	//Destroy objects after test
+	/**
+	 * Destroy objects after test
+	 */
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
-	//Tests constructor
+	/**
+	 * testMajor
+	 * Tests constructor
+	 */
 	public void testMajor() {
 		Major test = new Major("aSampleMajor", "SPMJ");
 		
@@ -36,7 +46,10 @@ public class MajorTest extends TestCase {
 		Assert.assertNotNull(test);
 	}
 
-	//Tests getName method
+	/**
+	 * testGetName
+	 * Tests getName method
+	 */
 	public void testGetName() {
 		String name = mTest.getName();
 
@@ -47,6 +60,10 @@ public class MajorTest extends TestCase {
 		Assert.assertTrue(name.equals("aSampleMajor"));
 	}
 
+	/**
+	 * testGetAbbrev
+	 * tests the getAbbrev method
+	 */
 	public void testGetAbbrev() {
 		String abbrev = mTest.getAbbrev();
 

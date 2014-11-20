@@ -8,6 +8,11 @@ import com.database.Major;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+/**
+ * CompanyTest
+ * This class holds the JUnit test cases for testing the Company object
+ * @author hewilder
+ */
 public class CompanyTest extends TestCase {
 	// private SQLiteDatabase db;
 	private Company mTest;
@@ -16,6 +21,7 @@ public class CompanyTest extends TestCase {
 	private ArrayList<String> mPositions;
 
 	/**
+	 * setUp
 	 * Called before any test method
 	 */
 	@Override
@@ -40,13 +46,19 @@ public class CompanyTest extends TestCase {
 		super.setUp();
 	}
 
-	//Destroys objects after test
+	/**
+	 * tearDown
+	 * Destroys objects after test
+	 */
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
-	//Test constructor
+	/**
+	 * testCompany
+	 * Tests the constructor
+	 */
 	public void testCompany() {
 
 		Company test = new Company("aCompany", "www.aCompanyWebsite.com", "1",
@@ -56,7 +68,10 @@ public class CompanyTest extends TestCase {
 
 	}
 
-	//Tests the getMajors method
+	/**
+	 * testGetMajors
+	 * Tests the getMajors method
+	 */
 	public void testGetMajors() {
 		ArrayList<Major> majorList = mTest.getMajors();
 		
@@ -76,7 +91,10 @@ public class CompanyTest extends TestCase {
 
 	}
 
-	//Tests the getPositions method
+	/**
+	 * testGetPositions
+	 * Tests the getPositions method
+	 */
 	public void testGetPositions() {
 		ArrayList<String> positions = mTest.getPositions();
 		
@@ -92,7 +110,10 @@ public class CompanyTest extends TestCase {
 		Assert.assertTrue(positions.get(0) == mPositions.get(0));
 	}
 
-	//Tests the getWorkAuth method
+	/**
+	 * testGetWorkAuth
+	 * Tests the getWorkAuth method
+	 */
 	public void testGetWorkAuth() {
 
 		ArrayList<String> workAuth = mTest.getWorkAuth();
@@ -109,7 +130,10 @@ public class CompanyTest extends TestCase {
 		Assert.assertTrue(workAuth.get(0) == mWorkAuths.get(0));
 	}
 
-	//Tests the get name method
+	/**
+	 * testGetName
+	 * Tests the get name method
+	 */
 	public void testGetName() {
 		String name = mTest.getName();
 		
@@ -120,7 +144,10 @@ public class CompanyTest extends TestCase {
 		Assert.assertEquals(mTest.getName(), "aCompany");
 	}
 
-	//Tests the getWebsite method
+	/**
+	 * testGetWebsite
+	 * Tests the getWebsite method
+	 */
 	public void testGetWebsite() {
 		String website = mTest.getWebsite();
 		
@@ -131,7 +158,10 @@ public class CompanyTest extends TestCase {
 		Assert.assertEquals(mTest.getWebsite(), "www.aCompanyWebsite.com");
 	}
 
-	//Tests the getTableNum method
+	/**
+	 * testGetTableNum
+	 * Tests the getTableNum method
+	 */
 	public void testGetTableNum() {
 		String tableNum = mTest.getTableNum();
 		
@@ -142,7 +172,10 @@ public class CompanyTest extends TestCase {
 		Assert.assertEquals(mTest.getTableNum(), "1");
 	}
 
-	//Tests the getTableNum method
+	/**
+	 * testGetRoom
+	 * Tests the getTableNum method
+	 */
 	public void testGetRoom() {
 		String room = mTest.getRoom();
 		
