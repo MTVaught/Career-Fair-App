@@ -102,7 +102,7 @@ public class DbAccessTest extends AndroidTestCase {
 	 * Tests getCompaniesWith
 	 */
 	public void testGetCompaniesWith() {
-		ArrayList<Company> companies = DbAccess.getCompaniesWith("", "",
+		ArrayList<Company> companies = DbAccess.getCompaniesWith("",
 				new ArrayList<String>(), new ArrayList<String>(),
 				new ArrayList<String>(), database);
 

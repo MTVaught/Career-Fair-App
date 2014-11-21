@@ -48,6 +48,10 @@ public class MainActivity extends Activity implements
 	private boolean databaseOpen = false;
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
+	
+	private boolean mSearching = false;
+	protected ArrayList<Company> searchedCompanyList;
+	protected ArrayList<String> searchedCompanyNames;
 
 	// Holds reference to MainActivity object being used by the app;
 	public static MainActivity appMainActivity;
@@ -94,8 +98,19 @@ public class MainActivity extends Activity implements
 	private void handleIntent(Intent intent) {
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search your data somehow
+        	String query = intent.getStringExtra(SearchManager.QUERY);
+        	query = query + "";
+        	mSearching = true;
+        	searchedCompanyList = DbAccess.searchAllCompanies(query, database);
+        	searchedCompanyNames = DbAccess.getSearchedCompanyNames();
+        	FragmentManager fragmentManager = super.getFragmentManager();
+    		FragmentTransaction ft = fragmentManager.beginTransaction();
+    		ft.replace(
+					R.id.container,
+					new CompanyListFragment().newInstance(1,
+							searchedCompanyNames, true));
+    		ft.addToBackStack(null);
+    		ft.commit();
         }
     }
 	/**
@@ -126,8 +141,8 @@ public class MainActivity extends Activity implements
 		case 1:
         ft.replace(
 					R.id.container,
-					CompanyListFragment.newInstance(position,
-							filteredCompanyNames));
+					new CompanyListFragment().newInstance(position,
+							filteredCompanyNames, false));
         ft.addToBackStack(null);
         ft.commit();
 			break;
@@ -166,11 +181,17 @@ public class MainActivity extends Activity implements
 	 * @param position - the position of the company that was clicked in the ArrayList of companies
 	 */
 	@Override
-	public void onCompanyListItemSelected(int position) {
+	public void onCompanyListItemSelected(int position, boolean searchOn) {
 
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		Company clickedCompany = filteredCompanyList.get(position);
+		Company clickedCompany;
+		if (!searchOn) {
+			clickedCompany = filteredCompanyList.get(position);
+		} else {
+			clickedCompany = searchedCompanyList.get(position);
+		}
+		
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
 				CompanyReaderFragment.newInstance(position, clickedCompany));
@@ -186,7 +207,7 @@ public class MainActivity extends Activity implements
 	 * @param position - the position of the company that was clicked in the ArrayList of companies
 	 */
 	@Override
-	public void onCompanyListItemSelected(int absPosition, int relPosition) {
+	public void onCompanyListItemSelected(int absPosition, int relPosition, boolean searchOn) {
 
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -384,7 +405,7 @@ public class MainActivity extends Activity implements
 		}
 
 		//Get the new filteredCompanyList based on the shared preferences 
-		filteredCompanyList = DbAccess.getCompaniesWith("", "", majors,
+		filteredCompanyList = DbAccess.getCompaniesWith("", majors,
 				workAuth, position, database);
 		filteredCompanyNames = DbAccess.getFilteredNames(database);
 	}
