@@ -433,6 +433,9 @@ public class CompanyListFragment extends Fragment {
 	 */
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		companyNameTagBlank = new ArrayList<String>();
+		companyNameTagNoBlank = new ArrayList<String>();
+		companyNameTag = new ArrayList<String>();
 		
 		SharedPreferences sharedPref = getActivity().getPreferences(
 				Context.MODE_PRIVATE);
