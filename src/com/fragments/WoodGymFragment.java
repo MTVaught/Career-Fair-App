@@ -120,8 +120,9 @@ public class WoodGymFragment extends Fragment {
 				FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
 				FragmentTransaction ft = fragmentManager.beginTransaction();
 				String name = mWoodMap.mIdToArea.get( id ).getName();
-				int subI = name.indexOf(",");
-				name = name.substring(0, subI);
+				name = name.replaceFirst(",\\s\\d+", "");
+				//int subI = name.indexOf(",");
+				//name = name.substring(0, subI);
 				String bId = mWoodMap.mIdToArea.get( id ).getbId();
 				//replace with hashmap
 				Company clickedCompany = null;

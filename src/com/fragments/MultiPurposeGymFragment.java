@@ -114,9 +114,9 @@ public class MultiPurposeGymFragment extends Fragment {
 						FragmentManager fragmentManager = MainActivity.appMainActivity.getFragmentManager();
 						FragmentTransaction ft = fragmentManager.beginTransaction();
 						String name = mMultiMap.mIdToArea.get( id ).getName();
-						int subI = name.indexOf(",");
-						name = name.substring(0, subI);
-						String bId = mMultiMap.mIdToArea.get( id ).getbId();
+						//int subI = name.indexOf(",");
+						name = name.replaceFirst(",\\s\\d+", "");
+						//String bId = mMultiMap.mIdToArea.get( id ).getbId();
 						//replace with hashmap
 						Company clickedCompany = null;
 						for ( Company c : mCompanies )
