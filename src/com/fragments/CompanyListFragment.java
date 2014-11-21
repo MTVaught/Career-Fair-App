@@ -60,10 +60,11 @@ public class CompanyListFragment extends Fragment {
 	private static ArrayList<String> companyNameTagNoBlank = new ArrayList<String>();
 	private static ArrayList<String> companyNameTagBlank = new ArrayList<String>();
 	
-	
 	private static int goToPosition;
 	private static int goToOffset;
 	private static boolean positionSaved;
+	
+	private boolean mSearchOn = false;
 
 	/*
 	 * ArrayList to store the information returned by the database
@@ -75,6 +76,11 @@ public class CompanyListFragment extends Fragment {
 
 	}
 	
+	public CompanyListFragment(ArrayList<String> aCompanyNames, boolean aSearch) {
+		companyNames = aCompanyNames;
+		mSearchOn = aSearch;
+	}
+	
 	/**newInstance
 	 * Returns a new instance of this fragment for the given section number.
 	 * @para sectionNumber - 
@@ -82,15 +88,17 @@ public class CompanyListFragment extends Fragment {
 	 * @return Return a new instance of this fragment
 	 */
 
-	public static CompanyListFragment newInstance(int sectionNumber,
-			ArrayList<String> companyName) {
+	public CompanyListFragment newInstance(int sectionNumber,
+			ArrayList<String> companyName, boolean aSearch) {
 		companyNames = companyName;
-		CompanyListFragment fragment = new CompanyListFragment();
+		CompanyListFragment fragment = new CompanyListFragment(companyName, aSearch);
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
+		this.mSearchOn = aSearch;
 		return fragment;
 	}
+
 	
 	public static CompanyListFragment newInstance(int sectionNumber) {
 		CompanyListFragment fragment = new CompanyListFragment();
@@ -171,7 +179,7 @@ public class CompanyListFragment extends Fragment {
 		SharedPreferences sharedPref = getActivity().getPreferences(
 						Context.MODE_PRIVATE);
 			
-		if (sharedPref.getBoolean("separateLists", true)) {
+		if (sharedPref.getBoolean("separateLists", true) && !mSearchOn) {
 			SeparatedListAdapter adapter = new SeparatedListAdapter(this.getActivity());
 			adapter.addSection("Matches", new ArrayAdapter<String>(getActionBar().getThemedContext(), android.R.layout.simple_list_item_activated_1, DbAccess.getFilteredNamesSep(false) ));
 			if (DbAccess.getFilteredNamesSep(true).size() > 0) {
@@ -288,7 +296,7 @@ public class CompanyListFragment extends Fragment {
 			lv1.setAdapter(new ArrayAdapter<String>(getActionBar()
 					.getThemedContext(),
 					android.R.layout.simple_list_item_activated_1,
-					((MainActivity)getActivity()).filteredCompanyNames));                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+					companyNames));                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 			lv1.setItemChecked(mCurrentSelectedPosition, true);
 
 
@@ -313,10 +321,10 @@ public class CompanyListFragment extends Fragment {
 					public void onClick(View v) {
 						String firstLetter = (String) v.getTag();
 						int index = 0;
-						if (((MainActivity)getActivity()).filteredCompanyNames != null) {
-							for (String string : ((MainActivity)getActivity()).filteredCompanyNames) {
+						if (companyNames != null) {
+							for (String string : (companyNames)) {
 								if (string.replace("The ","").trim().startsWith(firstLetter)) {
-									index = ((MainActivity)getActivity()).filteredCompanyNames.indexOf(string);
+									index = (companyNames.indexOf(string));
 									break;
 								}
 							}
@@ -363,7 +371,7 @@ public class CompanyListFragment extends Fragment {
 		// mDrawerLayout.closeDrawer(mFragmentContainerView);
 		// }
 		if (mCallbacks != null) {
-			mCallbacks.onCompanyListItemSelected(position);
+			mCallbacks.onCompanyListItemSelected(position, mSearchOn);
 		}
 	}
 	
@@ -384,7 +392,7 @@ public class CompanyListFragment extends Fragment {
 		// mDrawerLayout.closeDrawer(mFragmentContainerView);
 		// }
 		if (mCallbacks != null) {
-			mCallbacks.onCompanyListItemSelected(absPosition, relPosition);
+			mCallbacks.onCompanyListItemSelected(absPosition, relPosition, mSearchOn);
 		}
 	}
 	
@@ -398,13 +406,14 @@ public class CompanyListFragment extends Fragment {
 		 * Called in selectItem(int position) when an item in the CompanyList drawer is selected.
 		 * @para position - the index of clicked item in the list
 		 */
-		void onCompanyListItemSelected(int position);
-		void onCompanyListItemSelected(int absPosition, int relPosition);
+		void onCompanyListItemSelected(int position, boolean searchOn);
+		void onCompanyListItemSelected(int absPosition, int relPosition, boolean searchOn);
 	}
 
 	@Override 
 	public void onPause() {
 		super.onPause();
+		/**
 		ListView lv1 = (ListView)mCompanyListView.findViewById(id.listView1);
 		// save index and top position
 		int index = lv1.getFirstVisiblePosition();
@@ -414,6 +423,7 @@ public class CompanyListFragment extends Fragment {
 		MainActivity main = (MainActivity)getActivity();
 		main.mLastPosition = index;
 		main.mLastOffset = top;
+		*/
 	}
 	
 	@Override
@@ -423,11 +433,14 @@ public class CompanyListFragment extends Fragment {
 	 */
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		companyNameTagBlank = new ArrayList<String>();
+		companyNameTagNoBlank = new ArrayList<String>();
+		companyNameTag = new ArrayList<String>();
 		
 		SharedPreferences sharedPref = getActivity().getPreferences(
 				Context.MODE_PRIVATE);
 	
-		if (sharedPref.getBoolean("separateLists", true)) {
+		if (sharedPref.getBoolean("separateLists", true) && !mSearchOn) {
 			//Setup the alphabet array from filteredCompanyNames
 			for(String string: DbAccess.getFilteredNamesSep(false)){
 				String tag = string.replace("The ","").trim().substring(0, 1);
@@ -445,7 +458,7 @@ public class CompanyListFragment extends Fragment {
 			}
 		} else {
 			//Setup the alphabet array from filteredCompanyNames
-			for(String string: ((MainActivity)getActivity()).filteredCompanyNames){
+			for(String string: companyNames){
 				String tag = string.replace("The ","").trim().substring(0, 1);
 					if (!companyNameTag.contains(tag))
 						companyNameTag.add(tag);

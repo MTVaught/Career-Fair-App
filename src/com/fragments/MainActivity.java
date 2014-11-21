@@ -6,14 +6,18 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.database.Company;
 import com.database.DbAccess;
@@ -44,6 +48,10 @@ public class MainActivity extends Activity implements
 	private boolean databaseOpen = false;
 	public SharedPreferences sharedPref;
 	public SharedPreferences.Editor editor;
+	
+	private boolean mSearching = false;
+	protected ArrayList<Company> searchedCompanyList;
+	protected ArrayList<String> searchedCompanyNames;
 
 	// Holds reference to MainActivity object being used by the app;
 	public static MainActivity appMainActivity;
@@ -76,9 +84,35 @@ public class MainActivity extends Activity implements
 		// Setup the shared Preferences
 		sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 		editor = sharedPref.edit();
+		
+		handleIntent(getIntent());
 
 	}
+	
+	@Override
+    protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+        handleIntent(intent);
+    }
 
+	private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        	String query = intent.getStringExtra(SearchManager.QUERY);
+        	query = query + "";
+        	mSearching = true;
+        	searchedCompanyList = DbAccess.searchAllCompanies(query, database);
+        	searchedCompanyNames = DbAccess.getSearchedCompanyNames();
+        	FragmentManager fragmentManager = super.getFragmentManager();
+    		FragmentTransaction ft = fragmentManager.beginTransaction();
+    		ft.replace(
+					R.id.container,
+					new CompanyListFragment().newInstance(1,
+							searchedCompanyNames, true));
+    		ft.addToBackStack(null);
+    		ft.commit();
+        }
+    }
 	/**
 	 * onNavigationDrawerItemSelected
 	 * Changes the displayed fragment based on what the user selected in the Navigation Drawer
@@ -107,8 +141,8 @@ public class MainActivity extends Activity implements
 		case 1:
         ft.replace(
 					R.id.container,
-					CompanyListFragment.newInstance(position,
-							filteredCompanyNames));
+					new CompanyListFragment().newInstance(position,
+							filteredCompanyNames, false));
         ft.addToBackStack(null);
         ft.commit();
 			break;
@@ -147,11 +181,17 @@ public class MainActivity extends Activity implements
 	 * @param position - the position of the company that was clicked in the ArrayList of companies
 	 */
 	@Override
-	public void onCompanyListItemSelected(int position) {
+	public void onCompanyListItemSelected(int position, boolean searchOn) {
 
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		Company clickedCompany = filteredCompanyList.get(position);
+		Company clickedCompany;
+		if (!searchOn) {
+			clickedCompany = filteredCompanyList.get(position);
+		} else {
+			clickedCompany = searchedCompanyList.get(position);
+		}
+		
 		mTitle = clickedCompany.getName();
 		ft.replace(R.id.container,
 				CompanyReaderFragment.newInstance(position, clickedCompany));
@@ -167,7 +207,7 @@ public class MainActivity extends Activity implements
 	 * @param position - the position of the company that was clicked in the ArrayList of companies
 	 */
 	@Override
-	public void onCompanyListItemSelected(int absPosition, int relPosition) {
+	public void onCompanyListItemSelected(int absPosition, int relPosition, boolean searchOn) {
 
 		FragmentManager fragmentManager = super.getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -236,15 +276,36 @@ public class MainActivity extends Activity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+		
+		MenuItem SearchThing = menu.findItem(R.id.search);
+		if (SearchThing!= null) {
+			String thing= "do a thing";
+		}
+		
+		// Associate searchable configuration with the SearchView
+	    SearchManager searchManager =
+	           (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView =
+	            (SearchView) menu.findItem(R.id.search).getActionView();
+	    searchView.setSearchableInfo(
+	            searchManager.getSearchableInfo(getComponentName()));
+		
+		
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
 			// Only show items in the action bar relevant to this screen
 			// if the drawer is not showing. Otherwise, let the drawer
 			// decide what to show in the action bar.
-			getMenuInflater().inflate(R.menu.main, menu);
+			//getMenuInflater().inflate(R.menu.main, menu);
 			restoreActionBar();
 			return true;
 		}
-		return super.onCreateOptionsMenu(menu);
+		
+	    
+	    return true;
+	    
+		//return super.onCreateOptionsMenu(menu);
 	}
 
 	/**onOptionsItemSelected 
@@ -344,7 +405,7 @@ public class MainActivity extends Activity implements
 		}
 
 		//Get the new filteredCompanyList based on the shared preferences 
-		filteredCompanyList = DbAccess.getCompaniesWith("", "", majors,
+		filteredCompanyList = DbAccess.getCompaniesWith("", majors,
 				workAuth, position, database);
 		filteredCompanyNames = DbAccess.getFilteredNames(database);
 	}

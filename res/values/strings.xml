@@ -11,5 +11,5 @@
     <string name="title_preferencesview">Filter Options</string>
     <string name="title_welcomemessage">Welcome</string>
     <string name="ButtonTextMap">Show Map</string>
-
+	<string name="search_hint">Search Companies</string>
 </resources>

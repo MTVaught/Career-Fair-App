@@ -20,6 +20,7 @@ public class DbAccess {
 	private static ArrayList<String> majorNames;
 	private static ArrayList<String> majorAbbrevs;
 	private static ArrayList<String> lastFilteredNames = new ArrayList<String>();
+	private static ArrayList<String> lastSearchedNames = new ArrayList<String>();
 	private static HashMap<String, ArrayList<Major>> majorMap;
 	private static HashMap<String, ArrayList<String>> workAuthMap;
 	private static HashMap<String, ArrayList<String>> positionMap;
@@ -30,6 +31,9 @@ public class DbAccess {
 	private static ArrayList<Company> lastFilteredNotBlank = new ArrayList<Company>();
 	
 
+	public static ArrayList<String> getSearchedCompanyNames() {
+		return (ArrayList<String>)lastSearchedNames.clone();
+	}
 	/**
 	 * getFilteredNamesSep
 	 * @param getBlanks - set to true if you want the filtered names that had a blank filter, false otherwise
@@ -37,9 +41,9 @@ public class DbAccess {
 	 */
 	public static ArrayList<String> getFilteredNamesSep(boolean getBlanks) {
 		if (getBlanks) {
-			return lastFilteredNamesBlank;
+			return (ArrayList<String>)lastFilteredNamesBlank.clone();
 		} else {
-			return lastFilteredNamesNotBlank;
+			return (ArrayList<String>)lastFilteredNamesNotBlank.clone();
 		}
 	}
 	
@@ -50,9 +54,9 @@ public class DbAccess {
 	 */
 	public static ArrayList<Company> getFilteredSep(boolean getBlanks) {
 		if (getBlanks) {
-			return lastFilteredBlank;
+			return (ArrayList<Company>)lastFilteredBlank.clone();
 		} else {
-			return lastFilteredNotBlank;
+			return (ArrayList<Company>)lastFilteredNotBlank.clone();
 		}
 	}
 	
@@ -276,14 +280,77 @@ public class DbAccess {
 		getAllCompanies(companies, database);
 		return companies;
 	}
+	
+	public static ArrayList<Company> searchAllCompanies(String filterName, SQLiteDatabase database) {
+		lastSearchedNames = new ArrayList<String>();
+		ArrayList<Company> companies = new ArrayList<Company>();
+		String fromString = "FROM company, companyToLocation, location, room";
+		String whereString = "WHERE company._id=companyToLocation.companyID AND companyToLocation.locationID=location._id AND location.roomID=room._id";
+
+
+		// Handle name filter
+		if (!filterName.isEmpty()) {
+			filterName = "%" + filterName + "%";
+			whereString = whereString + " AND company.name LIKE '" + filterName
+					+ "'";
+		}
+
+		// Toss strings into array to be passed into query
+		String[] query = { fromString, whereString };
+		String wholeQuery = "SELECT DISTINCT company.name, company.website, location.tableNum, room.name "
+				+ fromString
+				+ " "
+				+ whereString
+				+ " ORDER BY replace(replace(lower(replace(company.name, 'The ', '')), '.', ''), ' ', '');";
+		wholeQuery = wholeQuery + "";
+		Cursor companiesCursor = database.rawQuery(wholeQuery, new String[0]);
+		companiesCursor.moveToFirst();
+		if (!companiesCursor.isAfterLast()) {
+			do {
+				String name = companiesCursor.getString(0);
+				String website = companiesCursor.getString(1);
+				String tableNum = companiesCursor.getString(2);
+				String room = companiesCursor.getString(3);
+
+				lastSearchedNames.add(name);
+
+				if (majorMap == null) {
+					fillMajorMap(database);
+				}
+				if (positionMap == null) {
+					fillPositionMap(database);
+				}
+				if (workAuthMap == null) {
+					fillWorkAuthMap(database);
+				}
+				ArrayList<Major> majorList = majorMap.get(name);
+				ArrayList<String> positionList = positionMap.get(name);
+				ArrayList<String> workAuthList = workAuthMap.get(name);
+				if (majorList == null) {
+					majorList = new ArrayList<Major>();
+				}
+				if (positionList == null) {
+					positionList = new ArrayList<String>();
+				}
+				if (workAuthList == null) {
+					workAuthList = new ArrayList<String>();
+				}
+
+				Company newCompany = new Company(name, website, tableNum, room,
+						majorList, positionList, workAuthList);
+				companies.add(newCompany);
+
+			} while (companiesCursor.moveToNext());
+		}
+		companiesCursor.close();
+
+		return companies;
+	}
 
 	/**
 	 * getCompaniesWith - gets all the companies in the database fitting a
 	 * specific set of criteria
 	 * 
-	 * @param filterName
-	 *            - a string that the returned company names should contain, if
-	 *            not used, enter empty string ""
 	 * @param filterRoom
 	 *            - one of either "Wood", "Multipurpose", "Hall" or ""
 	 *            (indicating not to filter at all)
@@ -302,7 +369,7 @@ public class DbAccess {
 	 *            - SQLite database object returned by
 	 *            ExternalDbOpenHelper.openDataBase
 	 */
-	public static ArrayList<Company> getCompaniesWith(String filterName,
+	public static ArrayList<Company> getCompaniesWith(
 			String filterRoom, ArrayList<String> filterMajor,
 			ArrayList<String> filterWorkAuth, ArrayList<String> filterPosition,
 			SQLiteDatabase database) {
@@ -357,13 +424,6 @@ public class DbAccess {
 					+ " AND company._id=companyToType.companyID AND employmentType._id=companyToType.typeID AND employmentType.type IN ("
 					+ positionSet + ")";
 			fromString = fromString + ", companyToType, employmentType";
-		}
-
-		// Handle name filter
-		if (!filterName.isEmpty()) {
-			filterName = "%" + filterName + "%";
-			whereString = whereString + " AND company.name LIKE '" + filterName
-					+ "'";
 		}
 
 		// Toss strings into array to be passed into query
